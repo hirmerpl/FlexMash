@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:intf="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="extract">
+    <complexType>
+     <sequence>
+      <element name="hashtag" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="extractResponse">
+    <complexType>
+     <sequence>
+      <element name="extractReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="extractRequest">
+
+      <wsdl:part element="impl:extract" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="extractResponse">
+
+      <wsdl:part element="impl:extractResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="TwitterEtractor">
+
+      <wsdl:operation name="extract">
+
+         <wsdl:input message="impl:extractRequest" name="extractRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:extractResponse" name="extractResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="TwitterEtractorSoapBinding" type="impl:TwitterEtractor">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="extract">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="extractRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="extractResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="TwitterEtractorService">
+
+      <wsdl:port binding="impl:TwitterEtractorSoapBinding" name="TwitterEtractor">
+
+         <wsdlsoap:address location="http://localhost:8080/Data_Mashup/services/TwitterEtractor"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

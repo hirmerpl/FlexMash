@@ -1,0 +1,121 @@
+<ns1:deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java" xmlns:ns1="http://xml.apache.org/axis/wsdd/">
+ <ns1:globalConfiguration>
+  <ns1:parameter name="sendMultiRefs" value="true"/>
+  <ns1:parameter name="disablePrettyXML" value="true"/>
+  <ns1:parameter name="adminPassword" value="admin"/>
+  <ns1:parameter name="attachments.Directory" value="/Users/johannesbohn/Documents/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/Data_Mashup/WEB-INF/attachments"/>
+  <ns1:parameter name="dotNetSoapEncFix" value="true"/>
+  <ns1:parameter name="enableNamespacePrefixOptimization" value="false"/>
+  <ns1:parameter name="sendXMLDeclaration" value="true"/>
+  <ns1:parameter name="sendXsiTypes" value="true"/>
+  <ns1:parameter name="attachments.implementation" value="org.apache.axis.attachments.AttachmentsImpl"/>
+  <ns1:requestFlow>
+   <ns1:handler type="java:org.apache.axis.handlers.JWSHandler">
+    <ns1:parameter name="scope" value="session"/>
+   </ns1:handler>
+   <ns1:handler type="java:org.apache.axis.handlers.JWSHandler">
+    <ns1:parameter name="scope" value="request"/>
+    <ns1:parameter name="extension" value=".jwr"/>
+   </ns1:handler>
+  </ns1:requestFlow>
+ </ns1:globalConfiguration>
+ <ns1:handler name="URLMapper" type="java:org.apache.axis.handlers.http.URLMapper"/>
+ <ns1:handler name="Authenticate" type="java:org.apache.axis.handlers.SimpleAuthenticationHandler"/>
+ <ns1:handler name="LocalResponder" type="java:org.apache.axis.transport.local.LocalResponder"/>
+ <ns1:service name="SQLFilter" provider="java:RPC" style="wrapped" use="literal">
+  <ns2:operation name="filterData" qname="ns1:filterData" returnQName="ns1:filterDataReturn" returnType="xsd:string" soapAction="" xmlns:ns1="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://xml.apache.org/axis/wsdd/">
+   <ns2:parameter qname="ns1:key" type="xsd:string"/>
+   <ns2:parameter qname="ns1:criteria" type="xsd:string"/>
+  </ns2:operation>
+  <ns1:parameter name="allowedMethods" value="filterData"/>
+  <ns1:parameter name="wsdlPortType" value="SQLFilter"/>
+  <ns1:parameter name="typeMappingVersion" value="1.2"/>
+  <ns1:parameter name="schemaQualified" value="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+  <ns1:parameter name="wsdlServicePort" value="SQLFilter"/>
+  <ns1:parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.sql.SQLFilter"/>
+  <ns1:parameter name="wsdlTargetNamespace" value="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+  <ns1:parameter name="wsdlServiceElement" value="SQLFilterService"/>
+ </ns1:service>
+ <ns1:service name="AdminService" provider="java:MSG">
+  <ns1:parameter name="allowedMethods" value="AdminService"/>
+  <ns1:parameter name="enableRemoteAdmin" value="false"/>
+  <ns1:parameter name="className" value="org.apache.axis.utils.Admin"/>
+  <ns1:namespace>http://xml.apache.org/axis/wsdd/</ns1:namespace>
+ </ns1:service>
+ <ns1:service name="SQLExtractor" provider="java:RPC" style="wrapped" use="literal">
+  <ns1:operation name="extract" qname="ns2:extract" returnQName="ns2:extractReturn" returnType="xsd:string" soapAction="" xmlns:ns2="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns2:address" type="xsd:string"/>
+  </ns1:operation>
+  <ns1:parameter name="allowedMethods" value="extract"/>
+  <ns1:parameter name="typeMappingVersion" value="1.2"/>
+  <ns1:parameter name="wsdlPortType" value="SQLExtractor"/>
+  <ns1:parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.sql.SQLExtractor"/>
+  <ns1:parameter name="wsdlServicePort" value="SQLExtractor"/>
+  <ns1:parameter name="schemaQualified" value="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+  <ns1:parameter name="wsdlTargetNamespace" value="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+  <ns1:parameter name="wsdlServiceElement" value="SQLExtractorService"/>
+ </ns1:service>
+ <ns1:service name="Version" provider="java:RPC">
+  <ns1:parameter name="allowedMethods" value="getVersion"/>
+  <ns1:parameter name="className" value="org.apache.axis.Version"/>
+ </ns1:service>
+ <ns1:service name="TwitterFilter" provider="java:RPC" style="wrapped" use="literal">
+  <ns1:operation name="filterData" qname="ns3:filterData" returnQName="ns3:filterDataReturn" returnType="xsd:string" soapAction="" xmlns:ns3="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns3:key" type="xsd:string"/>
+   <ns1:parameter qname="ns3:criteria" type="xsd:string"/>
+  </ns1:operation>
+  <ns1:parameter name="allowedMethods" value="filterData"/>
+  <ns1:parameter name="typeMappingVersion" value="1.2"/>
+  <ns1:parameter name="wsdlPortType" value="TwitterFilter"/>
+  <ns1:parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.twitter.TwitterFilter"/>
+  <ns1:parameter name="wsdlServicePort" value="TwitterFilter"/>
+  <ns1:parameter name="schemaQualified" value="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+  <ns1:parameter name="wsdlTargetNamespace" value="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+  <ns1:parameter name="wsdlServiceElement" value="TwitterFilterService"/>
+ </ns1:service>
+ <ns1:service name="Join" provider="java:RPC" style="wrapped" use="literal">
+  <ns1:operation name="joinData" qname="ns4:joinData" returnQName="ns4:joinDataReturn" returnType="xsd:string" soapAction="" xmlns:ns4="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns4:key1" type="xsd:string"/>
+   <ns1:parameter qname="ns4:key2" type="xsd:string"/>
+   <ns1:parameter qname="ns4:criteria" type="xsd:string"/>
+  </ns1:operation>
+  <ns1:parameter name="allowedMethods" value="joinData"/>
+  <ns1:parameter name="wsdlPortType" value="Join"/>
+  <ns1:parameter name="typeMappingVersion" value="1.2"/>
+  <ns1:parameter name="schemaQualified" value="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+  <ns1:parameter name="wsdlServicePort" value="Join"/>
+  <ns1:parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.operations.Join"/>
+  <ns1:parameter name="wsdlTargetNamespace" value="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+  <ns1:parameter name="wsdlServiceElement" value="JoinService"/>
+ </ns1:service>
+ <ns1:service name="TwitterEtractor" provider="java:RPC" style="wrapped" use="literal">
+  <ns1:operation name="extract" qname="ns5:extract" returnQName="ns5:extractReturn" returnType="xsd:string" soapAction="" xmlns:ns5="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns5:hashtag" type="xsd:string"/>
+  </ns1:operation>
+  <ns1:parameter name="allowedMethods" value="extract"/>
+  <ns1:parameter name="typeMappingVersion" value="1.2"/>
+  <ns1:parameter name="wsdlPortType" value="TwitterEtractor"/>
+  <ns1:parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.twitter.TwitterEtractor"/>
+  <ns1:parameter name="wsdlServicePort" value="TwitterEtractor"/>
+  <ns1:parameter name="schemaQualified" value="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+  <ns1:parameter name="wsdlTargetNamespace" value="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+  <ns1:parameter name="wsdlServiceElement" value="TwitterEtractorService"/>
+ </ns1:service>
+ <ns1:transport name="http">
+  <ns1:requestFlow>
+   <ns1:handler type="URLMapper"/>
+   <ns1:handler type="java:org.apache.axis.handlers.http.HTTPAuthHandler"/>
+  </ns1:requestFlow>
+  <ns1:parameter name="qs:list" value="org.apache.axis.transport.http.QSListHandler"/>
+  <ns1:parameter name="qs:wsdl" value="org.apache.axis.transport.http.QSWSDLHandler"/>
+  <ns1:parameter name="qs.list" value="org.apache.axis.transport.http.QSListHandler"/>
+  <ns1:parameter name="qs.method" value="org.apache.axis.transport.http.QSMethodHandler"/>
+  <ns1:parameter name="qs:method" value="org.apache.axis.transport.http.QSMethodHandler"/>
+  <ns1:parameter name="qs.wsdl" value="org.apache.axis.transport.http.QSWSDLHandler"/>
+ </ns1:transport>
+ <ns1:transport name="local">
+  <ns1:responseFlow>
+   <ns1:handler type="LocalResponder"/>
+  </ns1:responseFlow>
+ </ns1:transport>
+</ns1:deployment>

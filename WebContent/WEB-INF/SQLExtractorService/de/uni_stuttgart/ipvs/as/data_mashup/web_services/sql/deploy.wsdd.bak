@@ -1,0 +1,29 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from SQLExtractorService WSDL service -->
+
+  <service name="SQLExtractor" provider="java:RPC" style="wrapped" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+      <parameter name="wsdlServiceElement" value="SQLExtractorService"/>
+      <parameter name="schemaQualified" value="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+      <parameter name="wsdlServicePort" value="SQLExtractor"/>
+      <parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.sql.SQLExtractorSoapBindingImpl"/>
+      <parameter name="wsdlPortType" value="SQLExtractor"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <operation name="extract" qname="operNS:extract" xmlns:operNS="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de" returnQName="retNS:extractReturn" xmlns:retNS="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de" returnType="rtns:string" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:address" xmlns:pns="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <parameter name="allowedMethods" value="extract"/>
+
+  </service>
+</deployment>

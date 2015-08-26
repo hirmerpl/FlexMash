@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://bpel.data_mashup.as.ipvs.informatik.uni_stuttgart.de" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" xmlns:wsdl="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:wsdl1="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:wsdl2="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de" name="DataMashupProcess" targetNamespace="http://bpel.data_mashup.as.ipvs.informatik.uni_stuttgart.de">
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     TYPE DEFINITION - List of types participating in this BPEL process 
+     The BPEL Designer will generate default request and response types
+     but you can define or import any XML Schema type and use them as part 
+     of the message types.
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->    
+    <plnk:partnerLinkType name="SQLExtractorPartnerLinkType">
+    <plnk:role name="SQLExtractorRole" portType="wsdl:SQLExtractor"/>
+  </plnk:partnerLinkType>
+    <plnk:partnerLinkType name="SQLFilterParnterLinkType">
+    <plnk:role name="SQLFIlterRole" portType="wsdl:SQLFilter"/>
+  </plnk:partnerLinkType>
+    <plnk:partnerLinkType name="TwitterExtractorPartnerLinkType">
+    <plnk:role name="TwitterExtractorRole" portType="wsdl1:TwitterEtractor"/>
+  </plnk:partnerLinkType>
+    <plnk:partnerLinkType name="TwitterFilterPartnerLinkType">
+    <plnk:role name="TwitterFilterRole" portType="wsdl1:TwitterFilter"/>
+  </plnk:partnerLinkType>
+    <plnk:partnerLinkType name="JoinPartnerLinkType">
+    <plnk:role name="JoinRole" portType="wsdl2:Join"/>
+  </plnk:partnerLinkType>
+    <import location="SQLExtractor.wsdl" namespace="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+    <import location="SQLFilter.wsdl" namespace="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+    <import location="TwitterEtractor.wsdl" namespace="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+    <import location="TwitterFilter.wsdl" namespace="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+    <import location="Join.wsdl" namespace="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://bpel.data_mashup.as.ipvs.informatik.uni_stuttgart.de">
+
+            <element name="DataMashupProcessRequest">
+                <complexType>
+                    <sequence>
+                        <element name="sqlExtractorAdress" type="string"/>
+                        <element name="sqlFilterCriteria" type="string"/>
+                        <element name="twitterFilterCriteria" type="string"/>
+                        <element name="joinCriteria" type="string"/>
+                    </sequence>
+                </complexType>
+            </element>
+
+            <element name="DataMashupProcessResponse">
+                <complexType>
+                    <sequence>
+                        <element name="result" type="string"/>
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </types>
+
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     MESSAGE TYPE DEFINITION - Definition of the message types used as 
+     part of the port type defintions
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->    
+    <message name="DataMashupProcessRequestMessage">
+        <part element="tns:DataMashupProcessRequest" name="payload"/>
+    </message>
+    <message name="DataMashupProcessResponseMessage">
+        <part element="tns:DataMashupProcessResponse" name="payload"/>
+    </message>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     PORT TYPE DEFINITION - A port type groups a set of operations into
+     a logical service unit.
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->    
+
+    <!-- portType implemented by the DataMashupProcess BPEL process -->
+    <portType name="DataMashupProcess">
+        <operation name="process">
+            <input message="tns:DataMashupProcessRequestMessage"/>
+            <output message="tns:DataMashupProcessResponseMessage"/>
+        </operation>
+    </portType>   
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     PARTNER LINK TYPE DEFINITION
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->    
+    <plnk:partnerLinkType name="DataMashupProcess">
+        <plnk:role name="DataMashupProcessProvider" portType="tns:DataMashupProcess"/>
+    </plnk:partnerLinkType>
+    
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     BINDING DEFINITION - Defines the message format and protocol details
+     for a web service.
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <binding name="DataMashupProcessBinding" type="tns:DataMashupProcess">
+    	<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    	<operation name="process">
+    		<soap:operation soapAction="http://bpel.data_mashup.as.ipvs.informatik.uni_stuttgart.de/process"/>
+    		<input>
+    			<soap:body use="literal"/>
+    		</input>
+    		<output>
+    			<soap:body use="literal"/>
+    		</output>
+    	</operation>
+    </binding>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     SERVICE DEFINITION - A service groups a set of ports into
+     a service unit.
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <service name="DataMashupProcessService">
+    	<port binding="tns:DataMashupProcessBinding" name="DataMashupProcessPort">
+    		<soap:address location="http://localhost:8080/ode/processes/DataMashupProcess"/>
+    	</port>
+    </service>
+</definitions>

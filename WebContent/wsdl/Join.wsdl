@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:intf="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="joinData">
+    <complexType>
+     <sequence>
+      <element name="key1" type="xsd:string"/>
+      <element name="key2" type="xsd:string"/>
+      <element name="criteria" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="joinDataResponse">
+    <complexType>
+     <sequence>
+      <element name="joinDataReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="joinDataResponse">
+
+      <wsdl:part element="impl:joinDataResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="joinDataRequest">
+
+      <wsdl:part element="impl:joinData" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="Join">
+
+      <wsdl:operation name="joinData">
+
+         <wsdl:input message="impl:joinDataRequest" name="joinDataRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:joinDataResponse" name="joinDataResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="JoinSoapBinding" type="impl:Join">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="joinData">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="joinDataRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="joinDataResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="JoinService">
+
+      <wsdl:port binding="impl:JoinSoapBinding" name="Join">
+
+         <wsdlsoap:address location="http://localhost:8080/Data_Mashup/services/Join"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

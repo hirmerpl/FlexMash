@@ -1,0 +1,31 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from JoinService WSDL service -->
+
+  <service name="Join" provider="java:RPC" style="wrapped" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+      <parameter name="wsdlServiceElement" value="JoinService"/>
+      <parameter name="schemaQualified" value="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+      <parameter name="wsdlServicePort" value="Join"/>
+      <parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.operations.JoinSoapBindingImpl"/>
+      <parameter name="wsdlPortType" value="Join"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <operation name="joinData" qname="operNS:joinData" xmlns:operNS="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de" returnQName="retNS:joinDataReturn" xmlns:retNS="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de" returnType="rtns:string" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:key1" xmlns:pns="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:key2" xmlns:pns="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:criteria" xmlns:pns="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <parameter name="allowedMethods" value="joinData"/>
+
+  </service>
+</deployment>
