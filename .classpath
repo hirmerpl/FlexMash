@@ -24,5 +24,23 @@
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.34-bin.jar"/>
 	<classpathentry exported="true" kind="lib" path="json-simple-1.1.1.jar"/>
 	<classpathentry kind="lib" path="twitter4j-stream-4.0.3.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/axis.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-discovery-0.2.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/gson-2.2.4-javadoc.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/gson-2.2.4-sources.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/java-json.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/javax.servlet_3.0.0.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jaxrpc.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/lingpipe-4.1.0.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/mongo-java-driver-2.13.0.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/mongo-java-driver-2.9.3.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/mysql-connector-java-5.1.34-bin.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/saaj.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/twitter4j-core-4.0.2.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/wsdl4j.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

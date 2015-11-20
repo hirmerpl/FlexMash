@@ -295,4 +295,23 @@ public class NodeREDConverter {
 
 		return null;
 	}
+	
+	/**
+	 * Creates JSONObjects from a JSON String TODO: move to utils
+	 * 
+	 * @param jsonFlow
+	 *            the JSON flow as string
+	 * 
+	 * @return JSONArray with JSONObjects
+	 */
+	public org.json.JSONObject createJsonObjects(String jsonFlow) {
+		org.json.JSONObject jsnObj = null;
+		try {
+			jsnObj = new org.json.JSONObject(jsonFlow);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return jsnObj;
+	}
 }
