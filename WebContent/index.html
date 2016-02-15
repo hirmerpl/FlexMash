@@ -1,517 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FlexMash Builder</title>
-    <link rel="stylesheet" href="lib/aui-css/css/bootstrap.css">
-    <script src="lib/aui/aui.js"></script>
-</head>
-<body>
-    <style type="text/css">
-        .diagram-node-merge .diagram-node-content {
-            background: url(https://cdn0.iconfinder.com/data/icons/typicons-2/24/flow-merge-64.png) no-repeat scroll center transparent;
-        }
-        .diagram-node-merge-icon {
-            background: url(https://cdn0.iconfinder.com/data/icons/typicons-2/24/flow-merge-32.png) no-repeat scroll center transparent;
-        }
-
-        .diagram-node-dataSource_NYT .diagram-node-content {
-            background: url(https://cdn0.iconfinder.com/data/icons/circle-icons/48/new_york_times.png) no-repeat scroll center transparent;
-        }
-        .diagram-node-dataSource_NYT-icon {
-            background: url(https://cdn0.iconfinder.com/data/icons/circle-icons/48/new_york_times.png) no-repeat scroll center transparent;
-        }
-
-        .diagram-node-dataSource_twitter .diagram-node-content {
-            background: url(https://cdn3.iconfinder.com/data/icons/social-media-9/512/2-48.png) no-repeat scroll center transparent;
-        }
-        .diagram-node-dataSource_twitter-icon {
-            background: url(https://cdn3.iconfinder.com/data/icons/social-media-9/512/2-32.png) no-repeat scroll center transparent;
-        }
-
-        .diagram-node-filter .diagram-node-content {
-            background: url(https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/48/empty_filter.png) no-repeat scroll center transparent;
-        }
-        .diagram-node-filter-icon {
-            background: url(https://cdn0.iconfinder.com/data/icons/windows8_icons/26/empty_filter.png) no-repeat scroll center transparent;
-        }
-        
-       .diagram-node-analytics .diagram-node-content {
-            background: url(https://cdn0.iconfinder.com/data/icons/kameleon-free-pack/110/Analytics-128.png) no-repeat scroll center transparent;
-        }
-        
-        .diagram-node-analytics-icon {
-            background: url(https://cdn0.iconfinder.com/data/icons/kameleon-free-pack/110/Analytics-128.png) no-repeat scroll center transparent;
-        }
-    </style>
-
-    <h1>FlexMash Builder</h1>
-      
-    <div id="myDiagramContainer">
-        <div id="myDiagramBuilder" width=100></div>
-    </div>
-
-	<!--<p><button id="getButton" type="button" class="btn btn-default" style="margin-left: 40px">Get Data Source Description</button></p>-->
+	<head>
+	    <meta charset="UTF-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	    <title>FlexMash Builder</title>
+	    <link rel="stylesheet" href="lib/aui-css/css/bootstrap.css">
+	    <link rel="stylesheet" type="text/css" href="css/style.css">
+		<link rel="stylesheet" type="text/css" href="extjs/ext-6.0.0/build/classic/theme-crisp/resources/theme-crisp-all.css">
+		<script src="extjs/ext-6.0.0/build/ext-all.js"></script>
+	    <script src="lib/aui/aui.js"></script>
+		<script type="text/javascript" src="pouchdb/pouchdb-5.1.0.js"></script>
+		<script src="js/database.js"></script>
+		<script src="js/dynamicnodemanager.js"></script>
+		<script src="js/staticnodemanager.js"></script>
+	    <script src="js/application.js"></script>
+	</head>
+	<body>
+	    <div style="margin-left: 10px;">
+		<table>
+			<tr>
+				<td><h1>FlexMash Builder</h1></td>
+				<td><div style="position: absolute; top: 115px; left: 290px; z-index: 10000000000000000000000000000000000;" id="myAlert"></div></td>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td>
+					<button id="patterSelection" type="button" class="btn btn-primary btn-md">Pattern Selection</button>
+				</td>
+				<td>&nbsp&nbsp</td>
+				<td>
+					<button id="postButton" type="button" class="btn btn-primary btn-md">Execute Data Mashup</button>
+				</td>
+				<td>&nbsp&nbsp</td>
+				<td>
+					<button id="saveTempleteButton" type="button" class="btn btn-primary btn-md">Save Template</button>
+				</td>
+				<td>&nbsp&nbsp</td>
+				<td>
+					<button id="removeTempleteButton" type="button" class="btn btn-primary btn-md">Remove Template</button>
+				</td>
+				<td>&nbsp&nbsp</td>
+				<td>
+					<span id="savedTemplates"></span>
+				</td>
+				<td>&nbsp&nbsp</td>
+			</tr>
+		</table>
+	    </div>
+	    <div id="myDiagramContainer">
+	        <div id="myDiagramBuilder"></div>
+	    </div>
 	
-	<div style="margin-left: 40px;">
-	    <p> <b>Pattern Selection:</b> </p>
-	    
-	    <select style="width: 10%;" class="form-control" id="selectPattern">
-			<option id="timeCritical" value="timeCritical">Time-Critical</option>
-		 	<option id="robust" value="robust">Robust</option>
-		  	<option id="secure" value="tradeOff">Secure (tbd)</option>
-		  	<option id="bigData" value="bigData">Big Data (tbd)</option>
-		</select>
-    </div>
-    <br/>
-    <p><button id="postButton" type="button" class="btn btn-primary btn-lg" style="margin-left: 40px;">Execute Data Mashup</button></p>
-				
-    <script>    	
-        YUI().use(
-                'aui-io-request', 'aui-diagram-builder', 'aui-button', 'aui-form-builder',
-
-            function (Y) {
-
-                Y.DiagramNodeMerge = Y.Component.create({
-                    NAME: 'diagram-node',
-
-                    ATTRS: {
-                        type: {
-                            value: 'Merge'
-                        },
-                        criteria: {
-                            validator: Y.Lang.isString,
-                            value: ''
-                        }
-                    },
-
-                    EXTENDS: Y.DiagramNodeJoin,
-
-                    prototype: {
-                        initializer: function() {
-                            var instance = this;
-                            
-                            this.SERIALIZABLE_ATTRS.push('criteria');
-                        },
-
-                        getPropertyModel: function () {
-                            var instance = this;
-
-                            var model = Y.DiagramNodeMerge.superclass.getPropertyModel.apply(instance, arguments);
-
-                                model.splice(0, 1);
-                                model.push({ 
-                                    attributeName: 'criteria', 
-                                    name: 'Criteria'
-                                });
-
-                            return model;
-                        },
-                    }
-                });
-
-                Y.DiagramNodedataSource_NYT = Y.Component.create({
-                    NAME: 'diagram-node',
-
-                    ATTRS: {
-                        type: {
-                            value: 'dataSource_NYT'
-                        },
-                        dataSource_NYTName: {
-                            value: ''
-                        }
-                    },
-
-                    EXTENDS: Y.DiagramNodeTask,
-
-                    prototype: {
-                        initializer: function() {
-                            var instance = this;
-                            
-                            this.SERIALIZABLE_ATTRS.push('dataSource_NYTName');
-                        },
-
-                        getPropertyModel: function () {
-                            var instance = this;
-
-                            var model = Y.DiagramNodedataSource_NYT.superclass.getPropertyModel.apply(instance, arguments);
-
-                           model.splice(0, 1);
-                           model.push({ 
-                               attributeName: 'dataSource_NYTName', 
-                               name: 'Category',
-                               editor:  new Y.DropDownCellEditor({
-                                   options: {
-                                       Sports: 'Sports',
-                                       Business: 'Business',
-                                       Technology: 'Technology',
-                                       Science: 'Science',
-                                       Health: 'Health',
-                                       World: 'World'
-                                   }
-                               }) 
-                           });
-
-                            return model;
-                        },
-                    }
-                });
-
-                Y.DiagramNodeDataSource_twitter = Y.Component.create({
-                    NAME: 'diagram-node',
-
-                    ATTRS: {
-                        type: {
-                            value: 'dataSource_twitter'
-                        },
-                        dataSource_twitterHashtag: {
-                            validator: Y.Lang.isString,
-                            value: ''
-                        }
-                    },
-
-                    EXTENDS: Y.DiagramNodeTask,
-
-                    prototype: {
-                        initializer: function() {
-                            var instance = this;
-                            
-                            this.SERIALIZABLE_ATTRS.push('dataSource_twitterHashtag');
-                        },
-
-                        getPropertyModel: function () {
-                            var instance = this;
-
-                            var model = Y.DiagramNodeDataSource_twitter.superclass.getPropertyModel.apply(instance, arguments);
-
-                                model.splice(0, 1);
-                                model.push({
-                                    attributeName: 'dataSource_twitterHashtag', 
-                                    name: 'Keywords',
-                                });
-
-                            return model;
-                        },
-                    }
-                });
-
-                Y.DiagramNodeFilter = Y.Component.create({
-                    NAME: 'diagram-node',
-
-                    ATTRS: {
-                        type: {
-                            value: 'filter'
-                        },
-                        filtertype: {
-                            value: ''
-                        },
-                        filter_criteria: {
-                            value: ''
-                        }
-                    },
-
-                    EXTENDS: Y.DiagramNodeFork,
-
-                    prototype: {
-                        initializer: function() {
-                            var instance = this;
-                            
-                            this.SERIALIZABLE_ATTRS.push('filtertype');
-                            this.SERIALIZABLE_ATTRS.push('filter_criteria');
-                        },
-                        
-                        getPropertyModel: function () {
-                            var instance = this;
-
-                            var model = Y.DiagramNodeFilter.superclass.getPropertyModel.apply(instance, arguments);
-
-                            model.splice(0, 1);
-                            model.push({
-                                attributeName: 'filtertype',
-                                name: 'Filter Type',
-                                editor: new Y.DropDownCellEditor({
-                                    options: {
-                                    	NYT: 'NYT Filter',
-                                        tbd: 'tdb'
-                                    }
-                                })
-                            });
-                            model.push({
-                                attributeName: 'filter_criteria', 
-                                name: 'Keywords',
-                                editor: new Y.TextCellEditor  
-                            });
-
-                            return model;
-                        }
-                    }
-                });
-                
-                Y.DiagramNodeAnalytics = Y.Component.create({
-                    NAME: 'diagram-node',
-
-                    ATTRS: {
-                        type: {
-                            value: 'analytics'
-                        },
-                        filtertype: {
-                            value: ''
-                        },
-                        filter_criteria: {
-                            value: ''
-                        }
-                    },
-
-                    EXTENDS: Y.DiagramNodeFork,
-
-                    prototype: {
-                        initializer: function() {
-                            var instance = this;
-                            
-                            this.SERIALIZABLE_ATTRS.push('analyticstype');
-                            this.SERIALIZABLE_ATTRS.push('analytics_properties');
-                        },
-                        
-                        getPropertyModel: function () {
-                            var instance = this;
-
-                            var model = Y.DiagramNodeFilter.superclass.getPropertyModel.apply(instance, arguments);
-
-                            model.splice(0, 1);
-                            model.push({
-                                attributeName: 'analyticstype',
-                                name: 'Analytics Type',
-                                editor: new Y.DropDownCellEditor({
-                                    options: {
-                                        Sentiment: 'Sentiment Analysis',
-                                        NE: 'Named Entity Recognition'
-                                    }
-                                })
-                            });
-                            model.push({ 
-                                attributeName: 'analytics_properties', 
-                                name: 'Properties',
-                                editor: new Y.TextCellEditor  
-                            });
-
-                            return model;
-                        }
-                    }
-                });
-
-                Y.DiagramBuilder.types['analytics'] = Y.DiagramNodeAnalytics;
-                Y.DiagramBuilder.types['merge'] = Y.DiagramNodeMerge;
-                Y.DiagramBuilder.types['dataSource_NYT'] = Y.DiagramNodedataSource_NYT;
-                Y.DiagramBuilder.types['dataSource_twitter'] = Y.DiagramNodeDataSource_twitter;
-                Y.DiagramBuilder.types['filter'] = Y.DiagramNodeFilter;
-
-                var availableFields = [{
-                    iconClass: 'diagram-node-start-icon',
-                    label: 'Start',
-                    type: 'start'
-                }, {
-                    iconClass: 'diagram-node-end-icon',
-                    label: 'End',
-                    type: 'end'
-                }, {
-                    iconClass: 'diagram-node-merge-icon',
-                    label: 'Merge',
-                    type: 'merge'
-                },{
-                    iconClass: 'diagram-node-analytics-icon',
-                    label: 'Analytics',
-                    type: 'analytics'
-                },{
-                    iconClass: 'diagram-node-filter-icon',
-                    label: 'Filter',
-                    type: 'filter'
-                }, {
-                    iconClass: 'diagram-node-dataSource_twitter-icon',
-                    label: 'Twitter',
-                    type: 'dataSource_twitter'
-                }, {
-                    iconClass: 'diagram-node-dataSource_NYT-icon',
-                    label: 'NYT',
-                    type: 'dataSource_NYT'
-                }];
-
-                diagram = new Y.DiagramBuilder({
-                    availableFields: availableFields,
-                    boundingBox: '#myDiagramContainer',
-                    fields: [
-                      /*{
-                        name: 'Start',
-                        type: 'start',
-                        xy: [20, 250]
-                      },
-                      {
-                        name: 'NYT',
-                        type: 'dataSource_NYT',
-                        xy: [220, 100]
-                      },
-                      {
-                        name: 'Twitter',
-                        type: 'dataSource_twitter',
-                        xy: [220, 400]
-                      },
-                      {
-                        name: 'Filter',
-                        type: 'filter',
-                        xy: [520, 100]
-                      },
-                      {
-                        name: 'Analytics',
-                        type: 'analytics',
-                        xy: [520, 400]
-                      },
-                      {
-                        name: 'Merge',
-                        type: 'merge',
-                        xy: [720, 250]
-                      },
-                      {
-                        name: 'End',
-                        type: 'end',
-                        xy: [1020, 260]
-                      }*/
-                    ],
-                    srcNode: '#myDiagramBuilder'
-                }).render();
-
-                
-                /*diagram.connectAll(
-                  [
-                    {
-                      connector: {
-                        name: ''
-                      },
-                      source: 'Start',
-                      target: 'NYT'
-                    },
-                    {
-                      connector: {
-                        name: ''
-                      },
-                      source: 'NYT',
-                      target: 'Filter'
-                    },
-                    {
-                      connector: {
-                        name: ''
-                      },
-                      source: 'Twitter',
-                      target: 'Analytics'
-                    },
-                    {
-                      connector: {
-                        name: ''
-                      },
-                      source: 'Filter',
-                      target: 'Twitter'
-                    },
-                    {
-                      connector: {
-                        name: ''
-                      },
-                      source: 'Analytics',
-                      target: 'Merge'
-                    },
-                    {
-                      connector: {
-                        name: ''
-                      },
-                      source: 'Merge',
-                      target: 'End'
-                    }
-                  ]
-                );*/
-                
-                /*
-                Y.one('#getButton').on(
-                    'click', 
-
-                    function() {
-                        jsonGetString = JSON.stringify(diagram.toJSON());
-                        jsonGetString = jsonGetString.substring(0, jsonGetString.length - 1);
-                        jsonGetString = jsonGetString + ",\"wrapper\":\"true\"}"
-                        Y.io.request(
-                            'http://localhost:8080/Data_Mashup/DataMashup',
-                            {
-                            	method: 'POST',
-                                data: jsonGetString,
-                                on: {
-                                    success: function() {
-                                        var data = this.get('responseData');
-                                        alert(data);
-                                    },
-                                    failure: function() {
-                                        alert('failure');
-                                    }
-                                }
-                            }
-                        );
-                    }
-                );
-				*/
-								  
-                Y.one('#postButton').on(
-                    'click', 
-
-                    function() {
-						document.getElementById("alertDiv").hidden = true;
-						document.getElementById("alertDiv2").hidden = true;
-
-                    	
-                    	jsonPostString = JSON.stringify(diagram.toJSON());
-                    	
-                    	var dropDownMenu = document.getElementById("selectPattern");
-                    	var dropDownLength = dropDownMenu.length;
-                    	var selectedPattern = "";
-                    	
-                    	for (var i = 0; i < dropDownLength; i++) {
-                    		if (dropDownMenu[i].selected == true) {
-                    			selectedPattern = dropDownMenu[i].value;
-                    		}
-                    	}
-                    	
-                        Y.io.request(
-                            'http://localhost:8080/Data_Mashup/DataMashup',
-                            {
-                                method: 'POST',
-                                data: {flow: jsonPostString, pattern: selectedPattern},
-                                on: {
-                                    success: function(msg) {
-                                        var data = this.get('responseData');
-                                        if(data.indexOf("timeCritical" != -1)) {
-                                        	//<div class="alert alert-success">
-                                        	//  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        	//  <strong>Success!</strong> Indicates a successful or positive action.
-                                        	//</div>
-											document.getElementById("alertDiv").hidden = false;
-                                        } else if (data.indexOf("robust" != -1)) {
-											document.getElementById("alertDiv2").hidden = false;
-                                        }
-                                    },
-                                    failure: function() {
-                                        alert('An error ocurred, please check your model.');
-                                    }
-                                }
-                            }
-                        );
-                    }
-                );
-            }
-        );
-    </script>
-    <div id="alertDiv" hidden="true" class="alert alert-success">
-    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Success!</strong> Access your Mashup here: file:///C:/Users/hirmerpl/Desktop/node-red-0.9.1/result.html
-    </div>
-    
-    <div id="alertDiv2" hidden="true" class="alert alert-success">
-    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Success!</strong> Access your Mashup here: file:///C:/result.html
-    </div>
-</body>
+		<!--<p><button id="getButton" type="button" class="btn btn-default" style="margin-left: 40px">Get Data Source Description</button></p>-->   
+	    <div id="alertDiv" hidden="true" class="alert alert-success">
+	    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	        <strong>Success!</strong> Access your Mashup here: file:///C:/Users/hirmerpl/Desktop/node-red-0.9.1/result.html
+	    </div>
+	
+	    <div id="alertDiv2" hidden="true" class="alert alert-success">
+	    	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	        <strong>Success!</strong> Access your Mashup here: file:///C:/result.html
+	    </div>
+	</body>
 </html>

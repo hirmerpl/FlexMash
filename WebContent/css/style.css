@@ -1,0 +1,50 @@
+.diagram-node-merge .diagram-node-content {
+    background: url(https://cdn0.iconfinder.com/data/icons/typicons-2/24/flow-merge-64.png) no-repeat scroll center transparent;
+}
+.diagram-node-merge-icon {
+	background: url(https://cdn0.iconfinder.com/data/icons/typicons-2/24/flow-merge-32.png) no-repeat scroll center transparent;
+}
+
+.diagram-node-dataSource_NYT .diagram-node-content {
+    background: url(https://cdn0.iconfinder.com/data/icons/circle-icons/48/new_york_times.png) no-repeat scroll center transparent;
+}
+.diagram-node-dataSource_NYT-icon {
+    background: url(https://cdn0.iconfinder.com/data/icons/circle-icons/48/new_york_times.png) no-repeat scroll center transparent;
+}
+.diagram-node-dataSource_facebook .diagram-node-content {
+    background: url(https://cdn1.iconfinder.com/data/icons/logotypes/32/square-facebook-24.png) no-repeat scroll center transparent;
+}
+.diagram-node-dataSource_facebook-icon {
+    background: url(https://cdn1.iconfinder.com/data/icons/logotypes/32/square-facebook-24.png) no-repeat scroll center transparent;
+}
+.diagram-node-dataSource_googleplus .diagram-node-content {
+    background: url(https://cdn2.iconfinder.com/data/icons/social-18/512/Google_Plus-24.png) no-repeat scroll center transparent;
+}
+.diagram-node-dataSource_googleplus-icon {
+    background: url(https://cdn2.iconfinder.com/data/icons/social-18/512/Google_Plus-24.png) no-repeat scroll center transparent;
+}
+.diagram-node-dataSource_twitter .diagram-node-content {
+    background: url(https://cdn3.iconfinder.com/data/icons/social-media-9/512/2-48.png) no-repeat scroll center transparent;
+}
+.diagram-node-dataSource_twitter-icon {
+    background: url(https://cdn3.iconfinder.com/data/icons/social-media-9/512/2-32.png) no-repeat scroll center transparent;
+}
+.diagram-node-filter .diagram-node-content {
+    background: url(https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/48/empty_filter.png) no-repeat scroll center transparent;
+}
+.diagram-node-filter-icon {
+    background: url(https://cdn0.iconfinder.com/data/icons/windows8_icons/26/empty_filter.png) no-repeat scroll center transparent;
+} 
+.diagram-node-analytics .diagram-node-content {
+    background: url(https://cdn0.iconfinder.com/data/icons/kameleon-free-pack/110/Analytics-128.png) no-repeat scroll center transparent;
+}
+.diagram-node-analytics-icon {
+    background: url(https://cdn0.iconfinder.com/data/icons/kameleon-free-pack/110/Analytics-128.png) no-repeat scroll center transparent;
+}
+
+.diagram-node-customNode .diagram-node-content {
+    background: url(https://cdn4.iconfinder.com/data/icons/linecon/512/add-24.png) no-repeat scroll center transparent;
+}
+.diagram-node-customNode-icon {
+    background: url(https://cdn4.iconfinder.com/data/icons/linecon/512/add-24.png) no-repeat scroll center transparent;
+}

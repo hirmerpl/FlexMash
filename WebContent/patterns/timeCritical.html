@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	</head>
+<body>
+	<div style="padding:5px; margin:3px; border-style: solid; border-width: 1px; border-radius: 25px;">
+		<table style="width:100%;">
+			<tr>
+				<td style="width: 40px; border-bottom: 1px solid; border-right: 1px solid;"><img width="40px" width="40px" src="patterns/images/timecritical.PNG"></td>
+				<td style="border-bottom: 1px solid;"><center><font size="5px">Transformation Pattern: Robust Mashup</font></center></td> 
+			</tr>
+			<tr>
+				<td><u>Problem:</u></td>
+				<td style="padding:10px; padding-left:40px;">The scenario the Mashup is executed in is very time-critical, i.e., it is of vital importance that the Mashup is
+					executed as fast as possible to receive the integrated result. Especially in situation recognition and exception
+					escalation scenarios, time is the most important factor. That is, the time-critical requirement is above all other
+					requirements such as robustness, security, data persistence etc.
+				</td>
+			</tr>
+			<tr>
+				<td><u>Solution:</u></td>
+				<td style="padding:10px; padding-left:40px;">A fast execution engine is chosen with a suitable execution language. The Mashup Plan will be mapped onto
+					this language and execute into the engine.
+				</td>
+			</tr>
+			<tr>
+				<td><u>Example:</u></td>
+				<td style="padding:10px; padding-left:40px;">We use the fast and efficient, however, non-robust execution engine Node-RED which has a lack of
+					robustness regarding data persistence, error handling etc. However, the time-critical requirement is fulfilled.
+				</td> 
+			</tr>
+			<tr>
+				<td><u>Evaluation:</u></td>
+				<td style="padding:10px; padding-left:40px;">Using this pattern enables its advantages especially in time-critical scenarios such as the integration of sensor
+					data for situation recognition. However, the disadvantages of this pattern are many. By just including the timecritical
+					requirement, no important factors such as error handling, logging or data persistence can be provided.
+					This can lead to an unstable Mashup execution. In conclusion, this pattern should be used connected with other
+					patterns or in prototypical, non-production environments.</b>
+				</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
