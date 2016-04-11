@@ -173,12 +173,13 @@ var application = {
 				allowBlank: false
 		});
 
-		//Ext js store for saving the templates and connecting to combo box
-		app.savedTempletesStore = Ext.create('Ext.data.Store', {
-			fields: ['value', 'name'],
-			data: storage.lastRevision.templetes
-		});
+        //Ext js store for saving the templates and connecting to combo box
+        app.savedTempletesStore = Ext.create('Ext.data.Store', {
+            fields: ['value', 'name'],
+            data: storage.lastRevision.templetes
+        });
 
+        
 		//Combo box for showing the templates
 		app.savedTempletes = Ext.create('Ext.form.ComboBox', {
 			fieldLabel: 'Saved Templates',
@@ -301,7 +302,7 @@ var application = {
 			for (var i = 0; i < app.dynamicNodes.length; i++) {
 					var strTable="<div><table border=1>";
 					var node = app.dynamicNodes[i];
-					debugger;
+					//debugger;
 					//check for subflows
 					if (node.nodeType == 'subflow') {
 						//table of the tooltip
@@ -345,13 +346,124 @@ var application = {
 						}					
 						
 						strTable=strTable+"<img src='"+node.iconURL+"'></table></div>";
-						strTable=strTable+"</table></div>";		
+						strTable=strTable+"</table></div>";	
+
+                        /*
+                        var tooltip = '<div>blub</div>'
 						//the tip
 						var tip = Ext.create('Ext.tip.ToolTip', {
 						target: ('availableFields_field_' + node.id),
 						dismissDelay: 0,
-						html:strTable
+						html:tooltip
 						});
+                        */
+                        
+                        /*YUI().use('overlay', 'event', 'widget-anim', function (Y) {
+                            Y.one('#tooltip').hide();
+                        });*/
+                        
+                        Y.one('#availableFields_field_' + node.id).on('mouseenter', function(event){
+                            var id = event.target._node.id;
+                            YUI().use('overlay', 'event', 'widget-anim', function (Y) {
+                                var targetNode;
+                                for (var i = 0; i < app.dynamicNodes.length; i++) {
+                                    if (id.indexOf(app.dynamicNodes[i].id) != -1) {
+                                        targetNode = app.dynamicNodes[i];
+                                    }
+                                }
+                                
+                                var fields = new Array();
+                                
+                                for (var j = 0; j < targetNode.nodes.length; j++) {
+                                    var currNode = targetNode.nodes[j];
+                                    var jsonNode = JSON.parse('{}');
+                                    jsonNode.name = currNode.name;
+                                    jsonNode.type = currNode.type;
+                                    jsonNode.xy = currNode.xy;
+                                    fields.push(jsonNode);
+                                }
+                                
+                                //document.getElementById('tooltip').innerHTML = event.target._node.id;
+                                
+                                // name: 'StartNode',
+                                // type: 'start',
+                                // xy: [10, 10]
+
+                                var moreFields = [{
+                                    iconClass: 'diagram-node-start-icon',
+                                    label: 'Start',
+                                    type: 'start'
+                                }, {
+                                    iconClass: 'diagram-node-end-icon',
+                                    label: 'End',
+                                    type: 'end'
+                                }, {
+                                    iconClass: 'diagram-node-merge-icon',
+                                    label: 'Merge',
+                                    type: 'merge'
+                                },{
+                                    iconClass: 'diagram-node-analytics-icon',
+                                    label: 'Analytics',
+                                    type: 'analytics'
+                                },{
+                                    iconClass: 'diagram-node-filter-icon',
+                                    label: 'Filter',
+                                    type: 'filter'
+                                }, {
+                                    iconClass: 'diagram-node-dataSource_twitter-icon',
+                                    label: 'Twitter',
+                                    type: 'dataSource_twitter'
+                                }, {
+                                    iconClass: 'diagram-node-dataSource_NYT-icon',
+                                    label: 'NYT',
+                                    type: 'dataSource_NYT'
+                                }, {
+                                    iconClass: 'diagram-node-dataSource_googleplus-icon',
+                                    label: 'Google+',
+                                    type: 'dataSource_googleplus'
+                                }, {
+                                    iconClass: 'diagram-node-dataSource_facebook-icon',
+                                    label: 'Facebook',
+                                    type: 'dataSource_facebook'
+                                }, {
+                                    id: 'customNode',
+                                    iconClass: 'diagram-node-customNode-icon',
+                                    label: 'Custom',
+                                    type: 'customNode'
+                                }];
+                                
+                                
+                                var availableFields = dnm.createAvailableFields(Y);
+                                for (var k = 0; k < moreFields.length; k++) {
+                                    availableFields.push(moreFields[k]);
+                                }
+                                
+                                //alert(availableFields);
+                                
+                                YUI().use(
+                                  'aui-diagram-builder',
+                                  function(Y) {
+                                    new Y.DiagramBuilder(
+                                      {
+                                        availableFields: availableFields,
+                                        boundingBox: '#tooltipContainer',
+                                        visible: true,
+                                        fields: fields,
+                                        srcNode: '#tooltip'
+                                      }
+                                    ).render()
+                                  }
+                                );
+                                
+                                Y.one('#tooltip').show();
+                            });
+                        });
+                        
+                        Y.one('#availableFields_field_' + node.id).on('mouseleave', function(event){
+                            YUI().use('overlay', 'event', 'widget-anim', function (Y) {
+                                Y.one('#tooltip').hide();
+                            });
+                        });
 					}
 				
 				var nodeElement = Ext.get('availableFields_field_' + node['id']);

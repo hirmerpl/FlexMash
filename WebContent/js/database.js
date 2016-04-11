@@ -1,6 +1,6 @@
 var storage = {
-	//Database driver defined for Cloudnat
-	db: new PouchDB('https://143e3876-46cf-403e-aeac-f332a7185c79-bluemix.cloudant.com/flexmash', {
+	//Database driver defined for Cloudant
+	db: new PouchDB('https://455678c4-5f99-426a-80ce-3c1694c262c1-bluemix.cloudant.com/flexmash', {
 		ajax: {
 			cache: false,
 			timeout: 10000,
@@ -9,8 +9,8 @@ var storage = {
 			},
 		},
 		auth: {
-			username: '143e3876-46cf-403e-aeac-f332a7185c79-bluemix',
-			password: '6a1de99bc3aeac2aba252b181a5bdf4cd52f5814649e3d45fbfde0b97d45c995'
+			username: '455678c4-5f99-426a-80ce-3c1694c262c1-bluemix',
+			password: '4dfde9d9855c8e07a5479af74f769d253ce0b03014e592f418215e0878512aa6'
 		}
 	}),
 	initializeData: function(Y) {
@@ -26,6 +26,7 @@ var storage = {
 				storage.lastRevision = response;
 			} else {
 				app.dynamicNodes = [];
+                storage.lastRevision = [];
 			}
 			//Lunch the application as the data is initialized
 			application.luncher(Y);

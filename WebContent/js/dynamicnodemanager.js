@@ -38,7 +38,24 @@ var dynamicnodemanager = {
 			}
 		}
 		return availableFields;
-	},
+	}, createAvailableFields: function(Y) {
+    		var availableFields = [];
+		//check and see if there are dynamic nodes to be created
+		if (app.dynamicNodes) {
+			for (var i = 0; i < app.dynamicNodes.length; i++) {
+				var node = app.dynamicNodes[i];
+
+				//Define the mapings dynamically and add the new node to available fields to be preocessed by application
+				availableFields.push({
+					id: node['id'],
+					iconClass: 'diagram-node-' + node['id'] + '-icon',
+					label: node['nodeName'],
+					type: node['id']
+				});
+			}
+		}
+		return availableFields;
+    },
 	addNewNode: function() {
 		alert("TODO add new node");
 	},
