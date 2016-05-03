@@ -36,7 +36,7 @@ public class EngineProcessStarter {
 	 * @param xml
 	 *            the BPEl process as XML string
 	 */
-	public void generateFiles(String xml) {
+	public static void generateFiles(String xml) {
 		generateBPELFile(xml);
 		zipFiles();
 		deployZip();
@@ -48,7 +48,7 @@ public class EngineProcessStarter {
 	 * @param bpel
 	 *            the BPEL XML string
 	 */
-	private void generateBPELFile(String bpel) {
+	private static void generateBPELFile(String bpel) {
 		Writer writer = null;
 
 		try {
@@ -85,7 +85,7 @@ public class EngineProcessStarter {
 	 * packs all necessary deployment components in a ZIP file to be compatible
 	 * with the ApacheODE engine
 	 */
-	private void zipFiles() {
+	private static void zipFiles() {
 		ZipOutputStream zipOutStream = null;
 		FileInputStream bpelInStream = null;
 		FileInputStream wsdlInStream = null;
@@ -163,7 +163,7 @@ public class EngineProcessStarter {
 	 * @throws IOException
 	 *             this exception occurs if the file is not readable or damaged
 	 */
-	private void addToZipStream(FileInputStream in, ZipOutputStream out, String name) throws IOException {
+	private static void addToZipStream(FileInputStream in, ZipOutputStream out, String name) throws IOException {
 		int len;
 		byte[] buffer = new byte[2048];
 		out.putNextEntry(new ZipEntry(new File(name).getName()));
@@ -176,7 +176,7 @@ public class EngineProcessStarter {
 	/**
 	 * deploys the generated ZIP in the ApacheODE BPEL engine
 	 */
-	private void deployZip() {
+	private static void deployZip() {
 		try {
 			// Create Connection
 			SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();

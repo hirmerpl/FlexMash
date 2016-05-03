@@ -2,6 +2,8 @@ package de.unistuttgart.ipvs.as.flexmash.servlet.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,73 +11,80 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
 import org.json.simple.JSONArray;
 
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.BPELEngineCommunicator;
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.EngineProcessStarter;
-import de.unistuttgart.ipvs.as.flexmash.transformation.BPELConverter;
+import de.unistuttgart.ipvs.as.flexmash.transformation.MashupPlanToBPELConverter;
 import de.unistuttgart.ipvs.as.flexmash.transformation.NodeREDConverter;
 import de.unistuttgart.ipvs.as.flexmash.utils.http.IOUtils;
+import de.unistuttgart.ipvs.as.flexmash.utils.http.Util;
 
 @WebServlet("/DataMashup")
 /**
- * Servlet to communicate with the client
+ * Entry point of the server side. Receives a Mashup Plan, transforms and executes it
  */
 public class ClientCommunicationServlet extends HttpServlet {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
+	// static string definitions
+	private static final String PATTERN_STRING = "pattern";
+	private static final String FLOW_STRING = "flow";
+	private static final String ROBUST = "robust";
+	private static final String TIME_CRITICAL = "timeCritical";
+	
+	private final static Logger LOGGER = Logger.getLogger(ClientCommunicationServlet.class.getName()); 
+	
 	/**
-	 * receives a POST request from the client side
+	 * Receives a POST request from the client side
+	 * 
+	 * @param req
+	 * 			the request from the client containing the mashup plan and the pattern to be used
+	 * 
+	 * @param resp
+	 * 			the response to the client whether the data mashup was successful
+	 * 
 	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		String pattern = req.getParameter("pattern");
+		String selectedPattern = req.getParameter(PATTERN_STRING);
+		String mashupPlan = req.getParameter(FLOW_STRING);
+		
+		// remove tab stops, line breaks
+		mashupPlan = mashupPlan.replaceAll("[\\t\\n\\r]", "");
 
-		String data = req.getParameter("flow");
-		data = data.replaceAll("[\\t\\n\\r]", "");
+		PrintWriter out = resp.getWriter();
+		JSONObject mashupPlanAsJSON = Util.createJsonObjects(mashupPlan);
+		
+		switch (selectedPattern) {
+			case ROBUST:
+				LOGGER.log(Level.INFO, "Robust pattern selected.");
 
-		if (pattern.equals("robust")) {
+				MashupPlanToBPELConverter mashupPlanToBPELConverter = new MashupPlanToBPELConverter();
+				String mashupPlanAsBPEL = mashupPlanToBPELConverter.convert(mashupPlanAsJSON);
+				String[] properties = mashupPlanToBPELConverter.getEntries();
 
-			BPELConverter conv = new BPELConverter();
+				EngineProcessStarter.generateFiles(mashupPlanAsBPEL);
+				BPELEngineCommunicator.callEngine(properties[0], properties[4], properties[5], properties[6], properties[7]);
 
-			org.json.JSONObject jsnObj = conv.createJsonObjects(data);
-
-			String bpel = conv.convert(jsnObj);
-
-			String[] entries = conv.getEntries();
-
-			EngineProcessStarter engineProcessStarter = new EngineProcessStarter();
-			engineProcessStarter.generateFiles(bpel);
-
-			BPELEngineCommunicator engineCommunicator = new BPELEngineCommunicator();
-
-			engineCommunicator.callEngine(entries[0], entries[4], entries[5], entries[6], entries[7]);
-
-			String reply = "robust";
-			PrintWriter out = resp.getWriter();
-			
-			out.println(reply);
-
-		} else if (pattern.equals("timeCritical")) {
-			// implement Node-RED Mapping here
-			System.out.println("Time Critical Pattern selected..");
-
-			NodeREDConverter conv = new NodeREDConverter();
-
-			org.json.JSONObject jsnObj = conv.createJsonObjects(data);
-
-			JSONArray nodeRedFlow = conv.convertToNodeRED(jsnObj);
-
-			IOUtils.deployToNodeRED(nodeRedFlow);
-
-			PrintWriter out = resp.getWriter();
-					
-			String reply = "timeCritical";
+				out.println(ROBUST);
 				
-			out.println(reply);
+				break;
+			case TIME_CRITICAL:
+				// implement Node-RED Mapping here
+				LOGGER.log(Level.INFO, "Time-critical pattern selected.");
+
+				JSONArray nodeRedFlow = NodeREDConverter.convertToNodeRED(mashupPlanAsJSON);
+				IOUtils.deployToNodeRED(nodeRedFlow);
+				
+				out.println(TIME_CRITICAL);
+				
+				break;
+
+			default:
+				break;
 		}
 	}
 }

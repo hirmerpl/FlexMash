@@ -16,7 +16,7 @@ import de.unistuttgart.ipvs.as.flexmash.utils.transformation_utils.FlowNode;
 /**
  * class to convert a Data Mashup flow into an executable BPEL workflow
  */
-public class BPELConverter {
+public class MashupPlanToBPELConverter {
 
 	private HashMap<String, FlowNode> WorkflowMap = new HashMap<String, FlowNode>();
 	String[] entries = new String[8];
@@ -148,25 +148,6 @@ public class BPELConverter {
 		}
 
 		return BPELWorkflow;
-	}
-
-	/**
-	 * Creates JSONObjects from a JSON String TODO: move to utils
-	 * 
-	 * @param jsonFlow
-	 *            the JSON flow as string
-	 * 
-	 * @return JSONArray with JSONObjects
-	 */
-	public org.json.JSONObject createJsonObjects(String jsonFlow) {
-		org.json.JSONObject jsnObj = null;
-		try {
-			jsnObj = new org.json.JSONObject(jsonFlow);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return jsnObj;
 	}
 
 	/**

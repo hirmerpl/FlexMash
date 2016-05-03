@@ -5,7 +5,6 @@ import org.json.JSONObject;
 
 import facebook4j.Facebook;
 import facebook4j.FacebookFactory;
-import facebook4j.Reading;
 import facebook4j.ResponseList;
 import facebook4j.User;
 import facebook4j.auth.AccessToken;

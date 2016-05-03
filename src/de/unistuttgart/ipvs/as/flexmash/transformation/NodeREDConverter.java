@@ -19,7 +19,7 @@ public class NodeREDConverter {
 	 * @return the results of the conversion as JSONArray
 	 */
 	@SuppressWarnings("unchecked")
-	public org.json.simple.JSONArray convertToNodeRED(JSONObject jsonFlow) {
+	public static org.json.simple.JSONArray convertToNodeRED(JSONObject jsonFlow) {
 		try {
 
 			org.json.simple.JSONArray nodeRedFlow = new org.json.simple.JSONArray();
@@ -294,24 +294,5 @@ public class NodeREDConverter {
 		}
 
 		return null;
-	}
-	
-	/**
-	 * Creates JSONObjects from a JSON String TODO: move to utils
-	 * 
-	 * @param jsonFlow
-	 *            the JSON flow as string
-	 * 
-	 * @return JSONArray with JSONObjects
-	 */
-	public org.json.JSONObject createJsonObjects(String jsonFlow) {
-		org.json.JSONObject jsnObj = null;
-		try {
-			jsnObj = new org.json.JSONObject(jsonFlow);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return jsnObj;
 	}
 }

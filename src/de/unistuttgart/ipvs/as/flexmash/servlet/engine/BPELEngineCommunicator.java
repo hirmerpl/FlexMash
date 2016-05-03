@@ -27,7 +27,7 @@ public class BPELEngineCommunicator {
 	 *            input parameters of the web service that joins data
 	 * @return the output of the executed process
 	 */
-	public String callEngine(String sqlExtractorAddress, String twitterExtractorHashtag, String sqlFilterCriteria, String twitterFilterCriteria,
+	public static String callEngine(String sqlExtractorAddress, String twitterExtractorHashtag, String sqlFilterCriteria, String twitterFilterCriteria,
 			String joinCriteria) {
 
 		String reply = null;

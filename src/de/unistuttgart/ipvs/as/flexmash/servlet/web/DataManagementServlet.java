@@ -18,7 +18,7 @@ import org.json.simple.JSONArray;
 
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.BPELEngineCommunicator;
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.EngineProcessStarter;
-import de.unistuttgart.ipvs.as.flexmash.transformation.BPELConverter;
+import de.unistuttgart.ipvs.as.flexmash.transformation.MashupPlanToBPELConverter;
 import de.unistuttgart.ipvs.as.flexmash.transformation.NodeREDConverter;
 import de.unistuttgart.ipvs.as.flexmash.utils.http.IOUtils;
 
