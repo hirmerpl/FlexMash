@@ -17,9 +17,9 @@ import org.json.simple.JSONArray;
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.BPELEngineCommunicator;
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.EngineProcessStarter;
 import de.unistuttgart.ipvs.as.flexmash.transformation.MashupPlanToBPELConverter;
-import de.unistuttgart.ipvs.as.flexmash.transformation.NodeREDConverter;
+import de.unistuttgart.ipvs.as.flexmash.transformation.MashupPlanToNodeREDFlowConverter;
+import de.unistuttgart.ipvs.as.flexmash.utils.Util;
 import de.unistuttgart.ipvs.as.flexmash.utils.http.IOUtils;
-import de.unistuttgart.ipvs.as.flexmash.utils.http.Util;
 
 @WebServlet("/DataMashup")
 /**
@@ -41,7 +41,7 @@ public class ClientCommunicationServlet extends HttpServlet {
 	 * Receives a POST request from the client side
 	 * 
 	 * @param req
-	 * 			the request from the client containing the mashup plan and the pattern to be used
+	 * 			the request from the client containing the Mashup Plan and the pattern to be used
 	 * 
 	 * @param resp
 	 * 			the response to the client whether the data mashup was successful
@@ -76,13 +76,12 @@ public class ClientCommunicationServlet extends HttpServlet {
 				// implement Node-RED Mapping here
 				LOGGER.log(Level.INFO, "Time-critical pattern selected.");
 
-				JSONArray nodeRedFlow = NodeREDConverter.convertToNodeRED(mashupPlanAsJSON);
+				JSONArray nodeRedFlow = MashupPlanToNodeREDFlowConverter.convertToNodeRED(mashupPlanAsJSON);
 				IOUtils.deployToNodeRED(nodeRedFlow);
 				
 				out.println(TIME_CRITICAL);
 				
 				break;
-
 			default:
 				break;
 		}

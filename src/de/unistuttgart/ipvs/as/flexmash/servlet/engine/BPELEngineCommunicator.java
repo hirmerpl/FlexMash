@@ -5,20 +5,19 @@ import java.io.IOException;
 import javax.xml.soap.*;
 
 /**
- * class to start, manage and stop a process in the BPEL engine
+ * Class to start, manage and stop a process in the BPEL engine
  */
 public class BPELEngineCommunicator {
 
 	/**
+	 * TODO: make generic
 	 * 
-	 * method to start a process in the BPEL engine and process it's output
+	 * Method to start a process in the BPEL engine and process it's output
 	 * 
 	 * @param sqlExtractorAddress
-	 *            input parameters of the web service that extracts data using
-	 *            SQL
+	 *            input parameters of the web service that extracts data using SQL
 	 * @param twitterExtractorHashtag
-	 *            input parameters of the web service that extracts Tweets using
-	 *            the Twitter API
+	 *            input parameters of the web service that extracts Tweets using  the Twitter API
 	 * @param sqlFilterCriteria
 	 *            input parameters of the web service that filters database data
 	 * @param twitterFilterCriteria

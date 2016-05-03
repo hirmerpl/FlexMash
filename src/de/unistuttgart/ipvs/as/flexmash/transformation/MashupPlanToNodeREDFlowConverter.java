@@ -9,13 +9,14 @@ import de.unistuttgart.ipvs.as.flexmash.utils.transformation_utils.NodeREDUtils;
 /**
  * class to convert the data mashup flow into a Node-RED flow
  */
-public class NodeREDConverter {
+public class MashupPlanToNodeREDFlowConverter {
 
 	/**
 	 * Converts the data mashup flow into a NODE-RED flow
 	 * 
 	 * @param jsonFlow
 	 * 			the flow as JSON object
+	 * 
 	 * @return the results of the conversion as JSONArray
 	 */
 	@SuppressWarnings("unchecked")

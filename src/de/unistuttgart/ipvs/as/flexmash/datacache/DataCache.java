@@ -13,9 +13,10 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.util.JSON;
 
+import de.unistuttgart.ipvs.as.flexmash.utils.Util;
+
 /**
  * Class to manage the cache that saves intermediate data during mashup execution
- * 
  */
 public class DataCache {
 
@@ -33,7 +34,7 @@ public class DataCache {
 	 */
 	public static JSONArray getData(String key) {
 		try {
-			// TODO: use config
+
 			MongoClient mongoClient = new MongoClient("localhost", 27017);
 			DB db = mongoClient.getDB("mydb");
 			DBCollection coll = db.getCollection(key);
@@ -76,7 +77,7 @@ public class DataCache {
 	 * @return the generated key to access the stored data
 	 */
 	public static String addData(JSONArray data) {
-		String key = generateKey();
+		String key = Util.generateKey();
 		try {
 
 			MongoClient mongoClient = new MongoClient("localhost", 27017);
@@ -111,21 +112,5 @@ public class DataCache {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * helper method to generate a database key
-	 * 
-	 * TODO: move to utils
-	 * 
-	 * @return the generated key
-	 */
-	private static String generateKey() {
-		final int STRING_LENGTH = 16;
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < STRING_LENGTH; i++) {
-			sb.append((char) ((int) (Math.random() * 26) + 97));
-		}
-		return sb.toString();
 	}
 }

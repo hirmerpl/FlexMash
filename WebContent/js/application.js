@@ -634,6 +634,7 @@ var application = {
             function() {
 				//get the query values from the database
 				var values = diagram.toJSON();
+                alert(JSON.stringify(diagram.toJSON()));
 				var inQuery = '';
 				var inQuery1 = '';
 				if (values.nodes) {
