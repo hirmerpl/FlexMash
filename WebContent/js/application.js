@@ -8,121 +8,10 @@ var application = {
         diagram = new Y.DiagramBuilder({
             availableFields: availableFields,
             boundingBox: '#myDiagramContainer',
-            fields: [
-              /*{
-                name: 'Start',
-                type: 'start',
-                xy: [20, 250]
-              },
-              {
-                name: 'NYT',
-                type: 'dataSource_NYT',
-                xy: [220, 100]
-              },
-              {
-                name: 'Twitter',
-                type: 'dataSource_twitter',
-                xy: [220, 400]
-              },
-              {
-                name: 'Filter',
-                type: 'filter',
-                xy: [520, 100]
-              },
-              {
-                name: 'Analytics',
-                type: 'analytics',
-                xy: [520, 400]
-              },
-              {
-                name: 'Merge',
-                type: 'merge',
-                xy: [720, 250]
-              },
-              {
-                name: 'End',
-                type: 'end',
-                xy: [1020, 260]
-              }*/
-            ],
+            fields: [],
             srcNode: '#myDiagramBuilder'
         }).render();
 		app.diagramBuilder = diagram;
-		
-        /*diagram.connectAll(
-          [
-            {
-              connector: {
-                name: ''
-              },
-              source: 'Start',
-              target: 'NYT'
-            },
-            {
-              connector: {
-                name: ''
-              },
-              source: 'NYT',
-              target: 'Filter'
-            },
-            {
-              connector: {
-                name: ''
-              },
-              source: 'Twitter',
-              target: 'Analytics'
-            },
-            {
-              connector: {
-                name: ''
-              },
-              source: 'Filter',
-              target: 'Twitter'
-            },
-            {
-              connector: {
-                name: ''
-              },
-              source: 'Analytics',
-              target: 'Merge'
-            },
-            {
-              connector: {
-                name: ''
-              },
-              source: 'Merge',
-              target: 'End'
-            }
-          ]
-        );*/
-        
-        /*
-        Y.one('#getButton').on(
-            'click', 
-
-            function() {
-                jsonGetString = JSON.stringify(diagram.toJSON());
-                jsonGetString = jsonGetString.substring(0, jsonGetString.length - 1);
-                jsonGetString = jsonGetString + ",\"wrapper\":\"true\"}"
-                Y.io.request(
-                    'http://localhost:8080/Data_Mashup/DataMashup',
-                    {
-                    	method: 'POST',
-                        data: jsonGetString,
-                        on: {
-                            success: function() {
-                                var data = this.get('responseData');
-                                alert(data);
-                            },
-                            failure: function() {
-                                alert('failure');
-                            }
-                        }
-                    }
-                );
-            }
-        );
-		*/
 
 		//Store for Node types combo box
 		app.nodeTypesStore = Ext.create('Ext.data.Store', {
@@ -300,183 +189,10 @@ var application = {
 		if (app.dynamicNodes) {
 			//loop through dynamic nodes
 			for (var i = 0; i < app.dynamicNodes.length; i++) {
-					var strTable="<div><table border=1>";
-					var node = app.dynamicNodes[i];
-					//debugger;
-					//check for subflows
-					if (node.nodeType == 'subflow') {
-						//table of the tooltip
-						strTable=strTable + "<tr>Sub Flow Information:</tr>";
-						for (var strNode in node){
-									if(strNode!='nodes'){
-									strTable=strTable+"<tr bgcolor='#81DAF5'><td>" + strNode +":</td><td>"+ node[strNode]+"</td></tr>";
-								}
-								//loop through the sub nodes
-								else{
-									for(var j=0 ; j<node.nodes.length;j++){
-										var objNodes=node.nodes[j];
-										var strNodesName, strNodesValue ;
-										for(strNodesName in objNodes){
-											//check connections or transitions
-											if(strNodesName=='transitions'){
-												var objTrans=node.nodes[j].transitions;
-												var objTransNodes;
-												strTable=strTable+"<tr bgcolor='#F6E3CE'><td >" + strNodesName +":</td><td>";
-												//loop through the connections of the node
-												for(var k=0 ; k<objTrans.length; k++){
-													objTransNodes=objTrans[k];
-													var strTransName, strTransValue ;
-													for(strTransName in objTransNodes){
-														if(strTransName=='target'){
-															strTransValue = objTransNodes[strTransName] ;
-															strTable=strTable + strTransValue+"</td></tr>";
-														}
-													}
-													strTable=strTable +"</td></tr>";
-												}
-											}
-											else{
-												strNodesValue = objNodes[strNodesName] ;
-												strTable=strTable+"<tr bgcolor='#F6E3CE'><td >" + strNodesName +":</td><td>"+ strNodesValue+"</td></tr>";
-											}
-										}
-									strTable=strTable+"<tr bgcolor='#FE2E2E'><td>  </td><td>  </td></tr>";
-									}
-								}
-						}					
-						
-						strTable=strTable+"<img src='"+node.iconURL+"'></table></div>";
-						strTable=strTable+"</table></div>";	
-
-                        /*
-                        var tooltip = '<div>blub</div>'
-						//the tip
-						var tip = Ext.create('Ext.tip.ToolTip', {
-						target: ('availableFields_field_' + node.id),
-						dismissDelay: 0,
-						html:tooltip
-						});
-                        */
-                        
-                        /*YUI().use('overlay', 'event', 'widget-anim', function (Y) {
-                            Y.one('#tooltip').hide();
-                        });*/
-                        
-                        Y.one('#availableFields_field_' + node.id).on('mouseenter', function(event){
-                            var id = event.target._node.id;
-                            YUI().use('overlay', 'event', 'widget-anim', function (Y) {
-                                var targetNode;
-                                for (var i = 0; i < app.dynamicNodes.length; i++) {
-                                    if (id.indexOf(app.dynamicNodes[i].id) != -1) {
-                                        targetNode = app.dynamicNodes[i];
-                                    }
-                                }
-                                
-                                var fields = new Array();
-                                
-                                for (var j = 0; j < targetNode.nodes.length; j++) {
-                                    var currNode = targetNode.nodes[j];
-                                    var jsonNode = JSON.parse('{}');
-                                    jsonNode.name = currNode.name;
-                                    jsonNode.type = currNode.type;
-                                    jsonNode.xy = currNode.xy;
-                                    fields.push(jsonNode);
-                                }
-                                
-                                //document.getElementById('tooltip').innerHTML = event.target._node.id;
-                                
-                                // name: 'StartNode',
-                                // type: 'start',
-                                // xy: [10, 10]
-
-                                var moreFields = [{
-                                    iconClass: 'diagram-node-start-icon',
-                                    label: 'Start',
-                                    type: 'start'
-                                }, {
-                                    iconClass: 'diagram-node-end-icon',
-                                    label: 'End',
-                                    type: 'end'
-                                }, {
-                                    iconClass: 'diagram-node-merge-icon',
-                                    label: 'Merge',
-                                    type: 'merge'
-                                },{
-                                    iconClass: 'diagram-node-analytics-icon',
-                                    label: 'Analytics',
-                                    type: 'analytics'
-                                },{
-                                    iconClass: 'diagram-node-filter-icon',
-                                    label: 'Filter',
-                                    type: 'filter'
-                                }, {
-                                    iconClass: 'diagram-node-dataSource_twitter-icon',
-                                    label: 'Twitter',
-                                    type: 'dataSource_twitter'
-                                }, {
-                                    iconClass: 'diagram-node-dataSource_NYT-icon',
-                                    label: 'NYT',
-                                    type: 'dataSource_NYT'
-                                }, {
-                                    iconClass: 'diagram-node-dataSource_googleplus-icon',
-                                    label: 'Google+',
-                                    type: 'dataSource_googleplus'
-                                }, {
-                                    iconClass: 'diagram-node-dataSource_facebook-icon',
-                                    label: 'Facebook',
-                                    type: 'dataSource_facebook'
-                                }, {
-                                    id: 'customNode',
-                                    iconClass: 'diagram-node-customNode-icon',
-                                    label: 'Custom',
-                                    type: 'customNode'
-                                }];
-                                
-                                
-                                var availableFields = dnm.createAvailableFields(Y);
-                                for (var k = 0; k < moreFields.length; k++) {
-                                    availableFields.push(moreFields[k]);
-                                }
-                                
-                                //alert(availableFields);
-                                
-                                YUI().use(
-                                  'aui-diagram-builder',
-                                  function(Y) {
-                                    new Y.DiagramBuilder(
-                                      {
-                                        availableFields: availableFields,
-                                        boundingBox: '#tooltipContainer',
-                                        visible: true,
-                                        fields: fields,
-                                        srcNode: '#tooltip'
-                                      }
-                                    ).render()
-                                  }
-                                );
-                                
-                                Y.one('#tooltip').show();
-                            });
-                        });
-                        
-                        Y.one('#availableFields_field_' + node.id).on('mouseleave', function(event){
-                            YUI().use('overlay', 'event', 'widget-anim', function (Y) {
-                                Y.one('#tooltip').hide();
-                            });
-                        });
-					}
+				var node = app.dynamicNodes[i];
 				
 				var nodeElement = Ext.get('availableFields_field_' + node['id']);
-				nodeElement.addListener('click',
-					function(e, t, eOpts) {
-						/*var dom = e.target.parentElement;
-						var id = dom.id.substring(22, dom.id.length);  //debugger;
-						var nodes = app.getDynamicNodeById(id).nodes;
-						for (var i = 0; i < nodes.length; i++) {
-							app.diagramBuilder.addField(nodes[i]);
-						}*/
-					}
-				);
+                
 				//Add the show context meu listener to the node
 				nodeElement.dom.childNodes[0].setAttribute('name', (node['id'] + ''));
 				nodeElement.on("contextmenu", function(event, element) {
@@ -486,12 +202,43 @@ var application = {
 					app.removeNodeContextMenu.showAt(event.getXY());
 					return false;
 				});
-			}
-		}
-
+			                          
+                var fields = new Array();
+                
+                if (typeof node != 'undefined') {
+                    for (var j = 0; j < node.nodes.length; j++) {
+                        var currNode = node.nodes[j];
+                        var jsonNode = JSON.parse('{}');
+                        jsonNode.name = currNode.name;
+                        jsonNode.type = currNode.type;
+                        jsonNode.transitions = '';
+                        for (var k = 0; k < currNode.transitions.length; k++) {
+                            jsonNode.transitions += currNode.transitions[k].target + ';';
+                        }
+                        fields.push(jsonNode);
+                    }
+                }
+                
+                var tooltip = '<div></div>'
+                Ext.create('Ext.tip.ToolTip', {
+                    target: ('availableFields_field_' + node.id),
+                    dismissDelay: 0,
+                    html:JSON.stringify(fields)
+                });
+            }
+        }
+        
 		//The grid panel for showing the patterns
-		//Ad corespondig field definitions
+		//Add corresponding field definitions
 		app.patternGridPanel = Ext.create('Ext.grid.Panel', {
+            buttons: [{
+                    text: 'Select Pattern',
+                    tooltip:'Select this pattern',
+                    handler : function() {
+                       document.getElementById('selectedPattern').innerHTML = app.patternGridPanel.selection.data.name;
+                        app.patternSelectionWindow.hide();
+                    }
+            }],
 			title: 'Patterns',
 			store: Ext.create('Ext.data.Store', {
 				fields:['name', 'id'],

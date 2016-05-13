@@ -1,9 +1,11 @@
 package de.unistuttgart.ipvs.as.flexmash.utils.transformation_utils;
 
+import java.util.ArrayList;
 import java.util.Random;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * This class contains utility methods to be used to generate the NodeRED JSON
@@ -52,9 +54,9 @@ public class NodeREDUtils {
 	 * @param zCoordinate
 	 *            the sheet the node shall be used in
 	 * @return the debug node
+	 * @throws JSONException 
 	 */
-	@SuppressWarnings("unchecked")
-	public static JSONObject generateDebugNode(String id, String x, String y, String zCoordinate) {
+	public static JSONObject generateDebugNode(String id, String x, String y, String zCoordinate) throws JSONException {
 
 		JSONObject output = new JSONObject();
 		output.put("id", id);
@@ -69,7 +71,7 @@ public class NodeREDUtils {
 
 		JSONArray opWires = new JSONArray();
 		JSONArray opConnections = new JSONArray();
-		opWires.add(opConnections);
+		opWires.put(opConnections);
 		output.put("wires", opWires);
 
 		return output;
@@ -83,9 +85,9 @@ public class NodeREDUtils {
 	 * @param situationTemplate
 	 * @param debugNode
 	 * @return the inject node
+	 * @throws JSONException 
 	 */
-	@SuppressWarnings("unchecked")
-	public static JSONObject generateInputNode(String zCoordinate) {
+	public static JSONObject generateInputNode(String zCoordinate) throws JSONException {
 
 		JSONObject input = new JSONObject();
 		input.put("id", generateNodeREDId());
@@ -97,22 +99,15 @@ public class NodeREDUtils {
 		input.put("repeat", "");
 		input.put("crontab", "");
 		input.put("once", false);
-		// TODO: this is hard coded
 		input.put("x", "100");
 		input.put("y", "75");
 		input.put("z", zCoordinate);
+		input.put("outputs", 1);
 
 		JSONArray wires = new JSONArray();
 		JSONArray connections = new JSONArray();
 
-		// TODO connect the nodes
-		// for (TContextNode sensorNode : situationTemplate.getSituation()
-		// .getContextNode()) {
-		// String sensorNodeId = sensorNode.getId();
-		// connections.add(situationTemplate.getId() + "." + sensorNodeId);
-		// }
-
-		wires.add(connections);
+		wires.put(connections);
 		input.put("wires", wires);
 
 		return input;
@@ -135,9 +130,39 @@ public class NodeREDUtils {
 	 *            the sheet id
 	 * 
 	 * @return the node as JSONObject
+	 * @throws JSONException 
 	 */
-	@SuppressWarnings("unchecked")
-	public static JSONObject createNodeREDNode(String id, String name, String type, String x, String y, String z) {
+	public static JSONObject createNodeREDFunctionNode(String id, String name, String type, String x, String y, String z, String outputs, String function) throws JSONException {
+		JSONObject nodeREDNode = new JSONObject();
+		nodeREDNode.put("id", id);
+		nodeREDNode.put("type", type);
+		nodeREDNode.put("name", name);
+		nodeREDNode.put("x", x);
+		nodeREDNode.put("y", y);
+		nodeREDNode.put("z", z);
+		nodeREDNode.put("outputs", outputs);
+		nodeREDNode.put("func", function);
+
+		return nodeREDNode;
+	}
+
+	public static JSONObject createNodeREDFileOutputNode(String id, String type, String name, String filename, String appendNewline, boolean overwriteFile, String x, String y, String z) throws JSONException {
+		JSONObject nodeREDNode = new JSONObject();
+
+		nodeREDNode.put("id", id);
+		nodeREDNode.put("type", type);
+		nodeREDNode.put("name", name);
+		nodeREDNode.put("filename", filename);
+		nodeREDNode.put("appendNewline", appendNewline);
+		nodeREDNode.put("overwriteFile", overwriteFile);
+		nodeREDNode.put("x", x);
+		nodeREDNode.put("y", y);
+		nodeREDNode.put("z", z);
+		
+		return nodeREDNode;
+	}
+
+	public static JSONObject createSentimentFunctionNode(String id, String name, String type, String x, String y, String z) throws JSONException {
 		JSONObject nodeREDNode = new JSONObject();
 		nodeREDNode.put("id", id);
 		nodeREDNode.put("type", type);
@@ -147,5 +172,86 @@ public class NodeREDUtils {
 		nodeREDNode.put("z", z);
 
 		return nodeREDNode;
+	}
+	
+	public static JSONObject createDelayNode(String id, String name, String type, String pauseType, String timeout, String timeoutUnits,
+			String rate, String rateUnits, String randomFirst, String randomLast, String randomUnits, String drop, String x, String y, String z) throws JSONException {
+		JSONObject nodeREDNode = new JSONObject();
+		nodeREDNode.put("id", id);
+		nodeREDNode.put("name", name);
+		nodeREDNode.put("type", type);
+		nodeREDNode.put("pauseType", pauseType);
+		nodeREDNode.put("timeout", timeout);
+		nodeREDNode.put("timeoutUnits", timeoutUnits);
+		nodeREDNode.put("rate", rate);
+		nodeREDNode.put("rateUnits", rateUnits);
+		nodeREDNode.put("randomFirst", randomFirst);
+		nodeREDNode.put("randomLast", randomLast);
+		nodeREDNode.put("randomUnits",randomUnits);
+		nodeREDNode.put("drop", drop);
+		nodeREDNode.put("x", x);
+		nodeREDNode.put("y", y);
+		nodeREDNode.put("z", z);
+
+		return nodeREDNode;
+	}
+
+	public static JSONObject createNodeREDHTTPNode(String id, String name, String type, String x, String y, String z, String method, String URL, String outputs) throws JSONException {
+		JSONObject nodeREDNode = new JSONObject();
+		nodeREDNode.put("id", id);
+		nodeREDNode.put("type", type);
+		nodeREDNode.put("name", name);
+		nodeREDNode.put("x", x);
+		nodeREDNode.put("y", y);
+		nodeREDNode.put("z", z);
+		nodeREDNode.put("method", method);
+		nodeREDNode.put("url", URL);
+		nodeREDNode.put("outputs", outputs);
+
+		return nodeREDNode;
+	}
+
+	public static JSONObject createXMLToJSONNode(String id, String type, String name, String x, String y, String z) throws JSONException {
+		JSONObject nodeREDNode = new JSONObject();
+		nodeREDNode.put("id", id);
+		nodeREDNode.put("type", type);
+		nodeREDNode.put("name", name);
+		nodeREDNode.put("x", x);
+		nodeREDNode.put("y", y);
+		nodeREDNode.put("z", z);
+		
+		return nodeREDNode;
+	}
+
+	public static JSONObject createNodeREDTwitterNode(String id, String name, String type, String x, String y, String z, String twitter, String tags, String topic, String user, String outputs) throws JSONException {
+		JSONObject nodeREDNode = new JSONObject();
+		nodeREDNode.put("id", id);
+		nodeREDNode.put("type", type);
+		nodeREDNode.put("name", name);
+		nodeREDNode.put("x", x);
+		nodeREDNode.put("y", y);
+		nodeREDNode.put("z", z);
+		nodeREDNode.put("twitter", twitter);
+		nodeREDNode.put("tags", tags);
+		nodeREDNode.put("topic", topic);
+		nodeREDNode.put("user", user);
+		nodeREDNode.put("outputs", outputs);
+
+		return nodeREDNode;
+	}
+
+	public static JSONObject connectNode(JSONObject node, ArrayList<String> targets) throws JSONException {
+		JSONArray utilConnections = new JSONArray();
+		JSONArray utilWires = new JSONArray();
+
+		for (String connection : targets) {
+			utilConnections.put(connection);
+		}
+
+		utilWires.put(utilConnections);
+		node.put("wires", utilWires);
+		
+		return node;
+		
 	}
 }

@@ -1,4 +1,4 @@
-package de.unistuttgart.ipvs.as.flexmash.managers;
+package de.unistuttgart.ipvs.as.flexmash.nodemanagers;
 
 import java.io.BufferedReader;
 import java.io.IOException;

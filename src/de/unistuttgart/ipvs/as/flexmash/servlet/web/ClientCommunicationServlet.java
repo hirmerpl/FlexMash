@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
-import org.json.simple.JSONArray;
+import org.json.JSONArray;
 
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.BPELEngineCommunicator;
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.EngineProcessStarter;

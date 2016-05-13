@@ -7,8 +7,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Utility class for input and output
@@ -23,7 +24,7 @@ public class IOUtils {
 
 			JSONArray flow = new JSONArray();
 
-			String body = flow.toJSONString();
+			String body = flow.toString();
 
 			URL url;
 
@@ -81,13 +82,13 @@ public class IOUtils {
 			sheet.put("label", "0" + ": " + "FlexMash");
 
 			// add the sheet definition and all other components to the node red flow
-			flow.add(sheet);
+			flow.put(sheet);
 
-			for (int i = 0; i < nodeREDModel.size(); i++) {
-				flow.add(nodeREDModel.get(i));
+			for (int i = 0; i < nodeREDModel.length(); i++) {
+				flow.put(nodeREDModel.get(i));
 			}
 
-			String body = flow.toJSONString();
+			String body = flow.toString();
 
 			URL url = new URL("http://localhost:1880/flows");
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -109,7 +110,7 @@ public class IOUtils {
 			writer.close();
 			reader.close();
 
-		} catch (IOException e) {
+		} catch (IOException | JSONException e) {
 			System.err.println("Could not process HTTP request.");
 			e.printStackTrace();
 		}

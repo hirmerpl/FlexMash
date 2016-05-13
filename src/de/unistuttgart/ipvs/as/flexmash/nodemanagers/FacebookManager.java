@@ -1,4 +1,4 @@
-package de.unistuttgart.ipvs.as.flexmash.managers;
+package de.unistuttgart.ipvs.as.flexmash.nodemanagers;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

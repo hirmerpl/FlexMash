@@ -14,8 +14,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-import de.unistuttgart.ipvs.as.flexmash.managers.FacebookManager;
-import de.unistuttgart.ipvs.as.flexmash.managers.GoogleManager;
+import de.unistuttgart.ipvs.as.flexmash.nodemanagers.FacebookManager;
+import de.unistuttgart.ipvs.as.flexmash.nodemanagers.GoogleManager;
 
 @WebServlet("/DataMock")
 /**

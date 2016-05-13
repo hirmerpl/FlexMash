@@ -1,35 +1,51 @@
 package de.unistuttgart.ipvs.as.flexmash.transformation;
 
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.unistuttgart.ipvs.as.flexmash.enums.DataProcessingDescriptionEnum;
+import de.unistuttgart.ipvs.as.flexmash.models.nodered.DelayNode;
+import de.unistuttgart.ipvs.as.flexmash.models.nodered.FileOutputNode;
+import de.unistuttgart.ipvs.as.flexmash.models.nodered.FunctionNode;
+import de.unistuttgart.ipvs.as.flexmash.models.nodered.HTTPNode;
+import de.unistuttgart.ipvs.as.flexmash.models.nodered.InputNode;
+import de.unistuttgart.ipvs.as.flexmash.models.nodered.NodeREDNode;
+import de.unistuttgart.ipvs.as.flexmash.models.nodered.TwitterCredentialNode;
+import de.unistuttgart.ipvs.as.flexmash.models.nodered.TwitterNode;
+import de.unistuttgart.ipvs.as.flexmash.nodefragments.DataProcessingDescriptions;
 import de.unistuttgart.ipvs.as.flexmash.utils.transformation_utils.FlowNode;
 import de.unistuttgart.ipvs.as.flexmash.utils.transformation_utils.NodeREDUtils;
 
 /**
- * class to convert the data mashup flow into a Node-RED flow
+ * Class to convert the mashup plan into a Node-RED flow
  */
 public class MashupPlanToNodeREDFlowConverter {
 
+	private final static Logger LOGGER = Logger.getLogger(MashupPlanToNodeREDFlowConverter.class.getName()); 
+	
 	/**
-	 * Converts the data mashup flow into a NODE-RED flow
+	 * Converts the mashup plan into an executable NODE-RED flow
 	 * 
-	 * @param jsonFlow
+	 * @param mashupPlanAsJSON
 	 * 			the flow as JSON object
 	 * 
 	 * @return the results of the conversion as JSONArray
 	 */
-	@SuppressWarnings("unchecked")
-	public static org.json.simple.JSONArray convertToNodeRED(JSONObject jsonFlow) {
+	public static JSONArray convertToNodeRED(JSONObject mashupPlanAsJSON) {
 		try {
-
-			org.json.simple.JSONArray nodeRedFlow = new org.json.simple.JSONArray();
-
-			JSONArray nodes = jsonFlow.getJSONArray("nodes");
+			
+			ArrayList<NodeREDNode> nodeREDNodes = new ArrayList<NodeREDNode>();
+			
+			JSONArray nodes = mashupPlanAsJSON.getJSONArray("nodes");
 			JSONObject node;
 			String type;
 			JSONArray transitions;
-
+			String function;
+			
 			for (int i = 0; i < nodes.length(); i++) {
 				node = nodes.getJSONObject(i);
 				type = node.get("type").toString();
@@ -41,183 +57,61 @@ public class MashupPlanToNodeREDFlowConverter {
 					WFNode.target.add(transitions.getJSONObject(k).getString("target"));
 				}
 
-				// now connect the node to the flow
-				JSONArray wiresNode = new JSONArray();
-				JSONArray connections = new JSONArray();
-
-				JSONArray secondaryConnections;
 				switch (type) {
 				case "start":
-
-					org.json.simple.JSONObject utilNode = NodeREDUtils.createNodeREDNode("util", "util", "function", "100", "100", "0");
-					utilNode.put("func",
-							"context.global.allarticles = new Array();context.global.allurls = new Array();context.global.categories = new Array();context.global.counter = 0;return msg;");
-					utilNode.put("outputs", "1");
-
-					JSONArray utilConnections = new JSONArray();
-					JSONArray utilWires = new JSONArray();
-
-					for (String connection : WFNode.target) {
-						utilConnections.put(connection);
-					}
-
-					utilWires.put(utilConnections);
-					utilNode.put("wires", utilWires);
-
-					org.json.simple.JSONObject jsonNode = NodeREDUtils.generateInputNode(node.getString("name"));
-					connections.put("util");
-
-					wiresNode.put(connections);
-					jsonNode.put("wires", wiresNode);
-					jsonNode.put("outputs", "1");
-					nodeRedFlow.add(utilNode);
-					nodeRedFlow.add(jsonNode);
+					function = DataProcessingDescriptions.getSourceCode(DataProcessingDescriptionEnum.START, node);
+					FunctionNode utilNode = new FunctionNode("util", "util", "function", "100", "100", "0", "1", function, WFNode.target);
+					
+					ArrayList<String> newConnection = new ArrayList<String>();
+					newConnection.add(utilNode.getId());
+					InputNode inputNode = new InputNode(NodeREDUtils.generateNodeREDId(), node.getString("name"), "inject", "100", "75", "0", "", "", "date", "", "", false, "1", newConnection);
+					
+					nodeREDNodes.add(utilNode);
+					nodeREDNodes.add(inputNode);
 					break;
 				case "end":
-					org.json.simple.JSONObject outputNode = NodeREDUtils.createNodeREDNode(node.getString("name"), "output", "function", Integer.toString(500),
-							Integer.toString(500), Integer.toString(500));
-					outputNode
-							.put("func",
-									"var htmlString;\nvar currentArticle = context.global.categories[context.global.counter-1];\nvar searchKeywords = \"\";\nfor (var i= 0; i < currentArticle.length; i++) {\n		var keyword = currentArticle[i]._;\n	keyword = keyword.replace(',', '');\n	if (i != currentArticle.length-1) {\n		searchKeywords = searchKeywords + keyword + ',';\n	} else {\n		searchKeywords = searchKeywords + keyword;\n	}\n}\nif (context.global.counter == 1) {\n	htmlString = '<html><head><link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css\"><title>Data Mashup Result (Time-Critical) </title></head><body><table class=\"table table-striped\" style=\"width: 100%;\"><tr><th>Article</th><th>Keywords</th><th>Overall Sentiment</th><th>Example Tweets</th></tr>' + \n	'<tr><td>' + msg.article + ' (<a href=\"' + context.global.url + '\" target=\"_blank\">link)</td><td>' + searchKeywords + '</td><td>' + msg.payload + '</td><td>';\n	for (var i = 0; i < context.global.rendering.length; i++) {\n		htmlString = htmlString + context.global.rendering[i] + '<b> (Score: ' + context.global.scores[i] + ')</b><hr/>';\n}\n	htmlString = htmlString + '</td></tr>';\n	msg.payload = htmlString;\n	context.global.exampleTweets = new Array();\n	context.global.scores = new Array();\n	context.global.rendering = new Array();\n	//context.global.allarticles = new Array();\n	//context.global.allurls = new Array();\n	return [msg,msg];\n} else if (context.global.counter < 20) {\n	console.log('Sentiments for: ' + msg.article); \n	console.log(msg.payload);\n	htmlString = '<tr><td>' + msg.article + ' (<a href=\"' + context.global.url + '\" target=\"_blank\">link)</td><td>' + searchKeywords + '</td><td>' + msg.payload + '</td><td>';\n	for (var i = 0; i < context.global.rendering.length; i++) {\n		htmlString = htmlString + context.global.rendering[i] + '<b> (Score: ' + context.global.scores[i] + ')</b><hr/>';\n	}\n	htmlString = htmlString + '</td></tr>';\n	msg.payload = htmlString;\n	context.global.exampleTweets = new Array();\n	context.global.scores = new Array();\n	context.global.rendering = new Array();\n	//context.global.allarticles = new Array();\n	//context.global.allurls = new Array();\n	return [msg,msg];\n} else if (context.global.counter == 20) {\n	htmlString = '<tr><td>' + msg.article + ' (<a href=\"' + context.global.url + '\" target=\"_blank\">link)</td><td>' + searchKeywords + '</td><td>' + msg.payload + '</td><td>';\n	for (var i = 0; i < context.global.rendering.length; i++) {\n		htmlString = htmlString + context.global.rendering[i] + '<b> (Score: ' + context.global.scores[i] + ')</b><hr/>';\n	}\n	htmlString = htmlString + '</td></tr></table></body></html>';\n	msg.payload = htmlString;\n	context.global.exampleTweets = new Array();\n	context.global.scores = new Array();\n	context.global.rendering = new Array();\n	//context.global.allarticles = new Array();\n	//context.global.allurls = new Array();\n	return [msg,msg];\n} else {\n	return null;\n}\n");
-					outputNode.put("outputs", 2);
+					function = DataProcessingDescriptions.getSourceCode(DataProcessingDescriptionEnum.END, node);;
+					FunctionNode outputNode = new FunctionNode(node.getString("name"), "output", "function", Integer.toString(500),	Integer.toString(500), Integer.toString(500), "2", function, WFNode.target);
+					FileOutputNode fileOutput = new FileOutputNode("fileOutput", "result", "file", "1400", "516", "0", "result.html", "true", false, WFNode.target);
 
-					org.json.simple.JSONObject fileOutput = new org.json.simple.JSONObject();
-					fileOutput.put("id", "fileOutput");
-					fileOutput.put("type", "file");
-					fileOutput.put("name", "result");
-					fileOutput.put("filename", "result.html");
-					fileOutput.put("appendNewline", "true");
-					fileOutput.put("overwriteFile", false);
-					fileOutput.put("x", "1400");
-					fileOutput.put("y", "516");
-					fileOutput.put("z", "0");
-
-					JSONArray fileOutputWiresNode = new JSONArray();
-					JSONArray fileOutputConnections = new JSONArray();
-
-					fileOutputWiresNode.put(fileOutputConnections);
-					fileOutput.put("wires", fileOutputWiresNode);
-
-					for (String connection : WFNode.target) {
-						connections.put(connection);
-					}
-					secondaryConnections = new JSONArray();
-					connections.put("delay");
-					secondaryConnections.put("fileOutput");
-					wiresNode.put(connections);
-					wiresNode.put(secondaryConnections);
-					outputNode.put("wires", wiresNode);
-					nodeRedFlow.add(outputNode);
-					nodeRedFlow.add(fileOutput);
+					nodeREDNodes.add(outputNode);
+					nodeREDNodes.add(fileOutput);
 					break;
 				case "merge":
-					org.json.simple.JSONObject mergeNode = NodeREDUtils.createNodeREDNode(node.getString("name"), "merge", "function", "100",
-							Integer.toString(200), "0");
-					mergeNode
-							.put("func",
-									"context.values = context.values || new Array();\ncontext.values.push(msg);\nvar totalScore = 0;\nif (context.values.length == 5) {\nfor (var i=0; i < context.values.length; i++) {\nvar currentMessage = context.values[i];\n	console.log('Current Score' + currentMessage.sentiment.score);\ntotalScore = totalScore + currentMessage.sentiment.score;console.log('Total Score at the moment: ' + totalScore);\n}\ntotalScore = totalScore / 5;\nif (totalScore > 0) {\nmsg.payload = 'Sentiment is Positive!';\n} else if (totalScore < 0) {\nmsg.payload = 'Sentiment is Negative!';\n} else {\nmsg.payload = 'Sentiment is Neutral!';\n}\nmsg.article = context.global.article;\ncontext.values = new Array();\nreturn msg;\n}");
-					for (String connection : WFNode.target) {
-						connections.put(connection);
-					}
-
-					wiresNode.put(connections);
-					mergeNode.put("wires", wiresNode);
-					mergeNode.put("outputs", "1");
-
-					nodeRedFlow.add(mergeNode);
+					function = DataProcessingDescriptions.getSourceCode(DataProcessingDescriptionEnum.MERGE, node);
+					FunctionNode mergeNode = new FunctionNode(node.getString("name"), "merge", "function", "100", Integer.toString(200), "0", "1", function, WFNode.target);
+					nodeREDNodes.add(mergeNode);
 					break;
 				case "filter":
 					if (node.get("filtertype").toString().equals("NYT")) {
-						org.json.simple.JSONObject filterNode = NodeREDUtils.createNodeREDNode(node.getString("name"), "Filter", "function", "100", "200", "0");
-						filterNode.put("outputs", "1");
+						
 						if (!node.get("filter_criteria").toString().equals("")) {
-							filterNode
-									.put("func",
-											"var articles = msg.payload.rss.channel[0].item;\nvar keyword = '" + node.get("filter_criteria") + "';\nfor (var j = 0; j < articles.length; j++){\n	var currentArticle = articles[j];\n		for (var i= 0; i < currentArticle.category.length; i++) {\n		var tag = currentArticle.category[i]._;\n		if (tag.indexOf(keyword) != -1) {\n			articles.splice(j, 1);\n			break;\n		}\n	}\n}\nreturn msg;");
+							function = DataProcessingDescriptions.getSourceCode(DataProcessingDescriptionEnum.FILTER, node);
 						} else {
-							filterNode.put("func", "return msg;");
+							function = "return msg;";
 						}
-
-						for (String connection : WFNode.target) {
-							if (!connection.contains("merge")) {
-								connections.put(connection);
-							}
-						}
-						wiresNode.put(connections);
-						filterNode.put("wires", wiresNode);
-						nodeRedFlow.add(filterNode);
+						FunctionNode filterNode = new FunctionNode(node.getString("name"), "Filter", "function", "100", "200", "0", "1", function, WFNode.target);
+						nodeREDNodes.add(filterNode);
 					}
 					break;
 				case "analytics":
 					if (node.get("analyticstype").toString().equals("Sentiment")) {
 
-						org.json.simple.JSONObject sentimentNode = NodeREDUtils.createNodeREDNode("9d886b74.380ec", "sentiment", "sentiment", "100",
-								Integer.toString(200), "0");
-						JSONArray sentimentNodeConnections = new JSONArray();
-						JSONArray sentimentNodeWires = new JSONArray();
+						NodeREDNode sentimentNode = new NodeREDNode("9d886b74.380ec", "sentiment", "sentiment", "100", Integer.toString(200), "0", WFNode.target);
 
-						org.json.simple.JSONObject filterTwitterNode = NodeREDUtils.createNodeREDNode(node.getString("name"), "debuglog", "function", "100",
-								Integer.toString(200), "0");
-						filterTwitterNode
-								.put("func",
-										"context.global.exampleTweets = context.global.exampleTweets || new Array();context.global.exampleTweets.push(msg.payload);context.global.scores = context.global.scores || new Array();context.global.scores.push(msg.sentiment.score);console.log(msg.sentiment);\ncontext.global.rendering = context.global.rendering || new Array();context.global.rendering.push(msg.render);\nreturn msg;");
-						for (String connection : WFNode.target) {
-							connections.put(connection);
-						}
-						wiresNode.put(connections);
-						filterTwitterNode.put("wires", wiresNode);
-						filterTwitterNode.put("outputs", "1");
+						function = DataProcessingDescriptions.getSourceCode(DataProcessingDescriptionEnum.SENTIMENT_ANALYTICS, node);
+						FunctionNode filterTwitterNode = new FunctionNode(node.getString("name"), "debuglog", "function", "100", Integer.toString(200), "0", "1", function, WFNode.target);
 
-						sentimentNodeConnections.put(filterTwitterNode.get("id"));
-						sentimentNodeWires.put(sentimentNodeConnections);
-						sentimentNode.put("wires", sentimentNodeWires);
-
-						nodeRedFlow.add(sentimentNode);
-						nodeRedFlow.add(filterTwitterNode);
+						nodeREDNodes.add(sentimentNode);
+						nodeREDNodes.add(filterTwitterNode);
 						break;
 					} else if (node.get("analyticstype").toString().equals("NE")) {
-						org.json.simple.JSONObject namedEntityNode = NodeREDUtils.createNodeREDNode(node.getString("name"), "Named Entity Analysis",
-								"function", "100", Integer.toString(200), "0");
+						function = DataProcessingDescriptions.getSourceCode(DataProcessingDescriptionEnum.NAMED_ENTITY_ANALYTICS, node);
+						FunctionNode namedEntityNode = new FunctionNode(node.getString("name"), "Named Entity Analysis", "function", "100", Integer.toString(200), "0", "1", function, WFNode.target);
+						DelayNode delayNode = new DelayNode("delay", "delay", "delay", "660", "245", "0", "delay", "5", "seconds", "1", "seconds", "1", "5", "seconds", "false", WFNode.target);
 
-						org.json.simple.JSONObject delayNode = new org.json.simple.JSONObject();
-						delayNode.put("id", "delay");
-						delayNode.put("type", "delay");
-						delayNode.put("name", "");
-						delayNode.put("pauseType", "delay");
-						delayNode.put("timeout", "5");
-						delayNode.put("timeoutUnits", "seconds");
-						delayNode.put("rate", "1");
-						delayNode.put("rateUnits", "seconds");
-						delayNode.put("randomFirst", "1");
-						delayNode.put("randomLast", "5");
-						delayNode.put("randomUnits", "seconds");
-						delayNode.put("drop", "false");
-						delayNode.put("x", "660");
-						delayNode.put("y", "245");
-						delayNode.put("z", "0");
-						JSONArray delayNodeConnections = new JSONArray();
-						JSONArray delayNodeWires = new JSONArray();
-
-						delayNodeConnections.put(node.getString("name"));
-						delayNodeWires.put(delayNodeConnections);
-						delayNode.put("wires", delayNodeWires);
-
-						nodeRedFlow.add(delayNode);
-
-						namedEntityNode
-								.put("func",
-										"var articles; \nif (context.global.counter == 0) {\n	articles = msg.payload.rss.channel[0].item;\n}\nvar titles = new Array();\nvar searchKeywords = new Array();\nvar title;\nif (context.global.allarticles.length > 0) {\n	console.log('Number of Articles: ' + context.global.allarticles.length);\n	console.log('Current Article: ' + context.global.allarticles[context.global.counter][0]);\n	context.global.article=context.global.allarticles[context.global.counter][0];\n	context.global.url=context.global.allurls[context.global.counter][0];\n	//msg.payload = context.global.allarticles[context.global.counter][0].replace(/ /g,',');\n	var currentArticle = context.global.categories[context.global.counter];\n	var searchKeywords = '';\n	for (var i= 0; i < currentArticle.length; i++) {\n		var keyword = currentArticle[i]._;\n		keyword = keyword.replace(',', '');\n		if (i != currentArticle.length-1) {\n			searchKeywords = searchKeywords + keyword + ',';\n		} else {\n			searchKeywords = searchKeywords + keyword;\n		}\n	}\n	msg.payload = searchKeywords;\n	console.log('Keywords: ' + searchKeywords);\n	context.global.counter++;\n	return msg;\n} else {\n	for (var i=0; i < articles.length; i++ ) {\n		title = articles[i].title;\n		context.global.allurls.push(articles[i].link);\n		context.global.allarticles.push(title);\n		context.global.categories.push(articles[i].category);\n		titles.push(title);\n	}\n	context.global.article=context.global.allarticles[context.global.counter][0];\n	context.global.url=context.global.allurls[context.global.counter][0];\n	var currentArticle = context.global.categories[context.global.counter];\n	var searchKeywords = '';\n	for (var i= 0; i < currentArticle.length; i++) {\n		var keyword = currentArticle[i]._;\n		keyword = keyword.replace(',', '');\n		if (i != currentArticle.length-1) {\n			searchKeywords = searchKeywords + keyword + ',';\n		} else {\n			searchKeywords = searchKeywords + keyword;\n		}\n	}\n	msg.payload = searchKeywords;\n	console.log('Keywords: ' + searchKeywords);\n	context.global.counter++;\n	return msg;\n}\n");
-
-						for (String connection : WFNode.target) {
-							if (!connection.contains("merge")) {
-								connections.put(connection);
-							}
-						}
-						wiresNode.put(connections);
-						namedEntityNode.put("wires", wiresNode);
-						namedEntityNode.put("outputs", "1");
-
-						nodeRedFlow.add(namedEntityNode);
+						nodeREDNodes.add(delayNode);
+						nodeREDNodes.add(namedEntityNode);
 						break;
 					}
 					break;
@@ -226,72 +120,34 @@ public class MashupPlanToNodeREDFlowConverter {
 					if (!node.get("dataSource_NYTName").toString().equals("")) {
 						category = node.get("dataSource_NYTName").toString();
 					}
-					// org.json.simple.JSONObject sqlDataAdapter =
-					// NodeREDUtils.createNodeREDNode(node.getString("name"),
-					// "data_adapter", "function", "100", Integer.toString(200),
-					// "0");
-					// sqlDataAdapter.put("func", "");
+
 					// create the corresponding NodeRED JSON node
-					org.json.simple.JSONObject nytAdapterNode = NodeREDUtils.createNodeREDNode(node.getString("name"), "data_adapter", "http request", "100",
-							Integer.toString(200), "0");
-					nytAdapterNode.put("method", "GET");
-					nytAdapterNode.put("url", "http://rss.nytimes.com/services/xml/rss/nyt/" + category + ".xml");
+					HTTPNode nytAdapterNode = new HTTPNode(node.getString("name"), "data_adapter", "http request", "100", Integer.toString(200), "0", "GET", "http://rss.nytimes.com/services/xml/rss/nyt/" + category + ".xml", "1", WFNode.target);
+					NodeREDNode xmlToJSONNode = new NodeREDNode("xmlNode", "xml", "xmltojson", "341.1166687011719", "164.11669921875", "0", WFNode.target);
 
-					org.json.simple.JSONObject xmlNode = new org.json.simple.JSONObject();
-					xmlNode.put("id", "xmlNode");
-					xmlNode.put("type", "xml");
-					xmlNode.put("name", "xmltojson");
-					xmlNode.put("x", "341.1166687011719");
-					xmlNode.put("y", "164.11669921875");
-					xmlNode.put("z", "0");
-
-					JSONArray xmlNodeConnections = new JSONArray();
-					JSONArray xmlNodeWires = new JSONArray();
-
-					for (String connection : WFNode.target) {
-						if (!connection.contains("merge")) {
-							xmlNodeConnections.put(connection);
-						}
-					}
-
-					xmlNodeWires.put(xmlNodeConnections);
-					xmlNode.put("wires", xmlNodeWires);
-
-					nodeRedFlow.add(xmlNode);
-
-					connections.put("xmlNode");
-
-					wiresNode.put(xmlNode.get("id"));
-					nytAdapterNode.put("wires", wiresNode);
-					nytAdapterNode.put("outputs", "1");
-					nodeRedFlow.add(nytAdapterNode);
+					nodeREDNodes.add(xmlToJSONNode);
+					nodeREDNodes.add(nytAdapterNode);
 					break;
 				case "dataSource_twitter":
-					org.json.simple.JSONObject twitterDataAdapter = NodeREDUtils.createNodeREDNode(node.getString("name"), "data_adapter", "twitter in", "100",
-							Integer.toString(200), "0");
-					twitterDataAdapter.put("twitter", "6755a16c.01157");
-					twitterDataAdapter.put("tags", "foo");
-					twitterDataAdapter.put("topic", "tweets");
-					twitterDataAdapter.put("user", "false");
+					TwitterNode twitterDataAdapter = new TwitterNode(node.getString("name"), "data_adapter", "twitter in", "100", Integer.toString(200), "0", "6755a16c.01157", "foo", "tweets", "false", "1", WFNode.target);
 
-					org.json.simple.JSONObject twitterCredentialNode = new org.json.simple.JSONObject();
-					twitterCredentialNode.put("id", "6755a16c.01157");
-					twitterCredentialNode.put("type", "twitter-credentials");
-					twitterCredentialNode.put("screen_name", "@hirmerpl");
-					nodeRedFlow.add(twitterCredentialNode);
+					TwitterCredentialNode twitterCredentialNode = new TwitterCredentialNode("6755a16c.01157", "twitter-credentials", "@hirmerpl");
+					nodeREDNodes.add(twitterCredentialNode);
 
-					connections.put("9d886b74.380ec");
-
-					wiresNode.put(connections);
-					twitterDataAdapter.put("wires", wiresNode);
-					twitterDataAdapter.put("outputs", "1");
-					nodeRedFlow.add(twitterDataAdapter);
+					nodeREDNodes.add(twitterDataAdapter);
 					break;
 				}
 			}
+			
+			// build JSONArray
+			JSONArray nodeRedFlow = new JSONArray();
+			for (NodeREDNode nrn: nodeREDNodes) {
+				nodeRedFlow.put(nrn.toJSON());
+			}
+
 			return nodeRedFlow;
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "An error occurred while building the Node-RED flow");
 		}
 
 		return null;
