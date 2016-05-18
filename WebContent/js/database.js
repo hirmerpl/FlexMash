@@ -19,7 +19,7 @@ var storage = {
 			target : Ext.getBody()
 		});
 		mask.show();*/
-		//perform async request to the database and initializ data
+		//perform async request to the database and initialize data
 		storage.db.get('nodes', function (err, response) {
 			if (response != null && response.info) {
 				app.dynamicNodes = response.info;

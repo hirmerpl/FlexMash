@@ -82,6 +82,8 @@ var application = {
 			listeners: {
 				select: function( combo, record, eOpts ) {
 					var nodes = Ext.decode(record.get('value'));
+                    app.diagramBuilder.clearFields();
+                    // TODO create new diagramBuilder /w flow received
 					for (var i = 0; i < nodes.length; i++) {
 						app.diagramBuilder.addField(nodes[i]);
 					}
@@ -205,26 +207,43 @@ var application = {
 			                          
                 var fields = new Array();
                 
-                if (typeof node != 'undefined') {
+                var html = '<u> Subflow information:</u><br/>';
+                var nodes = '<b>Nodes:</b> <br/>';
+                var transitions = '<b>Transitions:</b><br>'; 
+                
+                if (typeof node != 'undefined' && node.nodeType == 'subflow') {
                     for (var j = 0; j < node.nodes.length; j++) {
                         var currNode = node.nodes[j];
                         var jsonNode = JSON.parse('{}');
+                        nodes += currNode.type + '<br>';
                         jsonNode.name = currNode.name;
                         jsonNode.type = currNode.type;
                         jsonNode.transitions = '';
-                        for (var k = 0; k < currNode.transitions.length; k++) {
-                            jsonNode.transitions += currNode.transitions[k].target + ';';
+                        if (currNode.transitions.length > 0) {
+                            transitions += 'Source: ' + currNode.name + '<br/>' + 'Target(s): ';
+                            for (var k = 0; k < currNode.transitions.length; k++) {
+                                jsonNode.transitions += currNode.transitions[k].target + ';';
+                                if (k != currNode.transitions.length - 1) {
+                                    transitions += currNode.transitions[k].target + ', ';
+                                } else {
+                                    transitions += currNode.transitions[k].target;
+                                }
+                            }
+                            transitions += '<br/>';
                         }
                         fields.push(jsonNode);
                     }
+                    
+                    html += nodes + transitions;
+                                        
+                    var tooltip = '<div></div>'
+                    Ext.create('Ext.tip.ToolTip', {
+                        target: ('availableFields_field_' + node.id),
+                        dismissDelay: 0,
+                        //html:JSON.stringify(fields)
+                        html: html
+                    });
                 }
-                
-                var tooltip = '<div></div>'
-                Ext.create('Ext.tip.ToolTip', {
-                    target: ('availableFields_field_' + node.id),
-                    dismissDelay: 0,
-                    html:JSON.stringify(fields)
-                });
             }
         }
         
@@ -335,6 +354,13 @@ var application = {
 				}
 			}
 		);
+        
+        Y.one('#clearCanvasButton').on(
+            'click', 
+            function() {
+                app.diagramBuilder.clearFields();
+        });
+            
 		//on click listener for saving the templete
 		Y.one('#saveTempleteButton').on(
             'click', 
@@ -379,8 +405,10 @@ var application = {
         Y.one('#postButton').on(
             'click', 
             function() {
+                // mocked
+                
 				//get the query values from the database
-				var values = diagram.toJSON();
+				/*var values = diagram.toJSON();
                 alert(JSON.stringify(diagram.toJSON()));
 				var inQuery = '';
 				var inQuery1 = '';
@@ -398,7 +426,8 @@ var application = {
 				}
 				//Construct and get the mock data from server
 				var url = '/Data_Mashup/DataMock?inQuery=' + (inQuery + '&inQuery1=' + inQuery1);
-				Ext.create('Ext.window.Window', {
+				
+                Ext.create('Ext.window.Window', {
 					title: 'Result',
 					height: 400,
 					width: 600,
@@ -428,7 +457,7 @@ var application = {
 						]
 					})
 				}).show();
-				/*
+				*/
 				document.getElementById("alertDiv").hidden = true;
 				document.getElementById("alertDiv2").hidden = true;
 
@@ -466,7 +495,7 @@ var application = {
                             }
                         }
                     }
-                );*/
+                );
             }
         );
 	},
