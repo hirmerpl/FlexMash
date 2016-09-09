@@ -7,11 +7,11 @@
     <provide partnerLink="client">
       <service name="bpel.data_mashup.as.ipvs.informatik.uni_stuttgart.de:DataMashupProcessService" port="DataMashupProcessPort"/>
     </provide>
-    <invoke partnerLink="SQLExtractorParnterLink">
-      <service name="sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de:SQLExtractorService" port="SQLExtractor"/>
+    <invoke partnerLink="NYTRSSExtractorParnterLink">
+      <service name="sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de:NYTRSSExtractorService" port="NYTRSSExtractor"/>
     </invoke>
-    <invoke partnerLink="SQLFilterPartnerLink">
-      <service name="sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de:SQLFilterService" port="SQLFilter"/>
+    <invoke partnerLink="TwitterServicePartnerLink">
+      <service name="sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de:TwitterServiceService" port="TwitterService"/>
     </invoke>
     <invoke partnerLink="TwitterExtractorPartnerLink">
       <service name="twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de:TwitterEtractorService" port="TwitterEtractor"/>

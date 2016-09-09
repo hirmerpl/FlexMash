@@ -9,6 +9,10 @@ public class TwitterEtractor {
 	@WebMethod(operationName = "extract")
 	@WebResult(name = "key")
 	public String extract(@WebParam(name = "key") String key) {
+		
+		System.out.println("TwitterExtractor SERVICE REACHED");
+		System.out.print("--------------------------------------------------------------------------");
+		
 		return "";
 	}
 }

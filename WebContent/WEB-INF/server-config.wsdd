@@ -22,19 +22,19 @@
  <ns1:handler name="URLMapper" type="java:org.apache.axis.handlers.http.URLMapper"/>
  <ns1:handler name="Authenticate" type="java:org.apache.axis.handlers.SimpleAuthenticationHandler"/>
  <ns1:handler name="LocalResponder" type="java:org.apache.axis.transport.local.LocalResponder"/>
- <ns1:service name="SQLFilter" provider="java:RPC" style="wrapped" use="literal">
+ <ns1:service name="TwitterService" provider="java:RPC" style="wrapped" use="literal">
   <ns2:operation name="filterData" qname="ns1:filterData" returnQName="ns1:filterDataReturn" returnType="xsd:string" soapAction="" xmlns:ns1="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://xml.apache.org/axis/wsdd/">
    <ns2:parameter qname="ns1:key" type="xsd:string"/>
    <ns2:parameter qname="ns1:criteria" type="xsd:string"/>
   </ns2:operation>
   <ns1:parameter name="allowedMethods" value="filterData"/>
-  <ns1:parameter name="wsdlPortType" value="SQLFilter"/>
+  <ns1:parameter name="wsdlPortType" value="TwitterService"/>
   <ns1:parameter name="typeMappingVersion" value="1.2"/>
   <ns1:parameter name="schemaQualified" value="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
-  <ns1:parameter name="wsdlServicePort" value="SQLFilter"/>
-  <ns1:parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.sql.SQLFilter"/>
+  <ns1:parameter name="wsdlServicePort" value="TwitterService"/>
+  <ns1:parameter name="className" value="de.unistuttgart.ipvs.as.flexmash.webservices.services.TwitterService"/>
   <ns1:parameter name="wsdlTargetNamespace" value="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
-  <ns1:parameter name="wsdlServiceElement" value="SQLFilterService"/>
+  <ns1:parameter name="wsdlServiceElement" value="TwitterServiceService"/>
  </ns1:service>
  <ns1:service name="AdminService" provider="java:MSG">
   <ns1:parameter name="allowedMethods" value="AdminService"/>
@@ -42,18 +42,18 @@
   <ns1:parameter name="className" value="org.apache.axis.utils.Admin"/>
   <ns1:namespace>http://xml.apache.org/axis/wsdd/</ns1:namespace>
  </ns1:service>
- <ns1:service name="SQLExtractor" provider="java:RPC" style="wrapped" use="literal">
+ <ns1:service name="NYTRSSExtractor" provider="java:RPC" style="wrapped" use="literal">
   <ns1:operation name="extract" qname="ns2:extract" returnQName="ns2:extractReturn" returnType="xsd:string" soapAction="" xmlns:ns2="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
    <ns1:parameter qname="ns2:address" type="xsd:string"/>
   </ns1:operation>
   <ns1:parameter name="allowedMethods" value="extract"/>
   <ns1:parameter name="typeMappingVersion" value="1.2"/>
-  <ns1:parameter name="wsdlPortType" value="SQLExtractor"/>
-  <ns1:parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.sql.SQLExtractor"/>
-  <ns1:parameter name="wsdlServicePort" value="SQLExtractor"/>
+  <ns1:parameter name="wsdlPortType" value="NYTRSSExtractor"/>
+  <ns1:parameter name="className" value="de.unistuttgart.ipvs.as.flexmash.webservices.services.NYTRSSExtractor"/>
+  <ns1:parameter name="wsdlServicePort" value="NYTRSSExtractor"/>
   <ns1:parameter name="schemaQualified" value="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
   <ns1:parameter name="wsdlTargetNamespace" value="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
-  <ns1:parameter name="wsdlServiceElement" value="SQLExtractorService"/>
+  <ns1:parameter name="wsdlServiceElement" value="NYTRSSExtractorService"/>
  </ns1:service>
  <ns1:service name="Version" provider="java:RPC">
   <ns1:parameter name="allowedMethods" value="getVersion"/>
@@ -67,7 +67,7 @@
   <ns1:parameter name="allowedMethods" value="filterData"/>
   <ns1:parameter name="typeMappingVersion" value="1.2"/>
   <ns1:parameter name="wsdlPortType" value="TwitterFilter"/>
-  <ns1:parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.twitter.TwitterFilter"/>
+  <ns1:parameter name="className" value="de.unistuttgart.ipvs.as.flexmash.webservices.twitter.TwitterFilter"/>
   <ns1:parameter name="wsdlServicePort" value="TwitterFilter"/>
   <ns1:parameter name="schemaQualified" value="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
   <ns1:parameter name="wsdlTargetNamespace" value="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
@@ -84,7 +84,7 @@
   <ns1:parameter name="typeMappingVersion" value="1.2"/>
   <ns1:parameter name="schemaQualified" value="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
   <ns1:parameter name="wsdlServicePort" value="Join"/>
-  <ns1:parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.operations.Join"/>
+  <ns1:parameter name="className" value="de.unistuttgart.ipvs.as.flexmash.webservices.operations.Join"/>
   <ns1:parameter name="wsdlTargetNamespace" value="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
   <ns1:parameter name="wsdlServiceElement" value="JoinService"/>
  </ns1:service>
@@ -95,7 +95,7 @@
   <ns1:parameter name="allowedMethods" value="extract"/>
   <ns1:parameter name="typeMappingVersion" value="1.2"/>
   <ns1:parameter name="wsdlPortType" value="TwitterEtractor"/>
-  <ns1:parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.twitter.TwitterEtractor"/>
+  <ns1:parameter name="className" value="de.unistuttgart.ipvs.as.flexmash.webservices.twitter.TwitterEtractor"/>
   <ns1:parameter name="wsdlServicePort" value="TwitterEtractor"/>
   <ns1:parameter name="schemaQualified" value="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
   <ns1:parameter name="wsdlTargetNamespace" value="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>

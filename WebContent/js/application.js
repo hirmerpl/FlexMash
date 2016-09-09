@@ -462,16 +462,7 @@ var application = {
 				document.getElementById("alertDiv2").hidden = true;
 
             	jsonPostString = JSON.stringify(diagram.toJSON());
-            	var dropDownMenu = document.getElementById("selectPattern");
-            	var dropDownLength = dropDownMenu.length;
-            	var selectedPattern = "";
-
-            	for (var i = 0; i < dropDownLength; i++) {
-            		if (dropDownMenu[i].selected == true) {
-            			selectedPattern = dropDownMenu[i].value;
-            		}
-            	}
-
+            	var selectedPattern = document.getElementById("selectedPattern").textContent;
                 Y.io.request(
                     'http://localhost:8080/Data_Mashup/DataMashup',
                     {
@@ -479,6 +470,8 @@ var application = {
                         data: {flow: jsonPostString, pattern: selectedPattern},
                         on: {
                             success: function(msg) {
+                            	alert(msg.details[1].responseText);
+                            	/*
                                 var data = this.get('responseData');
                                 if(data.indexOf("timeCritical" != -1)) {
                                 	//<div class="alert alert-success">
@@ -487,8 +480,9 @@ var application = {
                                 	//</div>
 									document.getElementById("alertDiv").hidden = false;
                                 } else if (data.indexOf("robust" != -1)) {
+                                	alert(msg);
 									document.getElementById("alertDiv2").hidden = false;
-                                }
+                                }*/
                             },
                             failure: function() {
                                 alert('An error ocurred, please check your model.');

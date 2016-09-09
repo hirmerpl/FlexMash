@@ -12,6 +12,9 @@ public class TwitterFilter {
 	@WebResult(name = "key")
 	public String filterData(@WebParam(name = "key") String key, @WebParam(name = "criteria") String criteria) {
 		
+		System.out.println("TwitterFilter SERVICE REACHED");
+		System.out.print("--------------------------------------------------------------------------");
+		
 		//TODO
 		return "";
 	}

@@ -7,11 +7,11 @@
      but you can define or import any XML Schema type and use them as part 
      of the message types.
      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->    
-    <plnk:partnerLinkType name="SQLExtractorPartnerLinkType">
-    <plnk:role name="SQLExtractorRole" portType="wsdl:SQLExtractor"/>
+    <plnk:partnerLinkType name="NYTRSSExtractorPartnerLinkType">
+    <plnk:role name="NYTRSSExtractorRole" portType="wsdl:NYTRSSExtractor"/>
   </plnk:partnerLinkType>
-    <plnk:partnerLinkType name="SQLFilterParnterLinkType">
-    <plnk:role name="SQLFIlterRole" portType="wsdl:SQLFilter"/>
+    <plnk:partnerLinkType name="TwitterServiceParnterLinkType">
+    <plnk:role name="TwitterServiceRole" portType="wsdl:TwitterService"/>
   </plnk:partnerLinkType>
     <plnk:partnerLinkType name="TwitterExtractorPartnerLinkType">
     <plnk:role name="TwitterExtractorRole" portType="wsdl1:TwitterEtractor"/>
@@ -22,8 +22,8 @@
     <plnk:partnerLinkType name="JoinPartnerLinkType">
     <plnk:role name="JoinRole" portType="wsdl2:Join"/>
   </plnk:partnerLinkType>
-    <import location="SQLExtractor.wsdl" namespace="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
-    <import location="SQLFilter.wsdl" namespace="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+    <import location="NYTRSSExtractor.wsdl" namespace="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
+    <import location="TwitterService.wsdl" namespace="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
     <import location="TwitterEtractor.wsdl" namespace="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
     <import location="TwitterFilter.wsdl" namespace="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
     <import location="Join.wsdl" namespace="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
@@ -33,8 +33,8 @@
             <element name="DataMashupProcessRequest">
                 <complexType>
                     <sequence>
-                        <element name="sqlExtractorAdress" type="string"/>
-                        <element name="sqlFilterCriteria" type="string"/>
+                        <element name="NYTRSSExtractorAdress" type="string"/>
+                        <element name="TwitterServiceCriteria" type="string"/>
                         <element name="twitterFilterCriteria" type="string"/>
                         <element name="joinCriteria" type="string"/>
                     </sequence>

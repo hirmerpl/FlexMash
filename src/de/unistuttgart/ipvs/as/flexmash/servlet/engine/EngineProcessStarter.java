@@ -30,6 +30,8 @@ import javax.xml.soap.SOAPPart;
  */
 public class EngineProcessStarter {
 
+	public static final String PATH = "C:/Users/FlexMash/Desktop/FlexMash-master/files";
+	
 	/**
 	 * generates all necessary files to deploy a process on ApacheODE
 	 * 
@@ -98,26 +100,28 @@ public class EngineProcessStarter {
 
 		try {
 			// TODO: paths config
+			
+			System.out.println(new File("test").getAbsolutePath());
+			
+			zipOutStream = new ZipOutputStream(new FileOutputStream(PATH + "/DataMashupProcess.zip"));
 
-			zipOutStream = new ZipOutputStream(new FileOutputStream("files/DataMashupProcess.zip"));
+			bpelInStream = new FileInputStream(PATH + "/DataMashupProcess.bpel");
+			wsdlInStream = new FileInputStream(PATH + "/DataMashupProcessArtifacts.wsdl");
+			deployInStream = new FileInputStream(PATH + "/deploy.xml");
+			joinInStream = new FileInputStream(PATH + "/Join.wsdl");
+			twitEInStream = new FileInputStream(PATH + "/TwitterEtractor.wsdl");
+			sqlEInStream = new FileInputStream(PATH + "/NYTRSSExtractor.wsdl");
+			twitFInStream = new FileInputStream(PATH + "/TwitterFilter.wsdl");
+			sqlFInStream = new FileInputStream(PATH + "/TwitterService.wsdl");
 
-			bpelInStream = new FileInputStream("files/DataMashupProcess.bpel");
-			wsdlInStream = new FileInputStream("files/DataMashupProcessArtifacts.wsdl");
-			deployInStream = new FileInputStream("files/deploy.xml");
-			joinInStream = new FileInputStream("files/Join.wsdl");
-			twitEInStream = new FileInputStream("files/TwitterEtractor.wsdl");
-			sqlEInStream = new FileInputStream("files/SQLExtractor.wsdl");
-			twitFInStream = new FileInputStream("files/TwitterFilter.wsdl");
-			sqlFInStream = new FileInputStream("files/SQLFilter.wsdl");
-
-			addToZipStream(bpelInStream, zipOutStream, "files/DataMashupProcess.bpel");
-			addToZipStream(wsdlInStream, zipOutStream, "files/DataMashupProcessArtifacts.wsdl");
-			addToZipStream(deployInStream, zipOutStream, "files/deploy.xml");
-			addToZipStream(joinInStream, zipOutStream, "files/Join.wsdl");
-			addToZipStream(twitEInStream, zipOutStream, "files/TwitterEtractor.wsdl");
-			addToZipStream(sqlEInStream, zipOutStream, "files/SQLExtractor.wsdl");
-			addToZipStream(twitFInStream, zipOutStream, "files/TwitterFilter.wsdl");
-			addToZipStream(sqlFInStream, zipOutStream, "files/SQLFilter.wsdl");
+			addToZipStream(bpelInStream, zipOutStream, PATH + "/DataMashupProcess.bpel");
+			addToZipStream(wsdlInStream, zipOutStream, PATH + "/DataMashupProcessArtifacts.wsdl");
+			addToZipStream(deployInStream, zipOutStream, PATH + "/deploy.xml");
+			addToZipStream(joinInStream, zipOutStream, PATH + "/Join.wsdl");
+			addToZipStream(twitEInStream, zipOutStream, PATH + "/TwitterEtractor.wsdl");
+			addToZipStream(sqlEInStream, zipOutStream, PATH + "/NYTRSSExtractor.wsdl");
+			addToZipStream(twitFInStream, zipOutStream, PATH + "/TwitterFilter.wsdl");
+			addToZipStream(sqlFInStream, zipOutStream, PATH + "/TwitterService.wsdl");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -183,8 +187,7 @@ public class EngineProcessStarter {
 			SOAPConnection soapConnection = soapConnectionFactory.createConnection();
 
 			// SOAP Message
-			String url = "http://localhost:8080/ode/processes/DeploymentService";
-
+			String url = "http://localhost:8081/ode/processes/DeploymentService/deploy";
 			MessageFactory messageFactory = MessageFactory.newInstance();
 			SOAPMessage soapMessage = messageFactory.createMessage();
 			SOAPPart soapPart = soapMessage.getSOAPPart();
@@ -204,7 +207,7 @@ public class EngineProcessStarter {
 			SOAPElement soapBodyElem1 = soapBodyElem.addChildElement("package");
 			SOAPElement soapBodyElem2 = soapBodyElem1.addChildElement("zip", "dep");
 
-			Path zipFilePath = Paths.get("files/DataMashupProcess.zip");
+			Path zipFilePath = Paths.get(PATH + "/DataMashupProcess.zip");
 			byte[] zipFileData = Files.readAllBytes(zipFilePath);
 			soapBodyElem2.addTextNode(Base64.getMimeEncoder().encodeToString(zipFileData));
 

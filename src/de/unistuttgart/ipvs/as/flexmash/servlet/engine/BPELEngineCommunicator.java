@@ -14,11 +14,11 @@ public class BPELEngineCommunicator {
 	 * 
 	 * Method to start a process in the BPEL engine and process it's output
 	 * 
-	 * @param sqlExtractorAddress
+	 * @param nytRSSExtractorAddress
 	 *            input parameters of the web service that extracts data using SQL
 	 * @param twitterExtractorHashtag
 	 *            input parameters of the web service that extracts Tweets using  the Twitter API
-	 * @param sqlFilterCriteria
+	 * @param twitterServiceCriteria
 	 *            input parameters of the web service that filters database data
 	 * @param twitterFilterCriteria
 	 *            input parameters of the web service that filters tweets
@@ -26,7 +26,7 @@ public class BPELEngineCommunicator {
 	 *            input parameters of the web service that joins data
 	 * @return the output of the executed process
 	 */
-	public static String callEngine(String sqlExtractorAddress, String twitterExtractorHashtag, String sqlFilterCriteria, String twitterFilterCriteria,
+	public static String callEngine(String nytRSSExtractorAddress, String twitterExtractorHashtag, String twitterServiceCriteria, String twitterFilterCriteria,
 			String joinCriteria) {
 
 		String reply = null;
@@ -38,7 +38,7 @@ public class BPELEngineCommunicator {
 
 			// TODO: use config file
 			// SOAP Message
-			String url = "http://localhost:8080/ode/processes/DataMashupProcess";
+			String url = "http://localhost:8081/ode/processes/DataMashupProcess";
 
 			MessageFactory messageFactory = MessageFactory.newInstance();
 			SOAPMessage soapMessage = messageFactory.createMessage();
@@ -53,16 +53,16 @@ public class BPELEngineCommunicator {
 			// SOAP Body
 			SOAPBody soapBody = envelope.getBody();
 			SOAPElement soapBodyElem = soapBody.addChildElement("DataMashupProcessRequest", "bpel");
-			SOAPElement soapBodyElem1 = soapBodyElem.addChildElement("sqlExtractorAdress", "bpel");
-			soapBodyElem1.addTextNode(sqlExtractorAddress);
+			SOAPElement soapBodyElem1 = soapBodyElem.addChildElement("NYTRSSExtractorAdress", "bpel");
+			soapBodyElem1.addTextNode(nytRSSExtractorAddress);
 			SOAPElement soapBodyElem5 = soapBodyElem.addChildElement("twitterExtractorHashtag", "bpel");
-			soapBodyElem5.addTextNode(twitterExtractorHashtag);
-			SOAPElement soapBodyElem6 = soapBodyElem.addChildElement("sqlFilterCriteria", "bpel");
+			soapBodyElem5.addTextNode("");
+			SOAPElement soapBodyElem6 = soapBodyElem.addChildElement("TwitterServiceCriteria", "bpel");
 			soapBodyElem6.addTextNode("");
 			SOAPElement soapBodyElem7 = soapBodyElem.addChildElement("twitterFilterCriteria", "bpel");
-			soapBodyElem7.addTextNode(twitterFilterCriteria);
+			soapBodyElem7.addTextNode("");
 			SOAPElement soapBodyElem8 = soapBodyElem.addChildElement("joinCriteria", "bpel");
-			soapBodyElem8.addTextNode(joinCriteria);
+			soapBodyElem8.addTextNode("");
 
 			MimeHeaders headers = soapMessage.getMimeHeaders();
 			headers.addHeader("SOAPAction", serverURI + "DataMashupProcessRequest");

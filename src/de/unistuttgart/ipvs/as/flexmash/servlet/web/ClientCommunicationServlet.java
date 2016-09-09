@@ -32,9 +32,10 @@ public class ClientCommunicationServlet extends HttpServlet {
 	// static string definitions
 	private static final String PATTERN_STRING = "pattern";
 	private static final String FLOW_STRING = "flow";
-	private static final String ROBUST = "robust";
-	private static final String TIME_CRITICAL = "timeCritical";
-	
+	private static final String ROBUST = "Robust";
+	private static final String TIME_CRITICAL = "Time-Critical";
+	private static final String ERROR = "error";
+
 	private final static Logger LOGGER = Logger.getLogger(ClientCommunicationServlet.class.getName()); 
 	
 	/**
@@ -67,9 +68,9 @@ public class ClientCommunicationServlet extends HttpServlet {
 				String[] properties = mashupPlanToBPELConverter.getEntries();
 
 				EngineProcessStarter.generateFiles(mashupPlanAsBPEL);
-				BPELEngineCommunicator.callEngine(properties[0], properties[4], properties[5], properties[6], properties[7]);
+				String result = BPELEngineCommunicator.callEngine(properties[0], properties[4], properties[5], properties[6], properties[7]);
 
-				out.println(ROBUST);
+				out.println(result);
 				
 				break;
 			case TIME_CRITICAL:
@@ -85,5 +86,7 @@ public class ClientCommunicationServlet extends HttpServlet {
 			default:
 				break;
 		}
+		
+//		out.println(ERROR);
 	}
 }

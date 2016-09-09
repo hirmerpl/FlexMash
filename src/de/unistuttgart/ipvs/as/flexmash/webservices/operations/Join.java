@@ -84,7 +84,7 @@ public class Join {
 			writer.write(html);
 			writer.close();
 
-			return key1;
+			return html;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
