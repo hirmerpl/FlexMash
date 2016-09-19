@@ -198,7 +198,7 @@ var staticnodemanager = {
                         editor: new Y.DropDownCellEditor({
                             options: {
                             	NYT: 'NYT Filter',
-                                tbd: 'tdb'
+                                tbd: 'SQLFilter'
                             }
                         })
                     });
