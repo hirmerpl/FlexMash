@@ -65,7 +65,7 @@ public class TwitterManager {
 				QueryResult r = null;
 
 				do {
-					ArrayList<Status> ts = new ArrayList<Status>();
+					ArrayList<Status> ts ;
 
 					r = twitter.search(query);
 					ts = (ArrayList<Status>) r.getTweets();

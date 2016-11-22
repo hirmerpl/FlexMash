@@ -54,7 +54,7 @@ public class EngineProcessStarter {
 		Writer writer = null;
 
 		try {
-			// TODO: config file
+			//  config file
 			File file = new File("files/DataMashupProcess.bpel");
 			File dir = new File("files");
 			if (!dir.exists()) {
@@ -99,10 +99,9 @@ public class EngineProcessStarter {
 		FileInputStream sqlFInStream = null;
 
 		try {
-			// TODO: paths config
+			//  paths config
 			
 			System.out.println(new File("test").getAbsolutePath());
-			
 			zipOutStream = new ZipOutputStream(new FileOutputStream(PATH + "/DataMashupProcess.zip"));
 
 			bpelInStream = new FileInputStream(PATH + "/DataMashupProcess.bpel");

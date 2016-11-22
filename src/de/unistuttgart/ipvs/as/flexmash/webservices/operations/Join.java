@@ -64,7 +64,7 @@ public class Join {
 
 					if (article.get("title") != null && article.get("link") != null && article.get("category") != null && article.get("sentiment") != null
 							&& article.get("exampleTweets") != null) {
-
+						
 						html += "<tr><td>" + article.get("title") + " (<a href=" + article.get("link") + " target=\"_blank\">link)</td><td>"
 								+ article.get("category") + "</td><td>" + article.get("sentiment") + "</td><td>";
 

@@ -22,7 +22,7 @@ import de.unistuttgart.ipvs.as.flexmash.utils.Util;
 public class GoogleManager {
 
 	private static final String URL = "https://www.googleapis.com/plus/v1/people?query={0}&key=AIzaSyC5EJ6otc4O5T6XcF0o04HWNmYGQqNyQng";
-	private final static Logger LOGGER = Logger.getLogger(GoogleManager.class.getName()); 
+	private static final Logger LOGGER = Logger.getLogger(GoogleManager.class.getName()); 
 
 	/**
 	 * Performs a query to the Google API in order to get user information 

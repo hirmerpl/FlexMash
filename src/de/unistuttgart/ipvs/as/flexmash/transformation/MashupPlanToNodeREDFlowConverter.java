@@ -25,7 +25,7 @@ import de.unistuttgart.ipvs.as.flexmash.utils.transformation_utils.NodeREDUtils;
  */
 public class MashupPlanToNodeREDFlowConverter {
 
-	private final static Logger LOGGER = Logger.getLogger(MashupPlanToNodeREDFlowConverter.class.getName()); 
+	private static final Logger LOGGER = Logger.getLogger(MashupPlanToNodeREDFlowConverter.class.getName()); 
 	
 	/**
 	 * Converts the mashup plan into an executable NODE-RED flow

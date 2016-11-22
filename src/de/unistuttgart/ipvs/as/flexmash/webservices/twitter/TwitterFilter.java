@@ -15,7 +15,7 @@ public class TwitterFilter {
 		System.out.println("TwitterFilter SERVICE REACHED");
 		System.out.print("--------------------------------------------------------------------------");
 		
-		//TODO
+		//
 		return "";
 	}
 

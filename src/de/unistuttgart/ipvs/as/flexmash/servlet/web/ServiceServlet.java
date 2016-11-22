@@ -31,10 +31,11 @@ public class ServiceServlet extends HttpServlet {
 	/**
 	 * receives a POST request from the client side
 	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	 public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		String command = req.getParameter("command");
 		String result = null;
+		String users = "users";
 		switch(command) {
 			case "google": 
 				//Get the query parameter for google plus
@@ -44,8 +45,9 @@ public class ServiceServlet extends HttpServlet {
 				JSONObject gmObject = gm.performQuery(inQuery1);
 				JSONArray gmData = new JSONArray();
 				try {
-					if (gmObject.has("users") && gmObject.getJSONArray("users") != null) {
-						gmData = gmObject.getJSONArray("users");
+					
+					if (gmObject.has(users) && gmObject.getJSONArray(users) != null) {
+						gmData = gmObject.getJSONArray(users);
 					}
 				} catch (Exception e) {
 					//log me out
@@ -60,8 +62,8 @@ public class ServiceServlet extends HttpServlet {
 				JSONObject fmObject = fm.performQuery(inQuery);
 				JSONArray fmData = new JSONArray();
 				try {
-					if (fmObject.has("users") && fmObject.getJSONArray("users") != null) {
-						fmData  = fmObject.getJSONArray("users");
+					if (fmObject.has(users) && fmObject.getJSONArray(users) != null) {
+						fmData  = fmObject.getJSONArray(users);
 					}
 				} catch (Exception e) {
 					//log me out					
@@ -128,7 +130,7 @@ public class ServiceServlet extends HttpServlet {
 			String name = firstName + lastName + midleName;
 			temp.put(name, item);
 	    }
-	    Iterator <String>it = temp.keys();
+		Iterator <String>it = temp.keys();
 	    while(it.hasNext()) {
 	    	result.put(temp.get(it.next()));
 	    }

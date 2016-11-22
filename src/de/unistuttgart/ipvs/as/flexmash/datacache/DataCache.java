@@ -28,7 +28,7 @@ public class DataCache {
 	/**
 	 * receives a value to a corresponding key from the cache
 	 * 
-	 * @param key
+	 * @param key 
 	 *            the database key
 	 * @return the corresponding value
 	 */
@@ -40,12 +40,12 @@ public class DataCache {
 			DBCollection coll = db.getCollection(key);
 
 			DBCursor cursor = coll.find();
-			DBObject doc = null;
+			
 
 			JSONArray data = new JSONArray();
 
-			while (cursor.hasNext() == true) {
-				doc = cursor.next();
+			while (cursor.hasNext()) {
+				DBObject doc = cursor.next();
 				JSONObject jsonO = new JSONObject(doc.toString());
 				jsonO.remove("_id");
 				data.put(jsonO);

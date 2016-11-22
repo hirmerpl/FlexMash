@@ -36,7 +36,7 @@ public class ClientCommunicationServlet extends HttpServlet {
 	private static final String TIME_CRITICAL = "Time-Critical";
 	private static final String ERROR = "error";
 
-	private final static Logger LOGGER = Logger.getLogger(ClientCommunicationServlet.class.getName()); 
+	private static final Logger LOGGER = Logger.getLogger(ClientCommunicationServlet.class.getName()); 
 	
 	/**
 	 * Receives a POST request from the client side
@@ -55,7 +55,6 @@ public class ClientCommunicationServlet extends HttpServlet {
 		
 		// remove tab stops, line breaks
 		mashupPlan = mashupPlan.replaceAll("[\\t\\n\\r]", "");
-
 		PrintWriter out = resp.getWriter();
 		JSONObject mashupPlanAsJSON = Util.createJsonObjects(mashupPlan);
 		
@@ -87,6 +86,5 @@ public class ClientCommunicationServlet extends HttpServlet {
 				break;
 		}
 		
-//		out.println(ERROR);
 	}
 }
