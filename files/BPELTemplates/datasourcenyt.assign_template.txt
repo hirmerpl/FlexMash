@@ -1,0 +1,24 @@
+<bpel:assign validate=\"no\" name=\"Assign\">
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<impl:extract xmlns:impl=\"http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">
+					<impl:address>impl:address</impl:address>
+				</impl:extract>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to variable=\"NYTRSSExtractorParnterLinkRequest\" part=\"parameters\"/>
+	</bpel:copy>
+	<bpel:copy>
+		<bpel:from part=\"payload\" variable=\"input\">
+			<bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\">
+				<![CDATA[tns:NYTRSSExtractorAdress]]>
+			</bpel:query>
+		</bpel:from>
+		<bpel:to part=\"parameters\" variable=\"NYTRSSExtractorParnterLinkRequest\">
+			<bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\">
+				<![CDATA[ns:address]]>
+			</bpel:query>
+		</bpel:to>
+	</bpel:copy>
+</bpel:assign>
