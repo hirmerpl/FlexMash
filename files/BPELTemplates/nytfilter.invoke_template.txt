@@ -1,1 +1,1 @@
-<bpel:invoke name=\"InvokeNYTFilterAndAnalytics\" partnerLink=\"TwitterServicePartnerLink\" operation=\"filterData\" portType=\"ns:TwitterService\" inputVariable=\"TwitterServicePartnerLinkRequest\" outputVariable=\"TwitterServicePartnerLinkResponse\"></bpel:invoke>
+<bpel:invoke name="InvokeNYTFilterAndAnalytics" partnerLink="TwitterServicePartnerLink" operation="filterData" portType="ns:TwitterService" inputVariable="TwitterServicePartnerLinkRequest" outputVariable="TwitterServicePartnerLinkResponse"></bpel:invoke>

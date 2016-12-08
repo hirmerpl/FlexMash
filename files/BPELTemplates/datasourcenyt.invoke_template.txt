@@ -1,1 +1,1 @@
-<bpel:invoke name=\"InvokeNYTExtractor\" partnerLink=\"NYTRSSExtractorParnterLink\" operation=\"extract\" portType=\"ns:NYTRSSExtractor\" inputVariable=\"NYTRSSExtractorParnterLinkRequest\" outputVariable=\"NYTRSSExtractorParnterLinkResponse\"/>
+<bpel:invoke name="InvokeNYTExtractor" partnerLink="NYTRSSExtractorParnterLink" operation="extract" portType="ns:NYTRSSExtractor" inputVariable="NYTRSSExtractorParnterLinkRequest" outputVariable="NYTRSSExtractorParnterLinkResponse"/>

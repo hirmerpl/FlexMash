@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import org.json.JSONArray;
@@ -19,7 +20,6 @@ import de.unistuttgart.ipvs.as.flexmash.utils.transformation_utils.FlowNode;
  */
 public class MashupPlanToBPELConverter {
 
-	private HashMap<String, FlowNode> WorkflowMap = new HashMap<String, FlowNode>();
 	String[] entries = new String[8];
 
 	/**
@@ -34,122 +34,84 @@ public class MashupPlanToBPELConverter {
 	public String convert(JSONObject mashupFlowAsJSON) throws IOException {
 
 		String startNode = null;
-
+		String BPELWorkflow = BPELMapper.getBPELConfig("BPELHeader");
+		
 		try {
 			JSONArray nodes = mashupFlowAsJSON.getJSONArray("nodes");
 			JSONObject node;
 			String type;
 			JSONArray transitions;
+			List<String> targets = null;
 
 			for (int i = 0; i < nodes.length(); i++) {
 				node = nodes.getJSONObject(i);
 				type = node.get("type").toString();
 				transitions = node.getJSONArray("transitions");
 
-				FlowNode WFNode = new FlowNode();
-
 				for (int k = 0; k < transitions.length(); k++) {
 					if (!transitions.getJSONObject(k).getString("target").equals(null)) {
-						WFNode.target.add(transitions.getJSONObject(k).getString("target"));
+						targets.add(transitions.getJSONObject(k).getString("target"));
 					}
 				}
 
 				switch (type) {
 				case "start":
-					WFNode.type = "start";
-					WFNode.name = node.getString("name");
-					startNode = WFNode.name;
+					startNode = node.getString("name");
+					BPELWorkflow += BPELMapper.getBPELConfig("start");
 					break;
 				case "end":
-					WFNode.type = "end";
-					WFNode.name = node.getString("name");
+					BPELWorkflow += BPELMapper.getBPELConfig("end");
 					break;
 				case "merge":
-					WFNode.criteria = node.getString("criteria");
-					entries[7] = WFNode.criteria;
-					WFNode.type = "merge";
-					WFNode.name = node.getString("name");
+					entries[7] = node.getString("criteria");
+					BPELWorkflow += BPELMapper.getBPELConfig("merge");
 					break;
 				case "dataSource_NYT":
-
-					WFNode.type = "dataSource_NYT";
-					WFNode.name = node.getString("name");
+					BPELWorkflow += BPELMapper.getBPELConfig("dataSourceNYT");
 					String category = "";
 					if (!node.get("dataSource_NYTName").toString().equals("")) {
 						category = node.get("dataSource_NYTName").toString();
 					}
-					WFNode.category = category;
 					entries[0] = category;
 					break;
 				case "dataSource_twitter":
-					WFNode.type = "dataSource_twitter";
-					WFNode.name = node.getString("name");
-					WFNode.hashtag = node.getString("dataSource_twitterHashtag");
-					entries[4] = WFNode.hashtag;
+					BPELWorkflow += BPELMapper.getBPELConfig("dataSourcetwitter");
+					entries[4] = node.getString("dataSource_twitterHashtag");
 					break;
 				case "filter":
 					if (node.get("filtertype").toString().equals("NYT")) {
-						WFNode.filter_criteria = node.getString("filter_criteria");
-						entries[5] = WFNode.filter_criteria;
-						WFNode.type = "NYTFilter";
-						WFNode.name = node.get("name").toString();
+						entries[5] = node.getString("filter_criteria");
+						BPELWorkflow += BPELMapper.getBPELConfig("NYTFilter");
 					}
 					break;
 				case "analytics":
 					if (node.get("analyticstype").toString().equals("Sentiment")) {
-						WFNode.filter_criteria = node.getString("filter_criteria");
-						entries[6] = WFNode.filter_criteria;
-						WFNode.type = "TwitterFilter";
-						WFNode.name = node.get("name").toString();
+						entries[6] = node.getString("filter_criteria");
+						BPELWorkflow += BPELMapper.getBPELConfig("TwitterFilter");
+						
 					} else if (node.get("analyticstype").toString().equals("NE")) {
 						System.out.println("NE Node reached");
-						WFNode.type = "NE";
-						WFNode.name = node.get("name").toString();
+						BPELWorkflow += BPELMapper.getBPELConfig("NE");
 					}
 					break;
 				}
 
-				WorkflowMap.put(WFNode.name, WFNode);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		Queue<String> queue = new LinkedList<String>();
-
-		FlowNode node ;
-		queue.add(startNode);
-
-		String BPELWorkflow = BPELMapper.getBPELConfig("BPELHeader");//"<bpel:process name=\"DataMashupProcess\"  targetNamespace=\"http://bpel.data_mashup.as.ipvs.informatik.uni_stuttgart.de\"  suppressJoinFailure=\"yes\"  xmlns:tns=\"http://bpel.data_mashup.as.ipvs.informatik.uni_stuttgart.de\"  xmlns:bpel=\"http://docs.oasis-open.org/wsbpel/2.0/process/executable\"  xmlns:ns=\"http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de\" xmlns:ns0=\"http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de\" xmlns:ns1=\"http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de\">  <bpel:import namespace=\"http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de\" location=\"Join.wsdl\" importType=\"http://schemas.xmlsoap.org/wsdl/\"></bpel:import>  <bpel:import namespace=\"http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de\" location=\"TwitterFilter.wsdl\" importType=\"http://schemas.xmlsoap.org/wsdl/\"></bpel:import>  <bpel:import namespace=\"http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de\" location=\"TwitterEtractor.wsdl\" importType=\"http://schemas.xmlsoap.org/wsdl/\"></bpel:import>  <bpel:import namespace=\"http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de\" location=\"TwitterService.wsdl\" importType=\"http://schemas.xmlsoap.org/wsdl/\"></bpel:import>  <bpel:import namespace=\"http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de\" location=\"NYTRSSExtractor.wsdl\" importType=\"http://schemas.xmlsoap.org/wsdl/\"></bpel:import>  <bpel:import location=\"DataMashupProcessArtifacts.wsdl\" namespace=\"http://bpel.data_mashup.as.ipvs.informatik.uni_stuttgart.de\" 	 importType=\"http://schemas.xmlsoap.org/wsdl/\" />   <bpel:partnerLinks> <bpel:partnerLink name=\"client\"     partnerLinkType=\"tns:DataMashupProcess\"     myRole=\"DataMashupProcessProvider\"     /> <bpel:partnerLink name=\"NYTRSSExtractorParnterLink\" partnerLinkType=\"tns:NYTRSSExtractorPartnerLinkType\" partnerRole=\"NYTRSSExtractorRole\"></bpel:partnerLink> <bpel:partnerLink name=\"TwitterServicePartnerLink\" partnerLinkType=\"tns:TwitterServiceParnterLinkType\" partnerRole=\"TwitterServiceRole\"></bpel:partnerLink> <bpel:partnerLink name=\"TwitterExtractorPartnerLink\" partnerLinkType=\"tns:TwitterExtractorPartnerLinkType\" partnerRole=\"TwitterExtractorRole\"></bpel:partnerLink> <bpel:partnerLink name=\"TwitterFilterPartnerLink\" partnerLinkType=\"tns:TwitterFilterPartnerLinkType\" partnerRole=\"TwitterFilterRole\"></bpel:partnerLink> <bpel:partnerLink name=\"JoinPartnerLink\" partnerLinkType=\"tns:JoinPartnerLinkType\" partnerRole=\"JoinRole\"></bpel:partnerLink>  </bpel:partnerLinks>   <bpel:variables> <bpel:variable name=\"input\"   messageType=\"tns:DataMashupProcessRequestMessage\"/> <bpel:variable name=\"output\"   messageType=\"tns:DataMashupProcessResponseMessage\"/> <bpel:variable name=\"NYTRSSExtractorParnterLinkResponse\" messageType=\"ns:extractResponse\"></bpel:variable> <bpel:variable name=\"NYTRSSExtractorParnterLinkRequest\" messageType=\"ns:extractRequest\"></bpel:variable> <bpel:variable name=\"TwitterServicePartnerLinkResponse\" messageType=\"ns:filterDataResponse\"></bpel:variable> <bpel:variable name=\"TwitterServicePartnerLinkRequest\" messageType=\"ns:filterDataRequest\"></bpel:variable> <bpel:variable name=\"TwitterExtractorPartnerLinkResponse\" messageType=\"ns0:extractResponse\"></bpel:variable> <bpel:variable name=\"TwitterExtractorPartnerLinkRequest\" messageType=\"ns0:extractRequest\"></bpel:variable> <bpel:variable name=\"TwitterFilterPartnerLinkResponse\" messageType=\"ns0:filterDataResponse\"></bpel:variable> <bpel:variable name=\"TwitterFilterPartnerLinkRequest\" messageType=\"ns0:filterDataRequest\"></bpel:variable> <bpel:variable name=\"JoinPartnerLinkResponse\" messageType=\"ns1:joinDataResponse\"></bpel:variable> <bpel:variable name=\"JoinPartnerLinkRequest\" messageType=\"ns1:joinDataRequest\"></bpel:variable>  </bpel:variables>";
-
-		//BPELWorkflow += "<bpel:sequence name=\"main\"><bpel:receive name=\"receiveInput\" partnerLink=\"client\" portType=\"tns:DataMashupProcess\" operation=\"process\" variable=\"input\" createInstance=\"yes\" />";
-
-		while (!queue.isEmpty()) {
-			node = WorkflowMap.get(queue.poll());
-			if (node != null) {
-				BPELWorkflow = BPELWorkflow + createBPEL(node);
-				for (String t : node.target) {
-					if (!queue.contains(t)) {
-						queue.add(t);
-						break;
-					}
-				}
-			}
-		}
-
 		try {
-			BPELWorkflow = BPELWorkflow
-					+ "<bpel:assign validate=\"no\" name=\"Assign1\"><bpel:copy>   <bpel:from><bpel:literal><tns:DataMashupProcessResponse xmlns:tns=\"http://bpel.data_mashup.as.ipvs.informatik.uni_stuttgart.de\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">  <tns:result>tns:result</tns:result> </tns:DataMashupProcessResponse> </bpel:literal></bpel:from>   <bpel:to variable=\"output\" part=\"payload\"></bpel:to>   </bpel:copy>   <bpel:copy>   <bpel:from part=\"parameters\" variable=\"JoinPartnerLinkResponse\">   <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\">   <![CDATA[ns1:joinDataReturn]]>   </bpel:query>   </bpel:from>   <bpel:to part=\"payload\" variable=\"output\">   <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[tns:result]]></bpel:query>   </bpel:to>   </bpel:copy>   </bpel:assign>   <bpel:reply name=\"replyOutput\" partnerLink=\"client\" portType=\"tns:DataMashupProcess\" operation=\"process\" variable=\"output\" /></bpel:sequence></bpel:process>";
+			BPELWorkflow +=  BPELMapper.getBPELConfig("response.assign");
 
-			File file = new File("C:/Users/FlexMash/Desktop/FlexMash-master/files/DataMashupProcess.bpel");
+			File file = new File("C:/Users/mahrous/Documents/GitHub/FlexMash/files/DataMashupProcess.bpel");
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
 			writer.write(BPELWorkflow);
 
 			writer.close();
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException e) {			
 			e.printStackTrace();
 		}
 
@@ -165,55 +127,49 @@ public class MashupPlanToBPELConverter {
 	 * @return the BPEL code
 	 * @throws IOException 
 	 */
-	private static String createBPEL(FlowNode node) throws IOException {
+	private static String createBPEL(String nodeType) throws IOException {
 		String BPELWorkflow = "";
 		String invoke = "";
 		String assign = "";
-		if (node != null) {
-			if (node.type != null) {
-				switch (node.type) {
+		
+			if (nodeType != null) {
+				switch (nodeType) {
 				case "start":
 					break;
 				case "end":
 					break;
 				case "merge":
 					System.out.println("Join");
-					assign = BPELMapper.getBPELConfig("join.assign"); //"<bpel:assign validate=\"no\" name=\"Assign5\">  <bpel:copy>    <bpel:from><bpel:literal><impl:joinData xmlns:impl=\"http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">  <impl:key1>impl:key1</impl:key1>  <impl:key2>impl:key2</impl:key2>  <impl:criteria>impl:criteria</impl:criteria> </impl:joinData> </bpel:literal></bpel:from>    <bpel:to variable=\"JoinPartnerLinkRequest\" part=\"parameters\"></bpel:to>  </bpel:copy>  <bpel:copy>    <bpel:from part=\"payload\" variable=\"input\">   <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[tns:joinCriteria]]></bpel:query>    </bpel:from>    <bpel:to part=\"parameters\" variable=\"JoinPartnerLinkRequest\">   <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[ns1:criteria]]></bpel:query>    </bpel:to>  </bpel:copy>  <bpel:copy>    <bpel:from part=\"parameters\" variable=\"TwitterServicePartnerLinkResponse\">   <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[ns:filterDataReturn]]></bpel:query>    </bpel:from>    <bpel:to part=\"parameters\" variable=\"JoinPartnerLinkRequest\">   <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[ns1:key1]]></bpel:query>    </bpel:to>  </bpel:copy>  <bpel:copy>    <bpel:from part=\"parameters\" variable=\"TwitterFilterPartnerLinkResponse\">   <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[ns0:filterDataReturn]]></bpel:query>    </bpel:from>    <bpel:to part=\"parameters\" variable=\"JoinPartnerLinkRequest\">   <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[ns1:key2]]></bpel:query>    </bpel:to>  </bpel:copy>  </bpel:assign>";
-					invoke = BPELMapper.getBPELConfig("join.invoke"); // " <bpel:invoke name=\"InvokeMerge\" partnerLink=\"JoinPartnerLink\" operation=\"joinData\" portType=\"ns1:Join\" inputVariable=\"JoinPartnerLinkRequest\" outputVariable=\"JoinPartnerLinkResponse\"></bpel:invoke>";
+					assign = BPELMapper.getBPELConfig("join.assign"); 
+					invoke = BPELMapper.getBPELConfig("join.invoke"); 
 					break;
 				case "NYTFilter":
 					System.out.println("NYTFilter");
-					assign = BPELMapper.getBPELConfig("NYTFilter.assign"); // "<bpel:assign validate=\"no\" name=\"Assign2\">             <bpel:copy>                 <bpel:from><bpel:literal><impl:filterData xmlns:impl=\"http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">   <impl:key>impl:key</impl:key>   <impl:criteria>impl:criteria</impl:criteria> </impl:filterData> </bpel:literal></bpel:from>                 <bpel:to variable=\"TwitterServicePartnerLinkRequest\" part=\"parameters\"></bpel:to>             </bpel:copy>                          <bpel:copy>                 <bpel:from part=\"payload\" variable=\"input\">                     <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\">                         <![CDATA[tns:TwitterServiceCriteria]]>                     </bpel:query>                 </bpel:from>                 <bpel:to part=\"parameters\" variable=\"TwitterServicePartnerLinkRequest\">                     <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\">                         <![CDATA[ns:criteria]]>                     </bpel:query>                 </bpel:to>             </bpel:copy>             <bpel:copy>                 <bpel:from part=\"parameters\" variable=\"NYTRSSExtractorParnterLinkResponse\">                     <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[ns:extractReturn]]></bpel:query></bpel:from> <bpel:to part=\"parameters\" variable=\"TwitterServicePartnerLinkRequest\">   <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[ns:key]]></bpel:query></bpel:to>  </bpel:copy>   </bpel:assign>";
-					invoke = BPELMapper.getBPELConfig("NYTFilter.assign"); //"<bpel:invoke name=\"InvokeNYTFilterAndAnalytics\" partnerLink=\"TwitterServicePartnerLink\" operation=\"filterData\" portType=\"ns:TwitterService\" inputVariable=\"TwitterServicePartnerLinkRequest\" outputVariable=\"TwitterServicePartnerLinkResponse\"></bpel:invoke>";
+					assign = BPELMapper.getBPELConfig("NYTFilter.assign");
+					invoke = BPELMapper.getBPELConfig("NYTFilter.invoke");
 					break;
 				case "TwitterFilter":
 					System.out.println("TwitterFilter");
-					assign = BPELMapper.getBPELConfig("TwitterFilter.assign");//"<bpel:assign validate=\"no\" name=\"Assign3\">       <bpel:copy>         <bpel:from><bpel:literal><impl:filterData xmlns:impl=\"http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">  <impl:key>impl:key</impl:key>  <impl:criteria>impl:criteria</impl:criteria> </impl:filterData> </bpel:literal></bpel:from>         <bpel:to variable=\"TwitterFilterPartnerLinkRequest\" part=\"parameters\"></bpel:to>       </bpel:copy>       <bpel:copy>         <bpel:from part=\"payload\" variable=\"input\">           <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[tns:twitterFilterCriteria]]></bpel:query>         </bpel:from>         <bpel:to part=\"parameters\" variable=\"TwitterFilterPartnerLinkRequest\">           <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[ns0:criteria]]></bpel:query>         </bpel:to>       </bpel:copy>       <bpel:copy>         <bpel:from part=\"parameters\" variable=\"TwitterExtractorPartnerLinkResponse\">           <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[ns0:extractReturn]]></bpel:query>         </bpel:from>         <bpel:to part=\"parameters\" variable=\"TwitterFilterPartnerLinkRequest\">           <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[ns0:key]]></bpel:query>     </bpel:to>   </bpel:copy>  </bpel:assign>";
-					invoke = BPELMapper.getBPELConfig("TwitterFilter.assign");//"<bpel:invoke name=\"InvokeTwitterFilterAndAnalytics\" partnerLink=\"TwitterFilterPartnerLink\" operation=\"filterData\" portType=\"ns0:TwitterFilter\" inputVariable=\"TwitterFilterPartnerLinkRequest\" outputVariable=\"TwitterFilterPartnerLinkResponse\"></bpel:invoke>";
+					assign = BPELMapper.getBPELConfig("TwitterFilter.assign");
+					invoke = BPELMapper.getBPELConfig("TwitterFilter.invoke");
 					break;
 				case "dataSource_NYT":
 					System.out.println("dataSource_NYT");
-					assign = BPELMapper.getBPELConfig("dataSourceNYT.assign");//"<bpel:assign validate=\"no\" name=\"Assign\"><bpel:copy><bpel:from><bpel:literal><impl:extract xmlns:impl=\"http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">   <impl:address>impl:address</impl:address>  </impl:extract> </bpel:literal></bpel:from>                 <bpel:to variable=\"NYTRSSExtractorParnterLinkRequest\" part=\"parameters\"></bpel:to></bpel:copy><bpel:copy><bpel:from part=\"payload\" variable=\"input\"><bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[tns:NYTRSSExtractorAdress]]></bpel:query></bpel:from><bpel:to part=\"parameters\" variable=\"NYTRSSExtractorParnterLinkRequest\"><bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[ns:address]]></bpel:query></bpel:to></bpel:copy></bpel:assign>";
-					invoke = BPELMapper.getBPELConfig("dataSourceNYT.assign");//"<bpel:invoke name=\"InvokeNYTExtractor\" partnerLink=\"NYTRSSExtractorParnterLink\" operation=\"extract\" portType=\"ns:NYTRSSExtractor\" inputVariable=\"NYTRSSExtractorParnterLinkRequest\" outputVariable=\"NYTRSSExtractorParnterLinkResponse\"></bpel:invoke>";
-
-//					BPELWorkflow = BPELWorkflow + assign + invoke;
-//
-//					assign = "<bpel:assign validate=\"no\" name=\"Assign2\">             <bpel:copy>                 <bpel:from><bpel:literal><impl:filterData xmlns:impl=\"http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">   <impl:key>impl:key</impl:key>   <impl:criteria>impl:criteria</impl:criteria> </impl:filterData> </bpel:literal></bpel:from>                 <bpel:to variable=\"TwitterServicePartnerLinkRequest\" part=\"parameters\"></bpel:to>             </bpel:copy>                          <bpel:copy>                 <bpel:from part=\"payload\" variable=\"input\">                     <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\">                         <![CDATA[tns:TwitterServiceCriteria]]>                     </bpel:query>                 </bpel:from>                 <bpel:to part=\"parameters\" variable=\"TwitterServicePartnerLinkRequest\">                     <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\">                         <![CDATA[ns:criteria]]>                     </bpel:query>                 </bpel:to>             </bpel:copy>             <bpel:copy>                 <bpel:from part=\"parameters\" variable=\"NYTRSSExtractorParnterLinkResponse\">                     <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[ns:extractReturn]]></bpel:query></bpel:from> <bpel:to part=\"parameters\" variable=\"TwitterServicePartnerLinkRequest\">   <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[ns:key]]></bpel:query></bpel:to>  </bpel:copy>   </bpel:assign>";
-//					invoke = "<bpel:invoke name=\"InvokeNYTFilterAndAnalytics\" partnerLink=\"TwitterServicePartnerLink\" operation=\"filterData\" portType=\"ns:TwitterService\" inputVariable=\"TwitterServicePartnerLinkRequest\" outputVariable=\"TwitterServicePartnerLinkResponse\"></bpel:invoke>";
-
+					assign = BPELMapper.getBPELConfig("dataSourceNYT.assign");
+					invoke = BPELMapper.getBPELConfig("dataSourceNYT.invoke");
 					break;
 				case "dataSource_twitter":
 					System.out.println("dataSource_twitter");
-					assign = BPELMapper.getBPELConfig("dataSourcetwitter.assign");//"<bpel:assign validate=\"no\" name=\"Assign4\">   <bpel:copy>    <bpel:from><bpel:literal><impl:extract xmlns:impl=\"http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"> <impl:hashtag>impl:hashtag</impl:hashtag> </impl:extract> </bpel:literal></bpel:from>    <bpel:to variable=\"TwitterExtractorPartnerLinkRequest\" part=\"parameters\"></bpel:to>   </bpel:copy>   <bpel:copy>    <bpel:from part=\"payload\" variable=\"input\">    <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[tns:twitterExtractorHashtag]]></bpel:query>    </bpel:from>    <bpel:to part=\"parameters\" variable=\"TwitterExtractorPartnerLinkRequest\">    <bpel:query queryLanguage=\"urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0\"><![CDATA[ns0:hashtag]]></bpel:query>    </bpel:to>   </bpel:copy>  </bpel:assign>";
-					invoke = BPELMapper.getBPELConfig("dataSourcetwitter.assign");//"<bpel:invoke name=\"InvokeTwitterExtractor\" partnerLink=\"TwitterExtractorPartnerLink\" operation=\"extract\" portType=\"ns0:TwitterEtractor\" inputVariable=\"TwitterExtractorPartnerLinkRequest\" outputVariable=\"TwitterExtractorPartnerLinkResponse\"></bpel:invoke>";
+					assign = BPELMapper.getBPELConfig("dataSourcetwitter.assign");
+					invoke = BPELMapper.getBPELConfig("dataSourcetwitter.invoke");
 					break;
 				case "NE":
 					break;
 				}
 
-				BPELWorkflow = BPELWorkflow + assign + invoke;
+				BPELWorkflow += assign + invoke;
 			}
-		}
+		
 		return BPELWorkflow;
 	}
 

@@ -1,1 +1,1 @@
-<bpel:invoke name=\"InvokeTwitterExtractor\" partnerLink=\"TwitterExtractorPartnerLink\" operation=\"extract\" portType=\"ns0:TwitterEtractor\" inputVariable=\"TwitterExtractorPartnerLinkRequest\" outputVariable=\"TwitterExtractorPartnerLinkResponse\"></bpel:invoke>
+<bpel:invoke name="InvokeTwitterExtractor" partnerLink="TwitterExtractorPartnerLink" operation="extract" portType="ns0:TwitterEtractor" inputVariable="TwitterExtractorPartnerLinkRequest" outputVariable="TwitterExtractorPartnerLinkResponse"></bpel:invoke>

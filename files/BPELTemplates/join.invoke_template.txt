@@ -1,1 +1,1 @@
-<bpel:invoke name=\"InvokeMerge\" partnerLink=\"JoinPartnerLink\" operation=\"joinData\" portType=\"ns1:Join\" inputVariable=\"JoinPartnerLinkRequest\" outputVariable=\"JoinPartnerLinkResponse\"/>
+<bpel:invoke name="InvokeMerge" partnerLink="JoinPartnerLink" operation="joinData" portType="ns1:Join" inputVariable="JoinPartnerLinkRequest" outputVariable="JoinPartnerLinkResponse"/>
