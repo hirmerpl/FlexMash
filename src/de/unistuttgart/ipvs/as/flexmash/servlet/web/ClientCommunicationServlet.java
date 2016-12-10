@@ -2,6 +2,7 @@ package de.unistuttgart.ipvs.as.flexmash.servlet.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
+
+import com.sun.javafx.collections.MappingChange.Map;
+
 import org.json.JSONArray;
 
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.BPELEngineCommunicator;
@@ -64,10 +68,10 @@ public class ClientCommunicationServlet extends HttpServlet {
 
 				MashupPlanToBPELConverter mashupPlanToBPELConverter = new MashupPlanToBPELConverter();
 				String mashupPlanAsBPEL = mashupPlanToBPELConverter.convert(mashupPlanAsJSON);
-				String[] properties = mashupPlanToBPELConverter.getEntries();
-
+				HashMap<String,String> properties =  mashupPlanToBPELConverter.getEntries();
 				EngineProcessStarter.generateFiles(mashupPlanAsBPEL);
-				String result = BPELEngineCommunicator.callEngine(properties[0], properties[4], properties[5], properties[6], properties[7]);
+				String result = BPELEngineCommunicator.callEngine(properties.get("category"), properties.get("dataSource_twitter"), 
+						properties.get("NYTFilter"), properties.get("TwitterFilter"), properties.get("criteria"));
 
 				out.println(result);
 				

@@ -1,26 +1,22 @@
 package de.unistuttgart.ipvs.as.flexmash.transformation;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import de.unistuttgart.ipvs.as.flexmash.BPELMappings.BPELMapper;
-import de.unistuttgart.ipvs.as.flexmash.utils.transformation_utils.FlowNode;
 
 /**
  * class to convert a Data Mashup flow into an executable BPEL workflow
  */
 public class MashupPlanToBPELConverter {
 
-	String[] entries = new String[8];
+	HashMap<String, String> entriesMap = new HashMap<String,String>();
 
 	/**
 	 * Converts the JSONObjects of the Data Mashup flow into a BPEL flow
@@ -33,7 +29,7 @@ public class MashupPlanToBPELConverter {
 	 */
 	public String convert(JSONObject mashupFlowAsJSON) throws IOException {
 
-		String startNode = null;
+
 		String BPELWorkflow = BPELMapper.getBPELConfig("BPELHeader");
 		
 		try {
@@ -41,57 +37,58 @@ public class MashupPlanToBPELConverter {
 			JSONObject node;
 			String type;
 			JSONArray transitions;
-			List<String> targets = null;
-
+			
 			for (int i = 0; i < nodes.length(); i++) {
 				node = nodes.getJSONObject(i);
 				type = node.get("type").toString();
-				transitions = node.getJSONArray("transitions");
+					transitions = node.getJSONArray("transitions");
 
 				for (int k = 0; k < transitions.length(); k++) {
 					if (!transitions.getJSONObject(k).getString("target").equals(null)) {
-						targets.add(transitions.getJSONObject(k).getString("target"));
+						String target = transitions.getJSONObject(k).getString("target");
+						JSONObject newNode= new JSONObject("{type:"+target+"}");
+						nodes.put(newNode);
 					}
 				}
 
 				switch (type) {
 				case "start":
-					startNode = node.getString("name");
-					BPELWorkflow += BPELMapper.getBPELConfig("start");
+					
+					BPELWorkflow += createBPEL("start");
 					break;
 				case "end":
-					BPELWorkflow += BPELMapper.getBPELConfig("end");
+					BPELWorkflow += createBPEL("end");
 					break;
 				case "merge":
-					entries[7] = node.getString("criteria");
-					BPELWorkflow += BPELMapper.getBPELConfig("merge");
+					entriesMap.put("criteria", node.getString("criteria"));
+					BPELWorkflow += createBPEL("merge");
 					break;
 				case "dataSource_NYT":
-					BPELWorkflow += BPELMapper.getBPELConfig("dataSourceNYT");
+					BPELWorkflow += createBPEL("dataSource_NYT");
 					String category = "";
 					if (!node.get("dataSource_NYTName").toString().equals("")) {
 						category = node.get("dataSource_NYTName").toString();
 					}
-					entries[0] = category;
+					entriesMap.put("category", category);
 					break;
 				case "dataSource_twitter":
-					BPELWorkflow += BPELMapper.getBPELConfig("dataSourcetwitter");
-					entries[4] = node.getString("dataSource_twitterHashtag");
+					BPELWorkflow += createBPEL("dataSource_twitter");
+					entriesMap.put("dataSource_twitter", node.getString("dataSource_twitterHashtag"));
 					break;
 				case "filter":
 					if (node.get("filtertype").toString().equals("NYT")) {
-						entries[5] = node.getString("filter_criteria");
-						BPELWorkflow += BPELMapper.getBPELConfig("NYTFilter");
+						entriesMap.put("NYTFilter", node.getString("filter_criteria"));
+						BPELWorkflow += createBPEL("NYTFilter");
 					}
 					break;
 				case "analytics":
 					if (node.get("analyticstype").toString().equals("Sentiment")) {
-						entries[6] = node.getString("filter_criteria");
-						BPELWorkflow += BPELMapper.getBPELConfig("TwitterFilter");
+						entriesMap.put("TwitterFilter", node.getString("filter_criteria"));
+						BPELWorkflow += createBPEL("TwitterFilter");
 						
 					} else if (node.get("analyticstype").toString().equals("NE")) {
 						System.out.println("NE Node reached");
-						BPELWorkflow += BPELMapper.getBPELConfig("NE");
+						BPELWorkflow += createBPEL("NE");
 					}
 					break;
 				}
@@ -104,7 +101,7 @@ public class MashupPlanToBPELConverter {
 		try {
 			BPELWorkflow +=  BPELMapper.getBPELConfig("response.assign");
 
-			File file = new File("C:/Users/mahrous/Documents/GitHub/FlexMash/files/DataMashupProcess.bpel");
+			File file = new File(System.getenv("FLEXMASH")+"/files/DataMashupProcess.bpel");
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
 			writer.write(BPELWorkflow);
@@ -167,7 +164,8 @@ public class MashupPlanToBPELConverter {
 					break;
 				}
 
-				BPELWorkflow += assign + invoke;
+
+				BPELWorkflow = assign +""+ invoke;
 			}
 		
 		return BPELWorkflow;
@@ -178,7 +176,7 @@ public class MashupPlanToBPELConverter {
 	 * 
 	 * @return the parameters as list
 	 */
-	public String[] getEntries() {
-		return entries;
+	public HashMap<String,String> getEntries() {
+		return entriesMap;
 	}
 }

@@ -30,7 +30,7 @@ import javax.xml.soap.SOAPPart;
  */
 public class EngineProcessStarter {
 
-	public static final String PATH = "C:/Users/FlexMash/Desktop/FlexMash-master/files";
+	public static final String PATH = System.getenv("FLEXMASH")+"/files/";
 	
 	/**
 	 * generates all necessary files to deploy a process on ApacheODE
