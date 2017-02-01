@@ -26,10 +26,9 @@ public class BPELMapper {
 	 * @throws IOException
 	 */
 	public  static String getBPELConfig(String ServiceName) throws IOException{
-		//C:/Users/mahrous/Documents/GitHub/FlexMash/
+
 		String filepath =System.getenv("FLEXMASH")+"/files/BPELTemplates/"+ServiceName.toLowerCase()+"_template.txt";
 		StringBuilder sb = new StringBuilder();
-		
 		try (BufferedReader br = new BufferedReader(new FileReader(filepath));) 
 		{	    
 		    String line = br.readLine();
