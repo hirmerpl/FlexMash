@@ -41,7 +41,7 @@ public class TwitterdsExe implements JavaDelegate {
 				SOAPConnection soapConnection = soapConnectionFactory.createConnection();
 
 				// SOAP Message
-				String url = "http://localhost:8080/Data_Mashup/services/TwitterEtractor";
+				String url = Helper.getURLPath()+"TwitterEtractor";
 				MessageFactory messageFactory = MessageFactory.newInstance();
 				SOAPMessage soapMessage = messageFactory.createMessage();
 				SOAPPart soapPart = soapMessage.getSOAPPart();

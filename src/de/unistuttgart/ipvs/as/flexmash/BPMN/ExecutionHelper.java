@@ -32,7 +32,12 @@ public class ExecutionHelper {
 	}
 	
 	public Object getInput(DelegateExecution execution){
-		
 		return execution.getVariable( execution.getCurrentActivityId()+"In" );
+	}
+	
+	public String getURLPath(){
+		
+		return "http://localhost:8080/Data_Mashup/services/";
+			
 	}
 }
