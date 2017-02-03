@@ -166,6 +166,37 @@ var staticnodemanager = {
 				}
             }
         });
+		
+		// CSV data source
+		Y.DiagramNodeDataSource_csv = Y.Component.create({
+            NAME: 'diagram-node',
+            ATTRS: {
+                type: {
+                    value: 'dataSource_CSV'
+                },
+                dataSource_CSV: {
+                    validator: Y.Lang.isString,
+                    value: ''
+                }
+            },
+            EXTENDS: Y.DiagramNodeTask,
+            prototype: {
+                initializer: function() {
+                    var instance = this;
+				    this.SERIALIZABLE_ATTRS.push('dataSource_CSV_path');
+                },
+				getPropertyModel: function () {
+					var instance = this;
+					var model = Y.DiagramNodeDataSource_googleplus.superclass.getPropertyModel.apply(instance, arguments);
+						model.splice(0, 1);
+						model.push({
+							attributeName: 'dataSource_CSV_path',
+							name: 'CSV Path'
+						});
+					return model;
+				}
+            }
+        });
 
 		//Initialize the Filter node to Aloye UI 		
         Y.DiagramNodeFilter = Y.Component.create({
@@ -198,7 +229,8 @@ var staticnodemanager = {
                         editor: new Y.DropDownCellEditor({
                             options: {
                             	NYT: 'NYT Filter',
-                                tbd: 'SQLFilter'
+                                tbd: 'SQLFilter',
+								CSVFilter: 'CSV Filter'
                             }
                         })
                     });
@@ -287,6 +319,7 @@ var staticnodemanager = {
 		Y.DiagramBuilder.types['dataSource_googleplus'] = Y.DiagramNodeDataSource_googleplus;
 		Y.DiagramBuilder.types['dataSource_facebook'] = Y.DiagramNodeDataSource_facebook;
         Y.DiagramBuilder.types['filter'] = Y.DiagramNodeFilter;
+		Y.DiagramBuilder.types['dataSource_CSV'] = Y.DiagramNodeDataSource_csv;
 		
 		//return the initialized static nodes to the application, to be created
 		return [
@@ -324,6 +357,11 @@ var staticnodemanager = {
                 label: 'NYT',
                 type: 'dataSource_NYT'
             }, {
+                iconClass: 'diagram-node-dataSource_CSV-icon',
+                label: 'CSV',
+                type: 'dataSource_CSV'
+            }, 
+			{
                 iconClass: 'diagram-node-dataSource_googleplus-icon',
                 label: 'Google+',
                 type: 'dataSource_googleplus'
