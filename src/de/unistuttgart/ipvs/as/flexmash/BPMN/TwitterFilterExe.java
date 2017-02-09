@@ -32,7 +32,7 @@ public class TwitterFilterExe implements JavaDelegate {
 				SOAPConnection soapConnection = soapConnectionFactory.createConnection();
 
 				// SOAP Message
-				String url = Helper.getURLPath()+"TwitterFilter";
+			String url = Helper.getURLPath() +"TwitterFilter";
 				MessageFactory messageFactory = MessageFactory.newInstance();
 				SOAPMessage soapMessage = messageFactory.createMessage();
 				SOAPPart soapPart = soapMessage.getSOAPPart();

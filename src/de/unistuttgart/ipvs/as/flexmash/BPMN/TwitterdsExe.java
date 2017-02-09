@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Iterator;
 import java.util.logging.Logger;
@@ -20,69 +23,24 @@ import javax.xml.soap.SOAPEnvelope;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
+
+import org.apache.jasper.tagplugins.jstl.core.ForEach;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-
 
 import de.unistuttgart.ipvs.as.flexmash.BPMN.ExecutionHelper;
 
 public class TwitterdsExe implements JavaDelegate {
 
-	
-	 private final Logger LOGGER = Logger.getLogger(TwitterdsExe.class.getName());
+	private final Logger LOGGER = Logger.getLogger(TwitterdsExe.class.getName());
 
-	  public static boolean wasExecuted=false;
+	public static boolean wasExecuted = false;
 
-	  public void execute(DelegateExecution execution) throws Exception {
-		  ExecutionHelper Helper = new ExecutionHelper();
-		  try {
-				// Create Connection
-				SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
-				SOAPConnection soapConnection = soapConnectionFactory.createConnection();
-
-				// SOAP Message
-				String url = Helper.getURLPath()+"TwitterEtractor";
-				MessageFactory messageFactory = MessageFactory.newInstance();
-				SOAPMessage soapMessage = messageFactory.createMessage();
-				SOAPPart soapPart = soapMessage.getSOAPPart();
-
-				// SOAP Envelope
-				SOAPEnvelope envelope = soapPart.getEnvelope();
-				envelope.addNamespaceDeclaration("twit", "http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de");
-
-
-				// SOAP Body
-				SOAPBody soapBody = envelope.getBody();
-				SOAPElement soapBodyElem = soapBody.addChildElement("extract", "twit");
-				SOAPElement soapBodyElemA = soapBodyElem.addChildElement("hashtag","twit");
-				soapBodyElemA.addTextNode(Helper.getInput(execution).toString());
-
-				soapMessage.saveChanges();
-
-				/* Print the request message */
-				System.out.print("Request SOAP Message:");
-				try {
-					soapMessage.writeTo(System.out);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				System.out.println();
-
-				SOAPMessage soapResponse = soapConnection.call(soapMessage, url);
-				
-				// print SOAP Response
-				System.out.print("Response SOAP Message:");
-				try {
-					soapResponse.writeTo(System.out);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				soapConnection.close();
-			} catch (SOAPException e) {
-				e.printStackTrace();
-			} 
-	  }
+	public void execute(DelegateExecution execution) throws Exception {
+		ExecutionHelper Helper = new ExecutionHelper();
+		System.out.println("Executing process: "+execution.getCurrentActivityId()+" at "+ new Timestamp(System.currentTimeMillis()));
+		System.out.println(String.format("Parents for the Activity %s are:",execution.getCurrentActivityId()) );
+		ArrayList<String > predecessors = (ArrayList<String >)execution.getVariable(execution.getCurrentActivityId()+"Pre");
+		predecessors.forEach((l)-> System.out.println(l));
+	}
 }
