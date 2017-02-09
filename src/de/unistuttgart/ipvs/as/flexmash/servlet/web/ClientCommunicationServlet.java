@@ -18,12 +18,16 @@ import com.sun.javafx.collections.MappingChange.Map;
 
 import org.json.JSONArray;
 
+import de.unistuttgart.ipvs.as.flexmash.BPMN.BPMNmodel;
+import de.unistuttgart.ipvs.as.flexmash.BPMN.Engine;
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.BPELEngineCommunicator;
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.EngineProcessStarter;
 import de.unistuttgart.ipvs.as.flexmash.transformation.MashupPlanToBPELConverter;
 import de.unistuttgart.ipvs.as.flexmash.transformation.MashupPlanToNodeREDFlowConverter;
+import de.unistuttgart.ipvs.as.flexmash.transformation.MashupPlantoBPMNConverter;
 import de.unistuttgart.ipvs.as.flexmash.utils.Util;
 import de.unistuttgart.ipvs.as.flexmash.utils.http.IOUtils;
+
 
 @WebServlet("/DataMashup")
 /**
@@ -65,16 +69,23 @@ public class ClientCommunicationServlet extends HttpServlet {
 		switch (selectedPattern) {
 			case ROBUST:
 				LOGGER.log(Level.INFO, "Robust pattern selected.");
-
-				MashupPlanToBPELConverter mashupPlanToBPELConverter = new MashupPlanToBPELConverter();
-				String mashupPlanAsBPEL = mashupPlanToBPELConverter.convert(mashupPlanAsJSON);
-				HashMap<String,String> properties =  mashupPlanToBPELConverter.getEntries();
-				EngineProcessStarter.generateFiles(mashupPlanAsBPEL);
-				String result = BPELEngineCommunicator.callEngine(properties.get("category"), properties.get("dataSource_twitter"), 
-						properties.get("NYTFilter"), properties.get("TwitterFilter"), properties.get("criteria"));
-
-				out.println(result);
 				
+				MashupPlantoBPMNConverter MashupPlanToBPMNConverter = new MashupPlantoBPMNConverter();
+				BPMNmodel generatedModel = MashupPlanToBPMNConverter.convert(mashupPlanAsJSON);
+				
+
+				Engine engine = new Engine();
+				engine.deployProcessModel(generatedModel.fileName, generatedModel);
+				engine.runProcessModel("MainProcess", generatedModel);
+//				MashupPlanToBPELConverter mashupPlanToBPELConverter = new MashupPlanToBPELConverter();
+//				String mashupPlanAsBPEL = mashupPlanToBPELConverter.convert(mashupPlanAsJSON);
+//				HashMap<String,String> properties =  mashupPlanToBPELConverter.getEntries();
+//				EngineProcessStarter.generateFiles(mashupPlanAsBPEL);
+//				String result = BPELEngineCommunicator.callEngine(properties.get("category"), properties.get("dataSource_twitter"), 
+//						properties.get("NYTFilter"), properties.get("TwitterFilter"), properties.get("criteria"));
+//
+//				out.println(result);
+//				
 				break;
 			case TIME_CRITICAL:
 				// implement Node-RED Mapping here
