@@ -20,7 +20,6 @@ public class CSVExe implements JavaDelegate {
 	        ArrayList<String> output = new ArrayList<>();
 	        while(scanner.hasNext()){
 	        	String nextLine = scanner.nextLine();
-	            System.out.println(nextLine);
 	            output.add(nextLine);
 	        }
 	        scanner.close();
