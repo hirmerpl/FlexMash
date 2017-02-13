@@ -4,12 +4,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.logging.Logger;
 
+import org.camunda.bpm.model.bpmn.Bpmn;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import de.unistuttgart.ipvs.as.flexmash.BPELMappings.BPELMapper;
+
+import de.unistuttgart.ipvs.as.flexmash.bpelmappings.BPELMapper;
+import de.unistuttgart.ipvs.as.flexmash.bpmn.BPMNmodel;
+
 
 /**
  * class to convert a Data Mashup flow into an executable BPEL workflow
@@ -28,8 +32,8 @@ public class MashupPlanToBPELConverter {
 	 * @throws IOException 
 	 */
 	public String convert(JSONObject mashupFlowAsJSON) throws IOException {
-
-
+	
+		
 		String BPELWorkflow = BPELMapper.getBPELConfig("BPELHeader");
 		
 		try {

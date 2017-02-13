@@ -18,9 +18,9 @@ import com.sun.javafx.collections.MappingChange.Map;
 
 import org.json.JSONArray;
 
-import de.unistuttgart.ipvs.as.flexmash.BPMN.BPMNmodel;
-import de.unistuttgart.ipvs.as.flexmash.BPMN.Engine;
+import de.unistuttgart.ipvs.as.flexmash.bpmn.BPMNmodel;
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.BPELEngineCommunicator;
+import de.unistuttgart.ipvs.as.flexmash.servlet.engine.Engine;
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.EngineProcessStarter;
 import de.unistuttgart.ipvs.as.flexmash.transformation.MashupPlanToBPELConverter;
 import de.unistuttgart.ipvs.as.flexmash.transformation.MashupPlanToNodeREDFlowConverter;
