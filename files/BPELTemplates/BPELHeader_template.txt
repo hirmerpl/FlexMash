@@ -1,0 +1,31 @@
+<bpel:process name="DataMashupProcess"  targetNamespace="http://bpel.data_mashup.as.ipvs.informatik.uni_stuttgart.de"  suppressJoinFailure="yes"  xmlns:tns="http://bpel.data_mashup.as.ipvs.informatik.uni_stuttgart.de"  xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"  xmlns:ns="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:ns0="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:ns1="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de">
+	<bpel:import namespace="http://operations.web_services.data_mashup.as.ipvs.uni_stuttgart.de" location="Join.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+	<bpel:import namespace="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" location="TwitterFilter.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+	<bpel:import namespace="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" location="TwitterEtractor.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+	<bpel:import namespace="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de" location="TwitterService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+	<bpel:import namespace="http://sql.web_services.data_mashup.as.ipvs.uni_stuttgart.de" location="NYTRSSExtractor.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+	<bpel:import location="DataMashupProcessArtifacts.wsdl" namespace="http://bpel.data_mashup.as.ipvs.informatik.uni_stuttgart.de" 	 importType="http://schemas.xmlsoap.org/wsdl/" />
+	<bpel:partnerLinks>
+		<bpel:partnerLink name="client"     partnerLinkType="tns:DataMashupProcess"     myRole="DataMashupProcessProvider"     />
+		<bpel:partnerLink name="NYTRSSExtractorParnterLink" partnerLinkType="tns:NYTRSSExtractorPartnerLinkType" partnerRole="NYTRSSExtractorRole"/>
+		<bpel:partnerLink name="TwitterServicePartnerLink" partnerLinkType="tns:TwitterServiceParnterLinkType" partnerRole="TwitterServiceRole"/>
+		<bpel:partnerLink name="TwitterExtractorPartnerLink" partnerLinkType="tns:TwitterExtractorPartnerLinkType" partnerRole="TwitterExtractorRole"/>
+		<bpel:partnerLink name="TwitterFilterPartnerLink" partnerLinkType="tns:TwitterFilterPartnerLinkType" partnerRole="TwitterFilterRole"/>
+		<bpel:partnerLink name="JoinPartnerLink" partnerLinkType="tns:JoinPartnerLinkType" partnerRole="JoinRole"/>
+	</bpel:partnerLinks>
+	<bpel:variables>
+		<bpel:variable name="input"   messageType="tns:DataMashupProcessRequestMessage"/>
+		<bpel:variable name="output"   messageType="tns:DataMashupProcessResponseMessage"/>
+		<bpel:variable name="NYTRSSExtractorParnterLinkResponse" messageType="ns:extractResponse"/>
+		<bpel:variable name="NYTRSSExtractorParnterLinkRequest" messageType="ns:extractRequest"/>
+		<bpel:variable name="TwitterServicePartnerLinkResponse" messageType="ns:filterDataResponse"/>
+		<bpel:variable name="TwitterServicePartnerLinkRequest" messageType="ns:filterDataRequest"/>
+		<bpel:variable name="TwitterExtractorPartnerLinkResponse" messageType="ns0:extractResponse"/>
+		<bpel:variable name="TwitterExtractorPartnerLinkRequest" messageType="ns0:extractRequest"/>
+		<bpel:variable name="TwitterFilterPartnerLinkResponse" messageType="ns0:filterDataResponse"/>
+		<bpel:variable name="TwitterFilterPartnerLinkRequest" messageType="ns0:filterDataRequest"/>
+		<bpel:variable name="JoinPartnerLinkResponse" messageType="ns1:joinDataResponse"/>
+		<bpel:variable name="JoinPartnerLinkRequest" messageType="ns1:joinDataRequest"/>
+	</bpel:variables>
+	<bpel:sequence name="main">
+		<bpel:receive name="receiveInput" partnerLink="client" portType="tns:DataMashupProcess" operation="process" variable="input" createInstance="yes" />

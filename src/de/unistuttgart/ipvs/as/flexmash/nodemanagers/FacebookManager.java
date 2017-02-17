@@ -50,7 +50,7 @@ public class FacebookManager {
 			//Query the facebook API for user information
 			ResponseList<User> users = facebook.searchUsers(inQuery);
 			
-			if (users != null && users.size() > 0) {
+			if (users != null && !users.isEmpty()) {
 				for (User user: users) {
 					// collect detailed user information
 					JSONObject userInformation = new JSONObject();

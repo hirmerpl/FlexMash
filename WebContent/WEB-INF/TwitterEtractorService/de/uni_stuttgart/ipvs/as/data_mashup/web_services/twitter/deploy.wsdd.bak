@@ -1,14 +1,4 @@
-<!-- Use this file to deploy some handlers/chains and services      -->
-<!-- Two ways to do this:                                           -->
-<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
-<!--      after the axis server is running                          -->
-<!-- or                                                             -->
-<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
-<!--      from the same directory that the Axis engine runs         -->
-
-<deployment
-    xmlns="http://xml.apache.org/axis/wsdd/"
-    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+<?xml version="1.0" encoding="UTF-8"?><!-- Use this file to deploy some handlers/chains and services      --><!-- Two ways to do this:                                           --><!--   java org.apache.axis.client.AdminClient deploy.wsdd          --><!--      after the axis server is running                          --><!-- or                                                             --><!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   --><!--      from the same directory that the Axis engine runs         --><deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
 
   <!-- Services from TwitterEtractorService WSDL service -->
 
@@ -17,11 +7,11 @@
       <parameter name="wsdlServiceElement" value="TwitterEtractorService"/>
       <parameter name="schemaQualified" value="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
       <parameter name="wsdlServicePort" value="TwitterEtractor"/>
-      <parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.twitter.TwitterEtractorSoapBindingImpl"/>
+      <parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.twitter.TwitterEtractor"/>
       <parameter name="wsdlPortType" value="TwitterEtractor"/>
       <parameter name="typeMappingVersion" value="1.2"/>
-      <operation name="extract" qname="operNS:extract" xmlns:operNS="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" returnQName="retNS:extractReturn" xmlns:retNS="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" returnType="rtns:string" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
-        <parameter qname="pns:hashtag" xmlns:pns="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      <operation xmlns:operNS="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:retNS="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="extract" qname="operNS:extract" returnQName="retNS:extractReturn" returnType="rtns:string" soapAction="">
+        <parameter xmlns:pns="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:hashtag" type="tns:string"/>
       </operation>
       <parameter name="allowedMethods" value="extract"/>
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<definitions xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="definitions_7156851e-d45d-4217-aafe-c85dab61b67a" targetNamespace="http://camunda.org/examples" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL">
+  <process id="MainProcess" isExecutable="true">
+    <startEvent id="start1201" name="start1201">
+      <outgoing>start1201-dataSource_twitter1678</outgoing>
+    </startEvent>
+    <serviceTask camunda:class="de.unistuttgart.ipvs.as.flexmash.BPMN.TwitterdsExe" id="dataSource_twitter1678" name="Twitterds">
+      <incoming>start1201-dataSource_twitter1678</incoming>
+      <outgoing>dataSource_twitter1678-end2149</outgoing>
+    </serviceTask>
+    <endEvent id="end2149" name="end2149">
+      <incoming>dataSource_twitter1678-end2149</incoming>
+    </endEvent>
+    <sequenceFlow id="start1201-dataSource_twitter1678" sourceRef="start1201" targetRef="dataSource_twitter1678"/>
+    <sequenceFlow id="dataSource_twitter1678-end2149" sourceRef="dataSource_twitter1678" targetRef="end2149"/>
+  </process>
+</definitions>

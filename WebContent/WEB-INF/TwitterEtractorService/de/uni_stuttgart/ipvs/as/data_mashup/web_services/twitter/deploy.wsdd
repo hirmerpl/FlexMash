@@ -7,7 +7,7 @@
       <parameter name="wsdlServiceElement" value="TwitterEtractorService"/>
       <parameter name="schemaQualified" value="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de"/>
       <parameter name="wsdlServicePort" value="TwitterEtractor"/>
-      <parameter name="className" value="de.uni_stuttgart.ipvs.as.data_mashup.web_services.twitter.TwitterEtractor"/>
+      <parameter name="className" value="de.unistuttgart.ipvs.as.flexmash.webservices.twitter.TwitterEtractor"/>
       <parameter name="wsdlPortType" value="TwitterEtractor"/>
       <parameter name="typeMappingVersion" value="1.2"/>
       <operation xmlns:operNS="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:retNS="http://twitter.web_services.data_mashup.as.ipvs.uni_stuttgart.de" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="extract" qname="operNS:extract" returnQName="retNS:extractReturn" returnType="rtns:string" soapAction="">

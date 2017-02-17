@@ -20,7 +20,7 @@ public class SentimentClassifier {
 	public SentimentClassifier() {
 
 		try {
-			classifier = (LMClassifier) AbstractExternalizable.readObject(new File("C:/Users/FlexMash/Desktop/FlexMash-master/files/classifier.txt"));
+			classifier = (LMClassifier) AbstractExternalizable.readObject(new File(System.getenv("FLEXMASH")+"/files/classifier.txt"));
 			categories = classifier.categories();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

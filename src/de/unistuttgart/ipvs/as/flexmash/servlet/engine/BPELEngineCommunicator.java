@@ -15,9 +15,11 @@ public class BPELEngineCommunicator {
 	 * Method to start a process in the BPEL engine and process it's output
 	 * 
 	 * @param nytRSSExtractorAddress
-	 *            input parameters of the web service that extracts data using SQL
+	 *            input parameters of the web service that extracts data using
+	 *            SQL
 	 * @param twitterExtractorHashtag
-	 *            input parameters of the web service that extracts Tweets using  the Twitter API
+	 *            input parameters of the web service that extracts Tweets using
+	 *            the Twitter API
 	 * @param twitterServiceCriteria
 	 *            input parameters of the web service that filters database data
 	 * @param twitterFilterCriteria
@@ -26,8 +28,8 @@ public class BPELEngineCommunicator {
 	 *            input parameters of the web service that joins data
 	 * @return the output of the executed process
 	 */
-	public static String callEngine(String nytRSSExtractorAddress, String twitterExtractorHashtag, String twitterServiceCriteria, String twitterFilterCriteria,
-			String joinCriteria) {
+	public static String callEngine(String nytRSSExtractorAddress, String twitterExtractorHashtag,
+			String twitterServiceCriteria, String twitterFilterCriteria, String joinCriteria) {
 
 		String reply = null;
 

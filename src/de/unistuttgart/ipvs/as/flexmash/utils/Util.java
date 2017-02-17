@@ -6,7 +6,8 @@ import java.io.Reader;
 public class Util {
 
 	/**
-	 * Creates JSONObjects from a JSON String TODO: move to utils
+	 * Creates JSONObjects from a JSON String 
+	 *  move to utils
 	 * 
 	 * @param jsonFlow
 	 *            the JSON flow as string
@@ -27,7 +28,7 @@ public class Util {
 	/**
 	 * helper method to generate a database key
 	 * 
-	 * TODO: move to utils
+	 *  move to utils
 	 * 
 	 * @return the generated key
 	 */

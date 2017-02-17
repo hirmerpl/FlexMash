@@ -30,7 +30,7 @@ import javax.xml.soap.SOAPPart;
  */
 public class EngineProcessStarter {
 
-	public static final String PATH = "C:/Users/FlexMash/Desktop/FlexMash-master/files";
+	public static final String PATH = System.getenv("FLEXMASH")+"/files/";
 	
 	/**
 	 * generates all necessary files to deploy a process on ApacheODE
@@ -54,7 +54,7 @@ public class EngineProcessStarter {
 		Writer writer = null;
 
 		try {
-			// TODO: config file
+			//  config file
 			File file = new File("files/DataMashupProcess.bpel");
 			File dir = new File("files");
 			if (!dir.exists()) {
@@ -99,10 +99,9 @@ public class EngineProcessStarter {
 		FileInputStream sqlFInStream = null;
 
 		try {
-			// TODO: paths config
+			//  paths config
 			
 			System.out.println(new File("test").getAbsolutePath());
-			
 			zipOutStream = new ZipOutputStream(new FileOutputStream(PATH + "/DataMashupProcess.zip"));
 
 			bpelInStream = new FileInputStream(PATH + "/DataMashupProcess.bpel");

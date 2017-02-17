@@ -57,7 +57,7 @@ public class SQLExtractor {
 
 			JSONObject result = new JSONObject();
 			result.put("result", writeResultSet(resultSet));
-
+			connect.close();
 			return result.toJSONString();
 
 		} catch (SQLException | ClassNotFoundException e) {

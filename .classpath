@@ -34,5 +34,19 @@
 	<classpathentry kind="lib" path="lib/saaj.jar"/>
 	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="lib/wsdl4j.jar"/>
+	<classpathentry kind="lib" path="lib/camunda-bpmn-model-7.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/camunda-cmmn-model-7.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/camunda-connect-connectors-all-1.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/camunda-connect-core-1.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/camunda-dmn-model-7.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/camunda-engine-7.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/camunda-engine-dmn-7.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/camunda-template-engines-freemarker-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/camunda-xml-model-7.6.0.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/jsp-api.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/el-api.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/annotations-api.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

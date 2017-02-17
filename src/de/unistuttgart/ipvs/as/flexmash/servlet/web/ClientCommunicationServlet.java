@@ -2,6 +2,7 @@ package de.unistuttgart.ipvs.as.flexmash.servlet.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,14 +13,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
+
+import com.sun.javafx.collections.MappingChange.Map;
+
 import org.json.JSONArray;
 
+import de.unistuttgart.ipvs.as.flexmash.bpmn.BPMNmodel;
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.BPELEngineCommunicator;
+import de.unistuttgart.ipvs.as.flexmash.servlet.engine.Engine;
 import de.unistuttgart.ipvs.as.flexmash.servlet.engine.EngineProcessStarter;
 import de.unistuttgart.ipvs.as.flexmash.transformation.MashupPlanToBPELConverter;
 import de.unistuttgart.ipvs.as.flexmash.transformation.MashupPlanToNodeREDFlowConverter;
+import de.unistuttgart.ipvs.as.flexmash.transformation.MashupPlantoBPMNConverter;
 import de.unistuttgart.ipvs.as.flexmash.utils.Util;
 import de.unistuttgart.ipvs.as.flexmash.utils.http.IOUtils;
+
 
 @WebServlet("/DataMashup")
 /**
@@ -36,7 +44,7 @@ public class ClientCommunicationServlet extends HttpServlet {
 	private static final String TIME_CRITICAL = "Time-Critical";
 	private static final String ERROR = "error";
 
-	private final static Logger LOGGER = Logger.getLogger(ClientCommunicationServlet.class.getName()); 
+	private static final Logger LOGGER = Logger.getLogger(ClientCommunicationServlet.class.getName()); 
 	
 	/**
 	 * Receives a POST request from the client side
@@ -55,23 +63,29 @@ public class ClientCommunicationServlet extends HttpServlet {
 		
 		// remove tab stops, line breaks
 		mashupPlan = mashupPlan.replaceAll("[\\t\\n\\r]", "");
-
 		PrintWriter out = resp.getWriter();
 		JSONObject mashupPlanAsJSON = Util.createJsonObjects(mashupPlan);
 		
 		switch (selectedPattern) {
 			case ROBUST:
 				LOGGER.log(Level.INFO, "Robust pattern selected.");
-
-				MashupPlanToBPELConverter mashupPlanToBPELConverter = new MashupPlanToBPELConverter();
-				String mashupPlanAsBPEL = mashupPlanToBPELConverter.convert(mashupPlanAsJSON);
-				String[] properties = mashupPlanToBPELConverter.getEntries();
-
-				EngineProcessStarter.generateFiles(mashupPlanAsBPEL);
-				String result = BPELEngineCommunicator.callEngine(properties[0], properties[4], properties[5], properties[6], properties[7]);
-
-				out.println(result);
 				
+				MashupPlantoBPMNConverter MashupPlanToBPMNConverter = new MashupPlantoBPMNConverter();
+				BPMNmodel generatedModel = MashupPlanToBPMNConverter.convert(mashupPlanAsJSON);
+				
+
+				Engine engine = new Engine();
+				engine.deployProcessModel(generatedModel.fileName, generatedModel);
+				engine.runProcessModel("MainProcess", generatedModel);
+//				MashupPlanToBPELConverter mashupPlanToBPELConverter = new MashupPlanToBPELConverter();
+//				String mashupPlanAsBPEL = mashupPlanToBPELConverter.convert(mashupPlanAsJSON);
+//				HashMap<String,String> properties =  mashupPlanToBPELConverter.getEntries();
+//				EngineProcessStarter.generateFiles(mashupPlanAsBPEL);
+//				String result = BPELEngineCommunicator.callEngine(properties.get("category"), properties.get("dataSource_twitter"), 
+//						properties.get("NYTFilter"), properties.get("TwitterFilter"), properties.get("criteria"));
+//
+//				out.println(result);
+//				
 				break;
 			case TIME_CRITICAL:
 				// implement Node-RED Mapping here
@@ -87,6 +101,5 @@ public class ClientCommunicationServlet extends HttpServlet {
 				break;
 		}
 		
-//		out.println(ERROR);
 	}
 }
