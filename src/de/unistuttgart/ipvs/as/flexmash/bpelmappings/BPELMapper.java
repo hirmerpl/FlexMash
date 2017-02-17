@@ -1,13 +1,9 @@
 package de.unistuttgart.ipvs.as.flexmash.bpelmappings;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Map;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
 
 /**
  * A class to manage the BPEL syntax with .txt files within the project
