@@ -61,12 +61,16 @@
 	  	<fileset dir="WebContent">
 	  		<include name="**/*"/>
 	    </fileset>
-        <fileset dir="">
+        <!--<fileset dir="">
 			<include name="lib/**"/>
-	  	</fileset>
+	  	</fileset>-->
 	  	<classes dir="bin"/>
+		<lib dir="">
+			<include name="*/*.jar"/>
+		</lib>
 	  </war>
-      <!--<copy file="Data_Mashup.war" todir="C:\\Users\\hirmerpl\\Documents\\Promotion\\Implementierungen\\Tools\\apache-tomcat-8.0.23\\webapps"/>-->
+	  <!-- <copy file="lib/java-json.jar" todir="<Path to TOMCAT Lib folder>"/>-->
+          <!--<copy file="Data_Mashup.war" todir="<TOMCAT>\\webapps"/>-->
    </target>
 
 </project>
