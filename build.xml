@@ -19,6 +19,18 @@
     	<pathelement path="lib/twitter4j-core-4.0.2.jar"/>
     	<pathelement path="lib/lingpipe-4.1.0.jar"/>
     	<pathelement path="lib/json-simple-1.1.1.jar"/>
+		<pathelement path="lib/camunda-bpmn-model-7.6.0.jar"/>
+		<pathelement path="lib/camunda-cmmn-model-7.6.0.jar"/>
+		<pathelement path="lib/camunda-connect-connectors-all-1.0.3.jar"/>
+		<pathelement path="lib/camunda-connect-core-1.0.3.jar"/>
+		<pathelement path="lib/camunda-dmn-model-7.6.0.jar"/>
+		<pathelement path="lib/camunda-engine-7.6.0.jar"/>
+		<pathelement path="lib/camunda-engine-dmn-7.6.0.jar"/>
+		<pathelement path="lib/camunda-template-engines-freemarker-1.0.1.jar"/>
+		<pathelement path="lib/camunda-xml-model-7.6.0.jar"/>
+		<pathelement path="lib/commons-discovery-0.2.jar"/>
+		<pathelement path="lib/commons-logging.jar"/>
+		<pathelement path="lib/mysql-connector-java-5.1.39-bin.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -54,7 +66,7 @@
 	  	</fileset>
 	  	<classes dir="bin"/>
 	  </war>
-      <copy file="Data_Mashup.war" todir="C:\\Users\\hirmerpl\\Documents\\Promotion\\Implementierungen\\Tools\\apache-tomcat-8.0.23\\webapps"/>
+      <!--<copy file="Data_Mashup.war" todir="C:\\Users\\hirmerpl\\Documents\\Promotion\\Implementierungen\\Tools\\apache-tomcat-8.0.23\\webapps"/>-->
    </target>
 
 </project>
