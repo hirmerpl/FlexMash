@@ -23,15 +23,6 @@
 .diagram-node-dataSource_googleplus-icon {
     background: url(https://cdn2.iconfinder.com/data/icons/social-18/512/Google_Plus-24.png) no-repeat scroll center transparent;
 }
-
-.diagram-node-dataSource_CSV .diagram-node-content {
-    background: url(https://cdn3.iconfinder.com/data/icons/lexter-flat-colorfull-file-formats/56/csv-48.png) no-repeat scroll center transparent;
-}
-
-.diagram-node-dataSource_CSV-icon {
-    background: url(https://cdn3.iconfinder.com/data/icons/lexter-flat-colorfull-file-formats/56/csv-32.png) no-repeat scroll center transparent;
-}
-
 .diagram-node-dataSource_twitter .diagram-node-content {
     background: url(https://cdn3.iconfinder.com/data/icons/social-media-9/512/2-48.png) no-repeat scroll center transparent;
 }
@@ -39,7 +30,7 @@
     background: url(https://cdn3.iconfinder.com/data/icons/social-media-9/512/2-32.png) no-repeat scroll center transparent;
 }
 .diagram-node-filter .diagram-node-content {
-    background: url(https://cdn0.iconfinder.com/data/icons/windows8_icons/26/empty_filter.png) no-repeat scroll center transparent;
+    background: url(https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/48/empty_filter.png) no-repeat scroll center transparent;
 }
 .diagram-node-filter-icon {
     background: url(https://cdn0.iconfinder.com/data/icons/windows8_icons/26/empty_filter.png) no-repeat scroll center transparent;
@@ -55,5 +46,12 @@
     background: url(https://cdn4.iconfinder.com/data/icons/linecon/512/add-24.png) no-repeat scroll center transparent;
 }
 .diagram-node-customNode-icon {
+    background: url(https://cdn4.iconfinder.com/data/icons/linecon/512/add-24.png) no-repeat scroll center transparent;
+}
+
+.diagram-node-apriori .diagram-node-content {
+    background: url(https://cdn4.iconfinder.com/data/icons/linecon/512/add-24.png) no-repeat scroll center transparent;
+}
+.diagram-node-apriori-icon {
     background: url(https://cdn4.iconfinder.com/data/icons/linecon/512/add-24.png) no-repeat scroll center transparent;
 }
