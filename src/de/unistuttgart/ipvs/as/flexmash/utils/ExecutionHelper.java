@@ -1,7 +1,16 @@
 package de.unistuttgart.ipvs.as.flexmash.utils;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-
+import org.json.JSONObject;
+import java.net.URL;
 import java.util.ArrayList;
 
 import java.util.Map;
@@ -37,7 +46,6 @@ public class ExecutionHelper {
 	 * @param output
 	 */
 	public void setOutput(DelegateExecution execution, Object output) {
-
 		execution.setVariable(execution.getCurrentActivityId() + "Out", output);
 	}
 
@@ -82,5 +90,34 @@ public class ExecutionHelper {
 
 		return (ArrayList<String>) execution
 				.getVariable(execution.getCurrentActivityId() + "Pre");
+	}
+
+	/**
+	 * Communication method to send the input to the service platform and
+	 * integrate the result back into the camunda engine.
+	 * 
+	 * @param input
+	 * @param serviceURL
+	 * @return result JSONObject
+	 * @throws Exception
+	 */
+	public JSONObject sendInputToPlatform(Map<String, Object> input,
+			URL serviceURL) throws Exception {
+
+		HttpClient client = HttpClientBuilder.create().build();
+		JSONObject toSend = new JSONObject(input);
+		System.out.println("SENT OUTPUT:");
+		System.out.println(toSend.toString());
+		StringEntity requestEntity = new StringEntity(toSend.toString(),
+				ContentType.APPLICATION_JSON);
+		HttpPost post = new HttpPost(serviceURL.toExternalForm());
+		post.setEntity(requestEntity);
+		HttpResponse response = client.execute(post);
+		HttpEntity entity = response.getEntity();
+		String content = EntityUtils.toString(entity);
+		System.out.println("RECEIVED INPUT:");
+		System.out.println(content.toString());
+		return new JSONObject(content);
+
 	}
 }

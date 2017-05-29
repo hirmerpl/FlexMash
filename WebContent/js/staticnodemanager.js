@@ -205,10 +205,10 @@ var staticnodemanager = {
                 type: {
                     value: 'filter'
                 },
-                filtertype: {
+                subtype: {
                     value: ''
                 },
-                filter_criteria: {
+                criteria: {
                     value: ''
                 }
             },
@@ -216,15 +216,15 @@ var staticnodemanager = {
             prototype: {
                 initializer: function() {
                     var instance = this;
-                    this.SERIALIZABLE_ATTRS.push('filtertype');
-                    this.SERIALIZABLE_ATTRS.push('filter_criteria');
+                    this.SERIALIZABLE_ATTRS.push('subtype');
+                    this.SERIALIZABLE_ATTRS.push('criteria');
                 },
                 getPropertyModel: function () {
                     var instance = this;
                     var model = Y.DiagramNodeFilter.superclass.getPropertyModel.apply(instance, arguments);
                     model.splice(0, 1);
                     model.push({
-                        attributeName: 'filtertype',
+                        attributeName: 'subtype',
                         name: 'Filter Type',
                         editor: new Y.DropDownCellEditor({
                             options: {
@@ -235,7 +235,7 @@ var staticnodemanager = {
                         })
                     });
                     model.push({
-                        attributeName: 'filter_criteria', 
+                        attributeName: 'criteria', 
                         name: 'Keywords',
                         editor: new Y.TextCellEditor  
                     });

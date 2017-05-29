@@ -2,6 +2,11 @@ package de.unistuttgart.ipvs.as.flexmash.utils;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class Util {
 
@@ -50,4 +55,12 @@ public class Util {
         return sb.toString();
     }
 	
+	public static List<String> parseJSONArray(JSONArray array) throws JSONException{
+		List<String> list = new ArrayList<String>();
+		for (String item: array.toString().split(",")){
+			list.add(item.replace("[", "").replace("]", "").replace("\"", ""));
+		}
+		return list;
+		
+	}
 }

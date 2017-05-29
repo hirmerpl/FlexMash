@@ -1,60 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project basedir="." default="build" name="Data_Mashup">
-    <property environment="env"/>
-    <property name="srcDir" value="."/>
-    <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.8"/>
-    <property name="source" value="1.8"/>
-    <property name="ARCHIVE_DIR" value="."/>
-	<property name="warname" value= "Data_Mashup.war"/>
-    <path id="classpathDir">
-        <pathelement location="bin"/>
-    	<pathelement path="lib/java-json.jar"/>
-    	<pathelement path="lib/facebook4j-core-2.4.3.jar"/>
-    	<pathelement path="lib/org.ektorp-1.1.1.jar"/>
-    	<pathelement path="lib/javax.servlet-api-3.0.1.jar"/>
-    	<pathelement path="lib/mongo-java-driver-2.13.0.jar"/>
-    	<pathelement path="lib/servlet-api.jar"/>
-    	<pathelement path="lib/twitter4j-core-4.0.2.jar"/>
-    	<pathelement path="lib/lingpipe-4.1.0.jar"/>
-    	<pathelement path="lib/json-simple-1.1.1.jar"/>
-    </path>
-    <target name="init">
-        <mkdir dir="bin"/>
-    </target>
-    <target name="clean">
-        <delete dir="bin"/>
-		<delete file="${ARCHIVE_DIR}/${warname}" />		
-    </target>
-    <target name="build" depends="build-project,build-war"/>
-    <target name="cleanall" depends="clean"/>
-    <target name="build-project" depends="clean,init">
-    	<copy todir="${ARCHIVE_DIR}">
-	      <fileset file="manifest.yml" />
-	    </copy>
-        <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}"
-		includeantruntime="false">
-            <src path="src"/>
-            <classpath refid="classpathDir"/>
-        </javac>
-    </target>
- 
-   <target name="build-war" depends="build-project">
-	  <war destfile="${ARCHIVE_DIR}/${warname}" webxml="WebContent/WEB-INF/web.xml">
-	  	<webinf dir="WebContent/WEB-INF">
-	  		<include name="resources"/>
-	    </webinf>
-	  	<fileset dir="WebContent">
-	  		<include name="**/*"/>
-	    </fileset>
-        <fileset dir="">
-			<include name="lib/**"/>
-	  	</fileset>
-	  	<classes dir="bin"/>
-	  </war>
-      <copy file="Data_Mashup.war" todir="C:\\Users\\hirmerpl\\Documents\\Promotion\\Implementierungen\\Tools\\apache-tomcat-8.0.23\\webapps"/>
-   </target>
+	<property environment="env" />
+	<property name="srcDir" value="." />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.8" />
+	<property name="source" value="1.8" />
+	<property name="ARCHIVE_DIR" value="." />
+	<property name="warname" value="Data_Mashup.war" />
+
+
+	<path id="classpathDir">
+		
+		<pathelement location="bin" />
+		<pathelement path="lib/java-json.jar" />
+		<pathelement path="lib/facebook4j-core-2.4.3.jar" />
+		<pathelement path="lib/org.ektorp-1.1.1.jar" />
+		<pathelement path="lib/javax.servlet-api-3.0.1.jar" />
+		<pathelement path="lib/mongo-java-driver-2.13.0.jar" />
+		<pathelement path="lib/servlet-api.jar" />
+		<pathelement path="lib/twitter4j-core-4.0.2.jar" />
+		<pathelement path="lib/lingpipe-4.1.0.jar" />
+		<pathelement path="lib/json-simple-1.1.1.jar" />
+		<pathelement path="lib/mysql-connector-java-5.1.34-bin.jar" />
+		<pathelement path="lib/axis.jar" />
+		<pathelement path="lib/commons-discovery-0.2.jar" />
+		<pathelement path="lib/commons-logging.jar" />
+		<pathelement path="lib/jaxrpc.jar" />
+		<pathelement path="lib/saaj.jar" />
+		<pathelement path="lib/wsdl4j.jar" />
+		<pathelement path="lib/camunda-bpmn-model-7.6.0.jar" />
+		<pathelement path="lib/camunda-cmmn-model-7.6.0.jar" />
+		<pathelement path="lib/camunda-connect-connectors-all-1.0.3.jar" />
+		<pathelement path="lib/camunda-connect-core-1.0.3.jar" />
+		<pathelement path="lib/camunda-dmn-model-7.6.0.jar" />
+		<pathelement path="lib/camunda-engine-7.6.0.jar" />
+		<pathelement path="lib/camunda-engine-dmn-7.6.0.jar" />
+		<pathelement path="lib/camunda-template-engines-freemarker-1.0.1.jar" />
+		<pathelement path="lib/camunda-xml-model-7.6.0.jar" />
+		<pathelement path="lib/httpclient-4.3.3.jar" />
+		<pathelement path="lib/httpcore-4.4.6.jar" />
+		<pathelement path="lib/jackson-databind-2.7.2.jar" />
+		<pathelement path="lib/jackson-core-2.7.2.jar" />
+	</path>
+	<target name="init">
+		<mkdir dir="bin" />
+	</target>
+	<target name="clean">
+		<delete dir="bin" />
+		<delete file="${ARCHIVE_DIR}/${warname}" />
+	</target>
+	<target name="build" depends="build-project,build-war" />
+	<target name="cleanall" depends="clean" />
+	<target name="build-project" depends="clean,init">
+		<copy todir="${ARCHIVE_DIR}">
+			<fileset file="manifest.yml" />
+		</copy>
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}" includeantruntime="false">
+			<src path="src" />
+			<classpath refid="classpathDir" />
+		</javac>
+	</target>
+
+	<target name="build-war" depends="build-project">
+		<war destfile="${ARCHIVE_DIR}/${warname}" webxml="WebContent/WEB-INF/web.xml">
+			<webinf dir="WebContent/WEB-INF">
+				<include name="resources" />
+			</webinf>
+			<fileset dir="WebContent">
+				<include name="**/*" />
+			</fileset>
+			<fileset dir="">
+				<include name="lib/**" />
+			</fileset>
+			<classes dir="bin" />
+		</war>
+		<copy file="Data_Mashup.war" todir="C:\\apache-tomcat-9.0.0.M13\\webapps" />
+	</target>
 
 </project>
