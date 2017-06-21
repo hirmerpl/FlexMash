@@ -44,7 +44,7 @@ public class MashupPlantoBPMNConverter {
 		Map<String, ArrayList<String>> outTransitionsMap = new HashMap<String, ArrayList<String>>();
 		Map<String, ArrayList<String>> inTransitionsMap = new HashMap<String, ArrayList<String>>();
 		ExecutionHelper Helper = new ExecutionHelper();
-
+		System.out.println(mashupFlowAsJSON.toString());
 		try {
 			JSONArray nodes = mashupFlowAsJSON.getJSONArray("nodes");
 			JSONObject node;
@@ -91,24 +91,13 @@ public class MashupPlantoBPMNConverter {
 							EndEvent.class);
 					endEvent.setName(node.getString("name"));
 					break;
-				case "merge":
-					BPMNWorkFlow.variables.put(node.getString("name") + "In",
-							node.getString("criteria"));
-					ServiceTask merge = BPMNWorkFlow.createElement(
-							BPMNWorkFlow.MainProcess, node.getString("name"),
-							ServiceTask.class);
-					merge.setName("merge");
-					merge.setCamundaClass(
-							"de.unistuttgart.ipvs.as.flexmash.BPMN.MergeExe");
-
-					break;
 				case "dataSource_NYT":
 					ServiceTask NYTds = BPMNWorkFlow.createElement(
 							BPMNWorkFlow.MainProcess, node.getString("name"),
 							ServiceTask.class);
 					NYTds.setName("NYTds");
 					NYTds.setCamundaClass(
-							"de.unistuttgart.ipvs.as.flexmash.BPMN.NYTdsExe");
+							"de.unistuttgart.ipvs.as.flexmash.bpmn.executables.NYTdsExe");
 					String category = "";
 					if (!node.get("dataSource_NYTName").toString().equals("")) {
 						category = node.get("dataSource_NYTName").toString();
@@ -122,34 +111,11 @@ public class MashupPlantoBPMNConverter {
 							ServiceTask.class);
 					Twitterds.setName("Twitterds");
 					Twitterds.setCamundaClass(
-							"de.unistuttgart.ipvs.as.flexmash.BPMN.TwitterdsExe");
+							"de.unistuttgart.ipvs.as.flexmash.bpmn.executables.TwitterdsExe");
 					BPMNWorkFlow.variables.put(node.getString("name") + "In",
 							node.getString("dataSource_twitterHashtag"));
 					break;
-				case "filter":
-					if (node.get("filtertype").toString().equals("NYT")) {
-						BPMNWorkFlow.variables.put(
-								node.getString("name") + "In",
-								node.getString("filter_criteria"));
-						ServiceTask NYTFilter = BPMNWorkFlow.createElement(
-								BPMNWorkFlow.MainProcess,
-								node.getString("name"), ServiceTask.class);
-						NYTFilter.setName("NYTFilter");
-						NYTFilter.setCamundaClass(
-								"de.unistuttgart.ipvs.as.flexmash.BPMN.NYTFilterExe");
-					} else if (node.get("filtertype").toString()
-							.equals("CSVFilter")) {
-						BPMNWorkFlow.variables.put(
-								node.getString("name") + "In",
-								node.getString("filter_criteria"));
-						ServiceTask CSVFilter = BPMNWorkFlow.createElement(
-								BPMNWorkFlow.MainProcess,
-								node.getString("name"), ServiceTask.class);
-						CSVFilter.setName("CSVFilter");
-						CSVFilter.setCamundaClass(
-								"de.unistuttgart.ipvs.as.flexmash.BPMN.CSVFilterExe");
-					}
-					break;
+
 				case "analytics":
 					if (node.get("analyticstype").toString()
 							.equals("Sentiment")) {
@@ -161,7 +127,7 @@ public class MashupPlantoBPMNConverter {
 								node.getString("name"), ServiceTask.class);
 						TwitterFilter.setName("TwitterFilter");
 						TwitterFilter.setCamundaClass(
-								"de.unistuttgart.ipvs.as.flexmash.BPMN.TwitterFilterExe");
+								"de.unistuttgart.ipvs.as.flexmash.bpmn.executables.TwitterFilterExe");
 
 					} else if (node.get("analyticstype").toString()
 							.equals("NE")) {
@@ -178,9 +144,42 @@ public class MashupPlantoBPMNConverter {
 							ServiceTask.class);
 					CSV.setName("CSV");
 					CSV.setCamundaClass(
-							"de.unistuttgart.ipvs.as.flexmash.BPMN.CSVExe");
+							"de.unistuttgart.ipvs.as.flexmash.bpmn.executables.CSVExe");
 
 					break;
+				case "filter":
+					if (node.get("subtype").toString().equals("NYT")) {
+						BPMNWorkFlow.variables.put(
+								node.getString("name") + "In",
+								node.getString("criteria"));
+						ServiceTask NYTFilter = BPMNWorkFlow.createElement(
+								BPMNWorkFlow.MainProcess,
+								node.getString("name"), ServiceTask.class);
+						NYTFilter.setName("NYTFilter");
+						NYTFilter.setCamundaClass(
+								"de.unistuttgart.ipvs.as.flexmash.bpmn.executables.NYTFilterExe");
+						break;
+					}
+
+				default:
+					String criteria;
+					try {
+						criteria = node.getString("criteria");
+					} catch (Exception e) {
+						criteria = "";
+					}
+					BPMNWorkFlow.variables.put(node.getString("name") + "In",
+							criteria);
+					ServiceTask genericService = BPMNWorkFlow.createElement(
+							BPMNWorkFlow.MainProcess, node.getString("name"),
+							ServiceTask.class);
+					genericService.setName(node.has("subtype")
+							? node.getString("subtype").toString()
+							: node.get("type").toString());
+					genericService.setCamundaClass(
+							"de.unistuttgart.ipvs.as.flexmash.bpmn.executables.GenericExe");
+					break;
+
 				}
 
 			}
@@ -198,7 +197,6 @@ public class MashupPlantoBPMNConverter {
 					.next();
 			ArrayList<String> targets = oEntry.getValue();
 			String sourceNode = oEntry.getKey().toString();
-
 			for (Iterator<String> iterTargets = targets.iterator(); iterTargets
 					.hasNext();) {
 				String targetNode = iterTargets.next();
@@ -207,13 +205,13 @@ public class MashupPlantoBPMNConverter {
 								.getModelElementById(sourceNode),
 						BPMNWorkFlow.ModelInstance
 								.getModelElementById(targetNode));
-
 			}
 		}
 
+		String guid = java.util.UUID.randomUUID().toString();
 		BPMNWorkFlow.Validate();
-		String filename = System.getenv("FLEXMASH")
-				+ "/files/DataMashupProcess.bpmn";
+		String filename = System.getenv("FLEXMASH") + "/files/DataMashupProcess"
+				+ guid + ".bpmn";
 		File file = new File(filename);
 		Bpmn.writeModelToFile(file, BPMNWorkFlow.ModelInstance);
 		BPMNWorkFlow.fileName = filename;
@@ -229,6 +227,7 @@ public class MashupPlantoBPMNConverter {
 	 * @param inTransitionMap
 	 * @param BPMNWorkFlow
 	 */
+	@SuppressWarnings("deprecation")
 	public void replaceValues(Map<String, ArrayList<String>> outTransitionMap,
 			Map<String, ArrayList<String>> inTransitionMap,
 			BPMNmodel BPMNWorkFlow) {
@@ -255,7 +254,7 @@ public class MashupPlantoBPMNConverter {
 						BPMNWorkFlow.MainProcess, "PG" + oEntry.getKey(),
 						ParallelGateway.class);
 				parallel.setName("PG" + oEntry.getKey());
-
+				parallel.setCamundaAsync(false);
 				BPMNWorkFlow.createSequenceFlow(
 						BPMNWorkFlow.MainProcess, BPMNWorkFlow.ModelInstance
 								.getModelElementById(oEntry.getKey()),
@@ -285,7 +284,7 @@ public class MashupPlantoBPMNConverter {
 						BPMNWorkFlow.MainProcess, "PG" + iEntry.getKey(),
 						ParallelGateway.class);
 				parallel.setName("PG" + iEntry.getKey());
-
+				parallel.setCamundaAsync(false);
 				BPMNWorkFlow.createSequenceFlow(BPMNWorkFlow.MainProcess,
 						parallel, BPMNWorkFlow.ModelInstance
 								.getModelElementById(iEntry.getKey()));

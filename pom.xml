@@ -1,0 +1,357 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>Data_Mashup</groupId>
+  <artifactId>Data_Mashup</artifactId>
+  <version>1.0.0</version>
+  <packaging>war</packaging>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>lib</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <warSourceDirectory>WebContent</warSourceDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+  
+  
+  	<!-- https://mvnrepository.com/artifact/org.twitter4j/twitter4j-core -->
+<dependency>
+    <groupId>org.twitter4j</groupId>
+    <artifactId>twitter4j-core</artifactId>
+    <version>4.0.2</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-jdk14 -->
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-jdk14</artifactId>
+    <version>1.7.7</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-api</artifactId>
+    <version>1.7.7</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.scannotation/scannotation -->
+<dependency>
+    <groupId>org.scannotation</groupId>
+    <artifactId>scannotation</artifactId>
+    <version>1.0.3</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jaxrs -->
+<dependency>
+    <groupId>org.jboss.resteasy</groupId>
+    <artifactId>resteasy-jaxrs</artifactId>
+    <version>2.3.5.Final</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
+<dependency>
+    <groupId>org.mybatis</groupId>
+    <artifactId>mybatis</artifactId>
+    <version>3.2.8</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
+<dependency>
+    <groupId>javax.mail</groupId>
+    <artifactId>mail</artifactId>
+    <version>1.4.1</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/log4j/log4j -->
+<dependency>
+    <groupId>log4j</groupId>
+    <artifactId>log4j</artifactId>
+    <version>1.2.13</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/javax.annotation/jsr250-api -->
+<dependency>
+    <groupId>javax.annotation</groupId>
+    <artifactId>jsr250-api</artifactId>
+    <version>1.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
+<dependency>
+    <groupId>com.jayway.jsonpath</groupId>
+    <artifactId>json-path</artifactId>
+    <version>0.9.1</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
+<dependency>
+    <groupId>joda-time</groupId>
+    <artifactId>joda-time</artifactId>
+    <version>2.1</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/net.jcip/jcip-annotations -->
+<dependency>
+    <groupId>net.jcip</groupId>
+    <artifactId>jcip-annotations</artifactId>
+    <version>1.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.jboss.resteasy/jaxrs-api -->
+<dependency>
+    <groupId>org.jboss.resteasy</groupId>
+    <artifactId>jaxrs-api</artifactId>
+    <version>2.3.5.Final</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/javassist/javassist -->
+<dependency>
+    <groupId>javassist</groupId>
+    <artifactId>javassist</artifactId>
+    <version>3.12.1.GA</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.fasterxml.uuid/java-uuid-generator -->
+<dependency>
+    <groupId>com.fasterxml.uuid</groupId>
+    <artifactId>java-uuid-generator</artifactId>
+    <version>3.1.2</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-jaxb-annotations -->
+<dependency>
+    <groupId>com.fasterxml.jackson.module</groupId>
+    <artifactId>jackson-module-jaxb-annotations</artifactId>
+    <version>2.6.3</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider -->
+<dependency>
+    <groupId>com.fasterxml.jackson.jaxrs</groupId>
+    <artifactId>jackson-jaxrs-json-provider</artifactId>
+    <version>2.6.3</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.jaxrs/jackson-jaxrs-base -->
+<dependency>
+    <groupId>com.fasterxml.jackson.jaxrs</groupId>
+    <artifactId>jackson-jaxrs-base</artifactId>
+    <version>2.6.3</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.6.3</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-core</artifactId>
+    <version>2.6.3</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-annotations</artifactId>
+    <version>2.6.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
+<dependency>
+    <groupId>org.apache.httpcomponents</groupId>
+    <artifactId>httpcore</artifactId>
+    <version>4.3.2</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+<dependency>
+    <groupId>org.apache.httpcomponents</groupId>
+    <artifactId>httpclient</artifactId>
+    <version>4.3.3</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <version>1.3.168</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all -->
+<dependency>
+    <groupId>org.codehaus.groovy</groupId>
+    <artifactId>groovy-all</artifactId>
+    <version>2.4.5</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
+<dependency>
+    <groupId>org.freemarker</groupId>
+    <artifactId>freemarker</artifactId>
+    <version>2.3.20</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/commons-pool/commons-pool -->
+<dependency>
+    <groupId>commons-pool</groupId>
+    <artifactId>commons-pool</artifactId>
+    <version>1.5.4</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
+<dependency>
+    <groupId>commons-logging</groupId>
+    <artifactId>commons-logging</artifactId>
+    <version>1.1.1</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+<dependency>
+    <groupId>commons-lang</groupId>
+    <artifactId>commons-lang</artifactId>
+    <version>2.4</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+<dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>2.0.1</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+<dependency>
+    <groupId>commons-fileupload</groupId>
+    <artifactId>commons-fileupload</artifactId>
+    <version>1.2.2</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-email -->
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-email</artifactId>
+    <version>1.2</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/commons-dbcp/commons-dbcp -->
+<dependency>
+    <groupId>commons-dbcp</groupId>
+    <artifactId>commons-dbcp</artifactId>
+    <version>1.4</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+<dependency>
+    <groupId>commons-codec</groupId>
+    <artifactId>commons-codec</artifactId>
+    <version>1.6</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.spin/camunda-spin-dataformat-xml-dom -->
+<dependency>
+    <groupId>org.camunda.spin</groupId>
+    <artifactId>camunda-spin-dataformat-xml-dom</artifactId>
+    <version>1.3.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.spin/camunda-spin-dataformat-json-jackson -->
+<dependency>
+    <groupId>org.camunda.spin</groupId>
+    <artifactId>camunda-spin-dataformat-json-jackson</artifactId>
+    <version>1.3.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.spin/camunda-spin-core -->
+<dependency>
+    <groupId>org.camunda.spin</groupId>
+    <artifactId>camunda-spin-core</artifactId>
+    <version>1.3.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.bpm.identity/camunda-identity-ldap -->
+<dependency>
+    <groupId>org.camunda.bpm.identity</groupId>
+    <artifactId>camunda-identity-ldap</artifactId>
+    <version>7.6.0-alpha6</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.bpm/camunda-engine-spring -->
+<dependency>
+    <groupId>org.camunda.bpm</groupId>
+    <artifactId>camunda-engine-spring</artifactId>
+    <version>7.6.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.bpm/camunda-engine-rest-core -->
+<dependency>
+    <groupId>org.camunda.bpm</groupId>
+    <artifactId>camunda-engine-rest-core</artifactId>
+    <version>7.6.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.bpm/camunda-engine-plugin-spin -->
+<dependency>
+    <groupId>org.camunda.bpm</groupId>
+    <artifactId>camunda-engine-plugin-spin</artifactId>
+    <version>7.6.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.bpm/camunda-engine-plugin-connect -->
+<dependency>
+    <groupId>org.camunda.bpm</groupId>
+    <artifactId>camunda-engine-plugin-connect</artifactId>
+    <version>7.6.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.bpm.dmn/camunda-engine-feel-juel -->
+<dependency>
+    <groupId>org.camunda.bpm.dmn</groupId>
+    <artifactId>camunda-engine-feel-juel</artifactId>
+    <version>7.6.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.bpm.dmn/camunda-engine-feel-api -->
+<dependency>
+    <groupId>org.camunda.bpm.dmn</groupId>
+    <artifactId>camunda-engine-feel-api</artifactId>
+    <version>7.6.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.connect/camunda-connect-soap-http-client -->
+<dependency>
+    <groupId>org.camunda.connect</groupId>
+    <artifactId>camunda-connect-soap-http-client</artifactId>
+    <version>1.0.3</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.connect/camunda-connect-http-client -->
+<dependency>
+    <groupId>org.camunda.connect</groupId>
+    <artifactId>camunda-connect-http-client</artifactId>
+    <version>1.0.3</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.commons/camunda-commons-utils -->
+<dependency>
+    <groupId>org.camunda.commons</groupId>
+    <artifactId>camunda-commons-utils</artifactId>
+    <version>1.4.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.commons/camunda-commons-typed-values -->
+<dependency>
+    <groupId>org.camunda.commons</groupId>
+    <artifactId>camunda-commons-typed-values</artifactId>
+    <version>1.4.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.camunda.commons/camunda-commons-logging -->
+<dependency>
+    <groupId>org.camunda.commons</groupId>
+    <artifactId>camunda-commons-logging</artifactId>
+    <version>1.4.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/aopalliance/aopalliance -->
+<dependency>
+    <groupId>aopalliance</groupId>
+    <artifactId>aopalliance</artifactId>
+    <version>1.0</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/javax.activation/activation -->
+<dependency>
+    <groupId>javax.activation</groupId>
+    <artifactId>activation</artifactId>
+    <version>1.1</version>
+</dependency>
+  	<!-- https://mvnrepository.com/artifact/org.camunda.bpm.model/camunda-xml-model -->
+<!-- https://mvnrepository.com/artifact/org.camunda.template-engines/camunda-template-engines-freemarker -->
+<!-- https://mvnrepository.com/artifact/org.camunda.bpm.dmn/camunda-engine-dmn -->
+
+<!-- https://mvnrepository.com/artifact/org.camunda.bpm/camunda-engine -->
+<!-- https://mvnrepository.com/artifact/org.camunda.bpm.model/camunda-dmn-model -->
+<!-- https://mvnrepository.com/artifact/org.camunda.connect/camunda-connect-core -->
+<!-- https://mvnrepository.com/artifact/org.camunda.connect/camunda-connect-connectors-all -->
+<!-- https://mvnrepository.com/artifact/org.camunda.bpm.model/camunda-cmmn-model -->
+<!-- https://mvnrepository.com/artifact/org.camunda.bpm.model/camunda-bpmn-model -->
+
+  </dependencies>
+</project>
