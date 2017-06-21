@@ -44,7 +44,7 @@ public class MashupPlantoBPMNConverter {
 		Map<String, ArrayList<String>> outTransitionsMap = new HashMap<String, ArrayList<String>>();
 		Map<String, ArrayList<String>> inTransitionsMap = new HashMap<String, ArrayList<String>>();
 		ExecutionHelper Helper = new ExecutionHelper();
-
+		System.out.println(mashupFlowAsJSON.toString());
 		try {
 			JSONArray nodes = mashupFlowAsJSON.getJSONArray("nodes");
 			JSONObject node;
