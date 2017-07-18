@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
+
+import com.mysql.fabric.xmlrpc.base.Param;
+
 import org.apache.http.entity.StringEntity;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -36,9 +39,10 @@ public class RegisterServiceServlet extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		PrintWriter pw = resp.getWriter();
-		HashMap<String, String> params = handleRequest(req, resp);
+		HashMap<String, String> params = handleRequest(req);
 		HttpClient client = HttpClientBuilder.create().build();
 		JSONObject cred = new JSONObject();
+		System.out.println(params.size());
 		try {
 			cred.put("op", "registerService");
 			cred.put("servicename", params.get("servicename").trim());
@@ -62,7 +66,9 @@ public class RegisterServiceServlet extends HttpServlet {
 		HttpResponse response = client.execute(post);
 		HttpEntity entity = response.getEntity();
 		String content = EntityUtils.toString(entity);
+		resp.setStatus(response.getStatusLine().getStatusCode() );
 		pw.println(content);
+		
 
 	}
 
@@ -74,17 +80,14 @@ public class RegisterServiceServlet extends HttpServlet {
 
 	}
 
-	public HashMap<String, String> handleRequest(HttpServletRequest req,
-			HttpServletResponse res) throws IOException {
-
+	public HashMap<String, String> handleRequest(HttpServletRequest req) throws IOException {
 		HashMap<String, String> params = new HashMap<String, String>();
 		Enumeration<String> parameterNames = req.getParameterNames();
-
+		
 		while (parameterNames.hasMoreElements()) {
 			String paramName = parameterNames.nextElement();
 			String paramValue = Arrays
 					.toString(req.getParameterValues(paramName));
-
 			params.put(paramName, paramValue);
 		}
 
