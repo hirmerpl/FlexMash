@@ -1,10 +1,10 @@
 var application = {
 	luncher: function(Y) {
 
-		//Initialize the static nodes frm Staticnodemanager.js
+		// Initialize the static nodes frm Staticnodemanager.js
 		var availableFields = snm.initialize(Y).concat(dnm.initialize(Y));
 
-		//make the diagram for Aloye UI
+		// make the diagram for Aloye UI
         diagram = new Y.DiagramBuilder({
             availableFields: availableFields,
             boundingBox: '#myDiagramContainer',
@@ -13,7 +13,7 @@ var application = {
         }).render();
 		app.diagramBuilder = diagram;
 
-		//Store for Node types combo box
+		// Store for Node types combo box
 		app.nodeTypesStore = Ext.create('Ext.data.Store', {
 			fields: ['key', 'name'],
 			data : [
@@ -22,7 +22,7 @@ var application = {
 			]
 		});
 
-		//node type combo box initialization
+		// node type combo box initialization
 		app.nodeTypesCombo = Ext.create('Ext.form.ComboBox', {
 			fieldLabel: 'Node Types',
 			name: 'nodeType',
@@ -45,7 +45,7 @@ var application = {
 			}
 		});
 
-		//Input field for Source URL, made for creating new nodes window
+		// Input field for Source URL, made for creating new nodes window
 		app.sourceURLField = Ext.create('Ext.form.field.Text', {
 				fieldLabel: 'Source URL',
 				name: 'sourceURL',
@@ -54,7 +54,7 @@ var application = {
 				hidden: true
 		});
 
-		//Input field for Icon URL, made for creating new nodes window
+		// Input field for Icon URL, made for creating new nodes window
 		app.iconURLField = Ext.create('Ext.form.field.Text', {
 				fieldLabel: 'Icon URL',
 				name: 'iconURL',
@@ -62,14 +62,14 @@ var application = {
 				allowBlank: false
 		});
 
-        //Ext js store for saving the templates and connecting to combo box
+        // Ext js store for saving the templates and connecting to combo box
         app.savedTempletesStore = Ext.create('Ext.data.Store', {
             fields: ['value', 'name'],
             data: storage.lastRevision.templetes
         });
 
         
-		//Combo box for showing the templates
+		// Combo box for showing the templates
 		app.savedTempletes = Ext.create('Ext.form.ComboBox', {
 			fieldLabel: 'Saved Templates',
 			editable: false,
@@ -91,7 +91,55 @@ var application = {
 			}
 		});
 
-		//Form panel for inputing new node information
+		// Inputs for registering a new service
+		app.srvName = Ext.create('Ext.form.field.Text', {
+				fieldLabel: 'Service Name',
+				name: 'srvName',
+				allowBlank: false
+		});
+		
+		app.srvDesc = Ext.create('Ext.form.field.Text', {
+			fieldLabel: 'Service Description',
+			name: 'srvDesc',
+			allowBlank: false,
+			hidden: false
+			
+	});
+		app.srvParams = Ext.create('Ext.form.field.Text', {
+			fieldLabel: 'Service Parameters',
+			name: 'srvParams',
+			allowBlank: false
+	});
+		app.srvTags = Ext.create('Ext.form.field.Text', {
+			fieldLabel: 'Service Tags',
+			name: 'srvTags',
+			allowBlank: false
+	});
+		app.srvHealthcheck = Ext.create('Ext.form.field.Text', {
+			fieldLabel: 'Service Healthcheck address',
+			name: 'srvHealthcheck',
+			allowBlank: false
+	});
+		app.srvAddr = Ext.create('Ext.form.field.Text', {
+			fieldLabel: 'Service Address',
+			name: 'srvAddr',
+			allowBlank: false
+	});
+		app.srvPort = Ext.create('Ext.form.field.Text', {
+			fieldLabel: 'Service Port',
+			name: 'srvPort',
+			allowBlank: false
+	});
+		app.srvTTL = Ext.create('Ext.form.field.Text', {
+			fieldLabel: 'Service Healthcheck TTL',
+			name: 'srvTTL',
+			allowBlank: false
+	});
+
+		
+		
+		
+		// Form panel for inputing new node information
 		app.addCustomNodeForm = Ext.create('Ext.form.Panel', {
 			border: false,
 			defaultType: 'textfield',
@@ -100,12 +148,19 @@ var application = {
 				name: 'nodeName',
 				allowBlank: false
 			}, app.iconURLField,
-			app.sourceURLField]
+			app.sourceURLField,
+			app.srvTTL,
+			app.srvPort,
+			app.srvAddr,
+			app.srvHealthcheck,
+			app.srvParams,
+			app.srvDesc,
+			app.srvTags]
 		});
 
-		//A window for adding embding the form panel for creating new node
+		// A window for adding embding the form panel for creating new node
 		app.addCustomNodeWindow = Ext.create('widget.window', {
-			title: 'Add new node',
+			title: 'Add new nodes',
 			closable: true,
 			closeAction: 'hide',
 			width: 280,
@@ -113,8 +168,9 @@ var application = {
 				text: 'Submit',
 				formBind: true,
 				handler: function() {
-					//get the nodes designed inside the diagram and check if it is not empty
-					//if valid save to the database
+					// get the nodes designed inside the diagram and check if it
+					// is not empty
+					// if valid save to the database
 					var diagramNodes = diagram.toJSON();
 					diagramNodes = diagramNodes.nodes ? diagramNodes.nodes : [];
 					var values = app.addCustomNodeForm.getValues();
@@ -123,25 +179,56 @@ var application = {
 						values['nodes'] = diagramNodes;
 						app.dynamicNodes.push(values);
 						storage.lastRevision.info = app.dynamicNodes;
-						//Save the data to the database
-						storage.db.put(storage.lastRevision).then(
-							function (response) {
-								location.reload();
-							}).catch(function (err) {
-								location.reload();
-							}
-						);
-						//app.addDynamicField(Y, values);
+						app.alertMSG('reached request part.');
+						// Save the data to the database
+
+						var postData = "servicename="+values['nodeName']+"&"+
+								"description="+values['srvDesc']+"&"+
+								"parameters="+values['srvDesc']+"&"+
+								"tags="+values['srvParams']+"&"+
+								"healthcheck="+values['srvHealthcheck']+"&"+
+								"serviceaddress="+values['srvAddr']+"&"+
+								"ttl="+values['srvTTL']+"&"+
+								"port="+values['srvPort'];
+		  
+						var async = false;
+						var request = new XMLHttpRequest();
+						app.alertMSG(postData);
+						request.open("POST", "http://localhost:8080/Data_Mashup/RegisterServiceServlet", async);
+						request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+						request.setRequestHeader("Content-length", postData.length);
+						request.setRequestHeader("Connection", "close");
+						
+						// Actually sends the request to the server.
+						 request.send(postData);
+						 
+						 
+						 if(request.status==200){ 
+							 storage.db.put(storage.lastRevision).then(
+									function (response) {
+										location.reload();
+									}).catch(function (err) {
+										location.reload();
+									}
+								);
+							 }
+						 else
+							 {
+								 app.alertMSG(request.responseText);
+								 }
+					   
+						// app.addDynamicField(Y, values);
 					} else {
 						app.alertMSG('Please configure the Diagram first');
 					}
 				}
 			}],
-			height: 200,
+			height: 500,
 			items: [app.addCustomNodeForm]
 		});
 
-		//add click listener for the custom node to show new node creation window
+		// add click listener for the custom node to show new node creation
+		// window
 		app.customNode = Ext.get('availableFields_field_customNode');
 		app.diagram = document.getElementsByClassName("property-builder-canvas")[0];
 		if (app.diagram == null) {
@@ -155,12 +242,13 @@ var application = {
 			}
 		);
 
-		//The action definition of contex menu for removing the node on right click
+		// The action definition of contex menu for removing the node on right
+		// click
 		app.removeNodeContextAction = Ext.create('Ext.Action', {
 			text: 'Remove',
 			icon: 'https://cdn3.iconfinder.com/data/icons/sympletts-free-sampler/128/circle-close-20.png',
 			handler: function(widget, event) {
-				//get the node inside the panels ad remove the choosen one
+				// get the node inside the panels ad remove the choosen one
 				app.removeNodeContextMenu.nodeToRemoveId;
 				for (var i = 0; i < app.dynamicNodes.length; i++) {
 					var node = app.dynamicNodes[i];
@@ -181,7 +269,7 @@ var application = {
 			}
 		});
 
-		//The context menu for the right click over the dynamic nodes
+		// The context menu for the right click over the dynamic nodes
 		app.removeNodeContextMenu = Ext.create('Ext.menu.Menu', {
 			items: [
 				app.removeNodeContextAction
@@ -189,13 +277,13 @@ var application = {
 		});
 
 		if (app.dynamicNodes) {
-			//loop through dynamic nodes
+			// loop through dynamic nodes
 			for (var i = 0; i < app.dynamicNodes.length; i++) {
 				var node = app.dynamicNodes[i];
 				
 				var nodeElement = Ext.get('availableFields_field_' + node['id']);
                 
-				//Add the show context meu listener to the node
+				// Add the show context meu listener to the node
 				nodeElement.dom.childNodes[0].setAttribute('name', (node['id'] + ''));
 				nodeElement.on("contextmenu", function(event, element) {
 					event.stopEvent();
@@ -240,15 +328,15 @@ var application = {
                     Ext.create('Ext.tip.ToolTip', {
                         target: ('availableFields_field_' + node.id),
                         dismissDelay: 0,
-                        //html:JSON.stringify(fields)
+                        // html:JSON.stringify(fields)
                         html: html
                     });
                 }
             }
         }
         
-		//The grid panel for showing the patterns
-		//Add corresponding field definitions
+		// The grid panel for showing the patterns
+		// Add corresponding field definitions
 		app.patternGridPanel = Ext.create('Ext.grid.Panel', {
             buttons: [{
                     text: 'Select Pattern',
@@ -277,7 +365,7 @@ var application = {
 			}),
 			listeners: {
 				select: function(grid, record, index, eOpts) {
-					//on select show the cresponding patterns
+					// on select show the cresponding patterns
 					var patternId = record.get('id');
 					Ext.Ajax.request({
 						url: ('patterns/' + patternId + '.html'),
@@ -295,7 +383,7 @@ var application = {
 				{ text: 'Description',  dataIndex: 'description', flex: 1}
 			]
 		});
-		//The detail panel for patterns to show information inside html files
+		// The detail panel for patterns to show information inside html files
 		app.patternDetailPanel = Ext.create('Ext.panel.Panel', {
 			region: 'center',
 			title: 'Pattern Details',
@@ -303,7 +391,7 @@ var application = {
 			split: true,
 			autoScroll: true
 		});
-		//view port to nest patern details panel and left grid panel
+		// view port to nest patern details panel and left grid panel
 		app.patternSelectionViewPort = Ext.create('Ext.panel.Panel', {
 			layout: 'border',
 			items: [{
@@ -312,10 +400,12 @@ var application = {
 				title: 'Navigation',
 				width: 250,
 				items: app.patternGridPanel
-				// could use a TreePanel or AccordionLayout for navigational items
+				// could use a TreePanel or AccordionLayout for navigational
+				// items
 			}, app.patternDetailPanel]
 		});
-		//Window to put the pattern selection related viewport iside and show it
+		// Window to put the pattern selection related viewport iside and show
+		// it
 		app.patternSelectionWindow = Ext.create('Ext.window.Window', {
 			title: 'Pattern Selection',
 			height: 530,
@@ -323,20 +413,20 @@ var application = {
 			layout: 'fit',
 			items: app.patternSelectionViewPort
 		});
-		//o click listener for showing the pattern selection panel
+		// o click listener for showing the pattern selection panel
 		Y.one('#patterSelection').on(
             'click',
             function() {
 				app.patternSelectionWindow.show();
             }
         );
-		//onclick listener for removing the choosen templete from combo box
+		// onclick listener for removing the choosen templete from combo box
 		Y.one('#removeTempleteButton').on(
             'click', 
             function() {
 				var selection = app.savedTempletes.getSelection();
 				if (selection != null) {
-					//remove the selected templete and update the database
+					// remove the selected templete and update the database
 					app.savedTempletesStore.remove(selection);
 					app.savedTempletes.setSelection(null);
 					storage.lastRevision.templetes = Ext.pluck(app.savedTempletesStore.data.items, 'data');
@@ -361,11 +451,12 @@ var application = {
                 app.diagramBuilder.clearFields();
         });
             
-		//on click listener for saving the templete
+		// on click listener for saving the templete
 		Y.one('#saveTempleteButton').on(
             'click', 
             function() {
-				//get the nodes over the diagram and save inside the templetes store
+				// get the nodes over the diagram and save inside the templetes
+				// store
 				var diagramNodes = diagram.toJSON();
 				diagramNodes = diagramNodes.nodes ? diagramNodes.nodes : [];
 				if (diagramNodes.length > 0) {
@@ -381,7 +472,7 @@ var application = {
 								id: id,
 								value: diagramNodes
 							});
-							//update the innformation inside the database
+							// update the innformation inside the database
 							storage.db.put(storage.lastRevision).then(
 								function (response) {
 									app.savedTempletesStore.add({
@@ -401,63 +492,43 @@ var application = {
             }
         );
 		
-		//On click listener for executing data mashup scenario
+		// On click listener for executing data mashup scenario
         Y.one('#postButton').on(
             'click', 
             function() {
                 // mocked
                 
-				//get the query values from the database
-				/*var values = diagram.toJSON();
-                alert(JSON.stringify(diagram.toJSON()));
-				var inQuery = '';
-				var inQuery1 = '';
-				if (values.nodes) {
-					var nodes = values.nodes;
-					for (var i = 0; i < nodes.length;i++) {
-						var node = nodes[i];
-						if (node.type == 'dataSource_googleplus') {
-							inQuery = node.dataSource_googleplusKey;
-						}
-						if (node.type == 'dataSource_facebook') {
-							inQuery1 = node.dataSource_facebookKey;
-						}
-					}
-				}
-				//Construct and get the mock data from server
-				var url = '/Data_Mashup/DataMock?inQuery=' + (inQuery + '&inQuery1=' + inQuery1);
-				
-                Ext.create('Ext.window.Window', {
-					title: 'Result',
-					height: 400,
-					width: 600,
-					layout: 'fit',
-					items: Ext.create('Ext.grid.Panel', {
-						 store: Ext.create('Ext.data.Store', {
-							fields: ['id', 'lastName', 'firstName', 'link'],
-							autoLoad: true,
-							proxy: {
-								type: 'ajax',
-								url: url,
-								reader: {
-									type: 'json'
-								}
-							 },
-							autoLoad: true
-						 }),
-						columns: [
-							{ text: 'ID',  dataIndex: 'id' },
-							{ text: 'Last Name', dataIndex: 'lastName'},
-							{ text: 'First Name', dataIndex: 'firstName' },
-							{ text: 'Link', dataIndex: 'link', flex: 1, 
-								renderer: function(value, metaData, record, row, col, store, gridView) {
-									return '<a href="' + value + '" target="_blank"><img border="0" alt="W3Schools" src="' + ((value.indexOf('google') > 0)? 'https://cdn3.iconfinder.com/data/icons/free-social-icons/67/google_circle_color-24.png': 'https://cdn3.iconfinder.com/data/icons/free-social-icons/67/facebook_circle_color-24.png') + '" width="24" height="24"></a>';
-								}
-							}
-						]
-					})
-				}).show();
-				*/
+				// get the query values from the database
+				/*
+				 * var values = diagram.toJSON();
+				 * alert(JSON.stringify(diagram.toJSON())); var inQuery = '';
+				 * var inQuery1 = ''; if (values.nodes) { var nodes =
+				 * values.nodes; for (var i = 0; i < nodes.length;i++) { var
+				 * node = nodes[i]; if (node.type == 'dataSource_googleplus') {
+				 * inQuery = node.dataSource_googleplusKey; } if (node.type ==
+				 * 'dataSource_facebook') { inQuery1 =
+				 * node.dataSource_facebookKey; } } } //Construct and get the
+				 * mock data from server var url =
+				 * '/Data_Mashup/DataMock?inQuery=' + (inQuery + '&inQuery1=' +
+				 * inQuery1);
+				 * 
+				 * Ext.create('Ext.window.Window', { title: 'Result', height:
+				 * 400, width: 600, layout: 'fit', items:
+				 * Ext.create('Ext.grid.Panel', { store:
+				 * Ext.create('Ext.data.Store', { fields: ['id', 'lastName',
+				 * 'firstName', 'link'], autoLoad: true, proxy: { type: 'ajax',
+				 * url: url, reader: { type: 'json' } }, autoLoad: true }),
+				 * columns: [ { text: 'ID', dataIndex: 'id' }, { text: 'Last
+				 * Name', dataIndex: 'lastName'}, { text: 'First Name',
+				 * dataIndex: 'firstName' }, { text: 'Link', dataIndex: 'link',
+				 * flex: 1, renderer: function(value, metaData, record, row,
+				 * col, store, gridView) { return '<a href="' + value + '"
+				 * target="_blank"><img border="0" alt="W3Schools" src="' +
+				 * ((value.indexOf('google') > 0)?
+				 * 'https://cdn3.iconfinder.com/data/icons/free-social-icons/67/google_circle_color-24.png':
+				 * 'https://cdn3.iconfinder.com/data/icons/free-social-icons/67/facebook_circle_color-24.png') + '"
+				 * width="24" height="24"></a>'; } } ] }) }).show();
+				 */
 				document.getElementById("alertDiv").hidden = true;
 				document.getElementById("alertDiv2").hidden = true;
 
@@ -472,17 +543,19 @@ var application = {
                             success: function(msg) {
                             	alert(msg.details[1].responseText);
                             	/*
-                                var data = this.get('responseData');
-                                if(data.indexOf("timeCritical" != -1)) {
-                                	//<div class="alert alert-success">
-                                	//  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                	//  <strong>Success!</strong> Indicates a successful or positive action.
-                                	//</div>
-									document.getElementById("alertDiv").hidden = false;
-                                } else if (data.indexOf("robust" != -1)) {
-                                	alert(msg);
-									document.getElementById("alertDiv2").hidden = false;
-                                }*/
+								 * var data = this.get('responseData');
+								 * if(data.indexOf("timeCritical" != -1)) { //<div
+								 * class="alert alert-success"> // <a href="#"
+								 * class="close" data-dismiss="alert"
+								 * aria-label="close">&times;</a> //
+								 * <strong>Success!</strong> Indicates a
+								 * successful or positive action. //</div>
+								 * document.getElementById("alertDiv").hidden =
+								 * false; } else if (data.indexOf("robust" !=
+								 * -1)) { alert(msg);
+								 * document.getElementById("alertDiv2").hidden =
+								 * false; }
+								 */
                             },
                             failure: function() {
                                 alert('An error ocurred, please check your model.');
@@ -493,7 +566,7 @@ var application = {
             }
         );
 	},
-	//returns a dynamic node by ID
+	// returns a dynamic node by ID
 	getDynamicNodeById: function(id) {
 		for (var i =0; i < app.dynamicNodes.length; i++) {
 			if (id = app.dynamicNodes[i]['id']) {
@@ -501,7 +574,7 @@ var application = {
 			}
 		}
 	},
-	//Show alert message with the content and type of alert: Info, Error etc...
+	// Show alert message with the content and type of alert: Info, Error etc...
 	alertMSG: function(content, type) {
 		if (!type) {
 			type = 'alert-warning';
@@ -526,5 +599,5 @@ var application = {
 	}
 };
 var app = application;
-//Initialize the application and prepare for the luncher
+// Initialize the application and prepare for the luncher
 YUI().use('aui-io-request', 'aui-diagram-builder', 'aui-button', 'aui-form-builder', 'aui-modal', storage.initializeData);
