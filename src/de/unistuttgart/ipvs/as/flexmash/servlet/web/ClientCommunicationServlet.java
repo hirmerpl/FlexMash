@@ -1,7 +1,11 @@
 package de.unistuttgart.ipvs.as.flexmash.servlet.web;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,6 +81,9 @@ public class ClientCommunicationServlet extends HttpServlet {
 				Engine engine = new Engine();
 				engine.deployProcessModel(generatedModel.fileName, generatedModel);
 				engine.runProcessModel("MainProcess", generatedModel);
+				Files.delete( Paths.get(generatedModel.fileName));
+				engine.close();
+				
 //				MashupPlanToBPELConverter mashupPlanToBPELConverter = new MashupPlanToBPELConverter();
 //				String mashupPlanAsBPEL = mashupPlanToBPELConverter.convert(mashupPlanAsJSON);
 //				HashMap<String,String> properties =  mashupPlanToBPELConverter.getEntries();

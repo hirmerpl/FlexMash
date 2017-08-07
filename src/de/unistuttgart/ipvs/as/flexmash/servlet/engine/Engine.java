@@ -40,7 +40,7 @@ public class Engine {
 	 * @return
 	 */
 	public Deployment deployProcessModel(String FileName, BPMNmodel Model) {
-		return processEngine.getRepositoryService().createDeployment()
+		return this.processEngine.getRepositoryService().createDeployment()
 				.addModelInstance(FileName, Model.ModelInstance).deploy();
 
 	}
@@ -55,8 +55,12 @@ public class Engine {
 	 */
 	public ProcessInstance runProcessModel(String ProcessName,
 			BPMNmodel Model) {
-
-		return processEngine.getRuntimeService()
+		
+		return this.processEngine.getRuntimeService()
 				.startProcessInstanceByKey(ProcessName, Model.variables);
 	}
+
+public void close(){
+	this.processEngine.close();
+}
 }

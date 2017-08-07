@@ -166,37 +166,6 @@ var staticnodemanager = {
 				}
             }
         });
-		
-		// CSV data source
-		Y.DiagramNodeDataSource_csv = Y.Component.create({
-            NAME: 'diagram-node',
-            ATTRS: {
-                type: {
-                    value: 'dataSource_CSV'
-                },
-                dataSource_CSV: {
-                    validator: Y.Lang.isString,
-                    value: ''
-                }
-            },
-            EXTENDS: Y.DiagramNodeTask,
-            prototype: {
-                initializer: function() {
-                    var instance = this;
-				    this.SERIALIZABLE_ATTRS.push('dataSource_CSV_path');
-                },
-				getPropertyModel: function () {
-					var instance = this;
-					var model = Y.DiagramNodeDataSource_googleplus.superclass.getPropertyModel.apply(instance, arguments);
-						model.splice(0, 1);
-						model.push({
-							attributeName: 'dataSource_CSV_path',
-							name: 'CSV Path'
-						});
-					return model;
-				}
-            }
-        });
 
 		//Initialize the Filter node to Aloye UI 		
         Y.DiagramNodeFilter = Y.Component.create({
@@ -205,10 +174,10 @@ var staticnodemanager = {
                 type: {
                     value: 'filter'
                 },
-                filtertype: {
+                subtype: {
                     value: ''
                 },
-                filter_criteria: {
+                criteria: {
                     value: ''
                 }
             },
@@ -216,26 +185,25 @@ var staticnodemanager = {
             prototype: {
                 initializer: function() {
                     var instance = this;
-                    this.SERIALIZABLE_ATTRS.push('filtertype');
-                    this.SERIALIZABLE_ATTRS.push('filter_criteria');
+                    this.SERIALIZABLE_ATTRS.push('subtype');
+                    this.SERIALIZABLE_ATTRS.push('criteria');
                 },
                 getPropertyModel: function () {
                     var instance = this;
                     var model = Y.DiagramNodeFilter.superclass.getPropertyModel.apply(instance, arguments);
                     model.splice(0, 1);
                     model.push({
-                        attributeName: 'filtertype',
+                        attributeName: 'subtype',
                         name: 'Filter Type',
                         editor: new Y.DropDownCellEditor({
                             options: {
                             	NYT: 'NYT Filter',
-                                tbd: 'SQLFilter',
-								CSVFilter: 'CSV Filter'
+                                tbd: 'tdb'
                             }
                         })
                     });
                     model.push({
-                        attributeName: 'filter_criteria', 
+                        attributeName: 'criteria', 
                         name: 'Keywords',
                         editor: new Y.TextCellEditor  
                     });
@@ -244,7 +212,48 @@ var staticnodemanager = {
                 }
             }
         });
+		
+		//Initialize the Filter node to Aloye UI 		
+        Y.DiagramNodeApriori = Y.Component.create({
+            NAME: 'diagram-node',
+            ATTRS: {
+                type: {
+                    value: 'filter'
+                },
+                minSupport: {
+                    value: ''
+                },
+                numberOfRules: {
+                    value: ''
+                }
+            },
+            EXTENDS: Y.DiagramNodeFork,
+            prototype: {
+                initializer: function() {
+                    var instance = this;
+                    this.SERIALIZABLE_ATTRS.push('minSupport');
+                    this.SERIALIZABLE_ATTRS.push('numberOfRules');
+                },
+                getPropertyModel: function () {
+                    var instance = this;
+                    var model = Y.DiagramNodeFilter.superclass.getPropertyModel.apply(instance, arguments);
+                    model.splice(0, 1);
+                    model.push({
+                        attributeName: 'minSupport', 
+                        name: 'Minimum Support',
+                        editor: new Y.TextCellEditor  
+                    });
+                    model.push({
+                        attributeName: 'numberOfRules', 
+                        name: 'Number of Rules',
+                        editor: new Y.TextCellEditor  
+                    });
 
+                    return model;
+                }
+            }
+        });
+		
 		//Initialize the Analytics node to Aloye UI 
         Y.DiagramNodeAnalytics = Y.Component.create({
             NAME: 'diagram-node',
@@ -311,7 +320,6 @@ var staticnodemanager = {
             }
         });
 		//provide the appropriate object with keyword mapping
-        Y.DiagramBuilder.types['customNode'] = Y.DiagramNodeCustom;
         Y.DiagramBuilder.types['analytics'] = Y.DiagramNodeAnalytics;
         Y.DiagramBuilder.types['merge'] = Y.DiagramNodeMerge;
         Y.DiagramBuilder.types['dataSource_NYT'] = Y.DiagramNodedataSource_NYT;
@@ -319,58 +327,58 @@ var staticnodemanager = {
 		Y.DiagramBuilder.types['dataSource_googleplus'] = Y.DiagramNodeDataSource_googleplus;
 		Y.DiagramBuilder.types['dataSource_facebook'] = Y.DiagramNodeDataSource_facebook;
         Y.DiagramBuilder.types['filter'] = Y.DiagramNodeFilter;
-		Y.DiagramBuilder.types['dataSource_CSV'] = Y.DiagramNodeDataSource_csv;
-		
+		Y.DiagramBuilder.types['apriori'] = Y.DiagramNodeApriori;
+		Y.DiagramBuilder.types['customNode'] = Y.DiagramNodeCustom;
+
 		//return the initialized static nodes to the application, to be created
-		return [
-            {
-                id: 'customNode',
-                iconClass: 'diagram-node-customNode-icon',
-                label: 'Custom',
-                type: 'customNode'
-            }, {
-                iconClass: 'diagram-node-start-icon',
-                label: 'Start',
-                type: 'start'
-            }, {
-                iconClass: 'diagram-node-end-icon',
-                label: 'End',
-                type: 'end'
-            }, {
-                iconClass: 'diagram-node-merge-icon',
-                label: 'Merge',
-                type: 'merge'
-            },{
-                iconClass: 'diagram-node-analytics-icon',
-                label: 'Analytics',
-                type: 'analytics'
-            },{
-                iconClass: 'diagram-node-filter-icon',
-                label: 'Filter',
-                type: 'filter'
-            }, {
-                iconClass: 'diagram-node-dataSource_twitter-icon',
-                label: 'Twitter',
-                type: 'dataSource_twitter'
-            }, {
-                iconClass: 'diagram-node-dataSource_NYT-icon',
-                label: 'NYT',
-                type: 'dataSource_NYT'
-            }, {
-                iconClass: 'diagram-node-dataSource_CSV-icon',
-                label: 'CSV',
-                type: 'dataSource_CSV'
-            }, 
-			{
-                iconClass: 'diagram-node-dataSource_googleplus-icon',
-                label: 'Google+',
-                type: 'dataSource_googleplus'
-            }, {
-                iconClass: 'diagram-node-dataSource_facebook-icon',
-                label: 'Facebook',
-                type: 'dataSource_facebook'
-            }
-        ];
+		return [{
+            iconClass: 'diagram-node-start-icon',
+            label: 'Start',
+            type: 'start'
+        }, {
+            iconClass: 'diagram-node-end-icon',
+            label: 'End',
+            type: 'end'
+        }, {
+            iconClass: 'diagram-node-merge-icon',
+            label: 'Merge',
+            type: 'merge'
+        },{
+            iconClass: 'diagram-node-analytics-icon',
+            label: 'Analytics',
+            type: 'analytics'
+        },{
+            iconClass: 'diagram-node-filter-icon',
+            label: 'Filter',
+            type: 'filter'
+        }, {
+            iconClass: 'diagram-node-dataSource_twitter-icon',
+            label: 'Twitter',
+            type: 'dataSource_twitter'
+        }, {
+            iconClass: 'diagram-node-dataSource_NYT-icon',
+            label: 'NYT',
+            type: 'dataSource_NYT'
+        }, {
+            iconClass: 'diagram-node-dataSource_googleplus-icon',
+            label: 'Google+',
+            type: 'dataSource_googleplus'
+        }, {
+            iconClass: 'diagram-node-dataSource_facebook-icon',
+            label: 'Facebook',
+            type: 'dataSource_facebook'
+        }, {
+			id: 'customNode',
+            iconClass: 'diagram-node-customNode-icon',
+            label: 'Custom',
+            type: 'customNode'
+        },
+		{
+			id: 'apriori',
+            iconClass: 'diagram-node-apriori-icon',
+            label: 'Apriori',
+            type: 'apriori'
+        }];
 	}
 };
 var snm = staticnodemanager;

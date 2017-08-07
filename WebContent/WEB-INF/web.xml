@@ -3,6 +3,7 @@
   <display-name>Data_Mashup</display-name>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
+    <welcome-file>registerService.jsp</welcome-file>
   </welcome-file-list>
   <servlet>
     <servlet-name>Data_Mashup</servlet-name>
@@ -12,6 +13,10 @@
     <servlet-name>Data_Mashup</servlet-name>
     <url-pattern>/DataMashup/</url-pattern>
   </servlet-mapping>
+   <servlet>
+    <servlet-name>registerService</servlet-name>
+    <servlet-class>de.unistuttgart.ipvs.as.flexmash.servlet.web.RegisterServiceServlet</servlet-class>
+  </servlet>
   <servlet>
     <display-name>Apache-Axis Servlet</display-name>
     <servlet-name>AxisServlet</servlet-name>
