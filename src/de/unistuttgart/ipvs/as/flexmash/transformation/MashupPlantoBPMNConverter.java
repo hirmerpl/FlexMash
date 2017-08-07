@@ -61,14 +61,14 @@ public class MashupPlantoBPMNConverter {
 							.equals(null)) {
 						Helper.addValues(outTransitionsMap,
 								transitions.getJSONObject(k)
-										.getString("source"),
+								.getString("source"),
 								transitions.getJSONObject(k)
-										.getString("target"));
+								.getString("target"));
 						Helper.addValues(inTransitionsMap,
 								transitions.getJSONObject(k)
-										.getString("target"),
+								.getString("target"),
 								transitions.getJSONObject(k)
-										.getString("source"));
+								.getString("source"));
 					}
 				}
 
@@ -175,7 +175,7 @@ public class MashupPlantoBPMNConverter {
 							ServiceTask.class);
 					genericService.setName(node.has("subtype")
 							? node.getString("subtype").toString()
-							: node.get("type").toString());
+									: node.get("type").toString());
 					genericService.setCamundaClass(
 							"de.unistuttgart.ipvs.as.flexmash.bpmn.executables.GenericExe");
 					break;
@@ -193,18 +193,16 @@ public class MashupPlantoBPMNConverter {
 				.entrySet().iterator();
 		while (outIter.hasNext()) {
 			// oEntry <Source node, list of target nodes>
-			Map.Entry<String, ArrayList<String>> oEntry = (Map.Entry<String, ArrayList<String>>) outIter
+			Map.Entry<String, ArrayList<String>> oEntry = outIter
 					.next();
 			ArrayList<String> targets = oEntry.getValue();
 			String sourceNode = oEntry.getKey().toString();
-			for (Iterator<String> iterTargets = targets.iterator(); iterTargets
-					.hasNext();) {
-				String targetNode = iterTargets.next();
+			for (String targetNode : targets) {
 				BPMNWorkFlow.createSequenceFlow(BPMNWorkFlow.MainProcess,
 						BPMNWorkFlow.ModelInstance
-								.getModelElementById(sourceNode),
+						.getModelElementById(sourceNode),
 						BPMNWorkFlow.ModelInstance
-								.getModelElementById(targetNode));
+						.getModelElementById(targetNode));
 			}
 		}
 
@@ -241,12 +239,11 @@ public class MashupPlantoBPMNConverter {
 		ArrayList<String> replaceKeys = new ArrayList<>();
 		Map<String, ArrayList<String>> outTransitionMapReplaced = new HashMap<String, ArrayList<String>>();
 
-		for (Iterator<Entry<String, ArrayList<String>>> outIter = outTransitionMap
-				.entrySet().iterator(); outIter.hasNext();) {
+		for (Entry<String, ArrayList<String>> entry : outTransitionMap
+				.entrySet()) {
 
 			// oEntry <Source node, list of target nodes>
-			Map.Entry<String, ArrayList<String>> oEntry = (Map.Entry<String, ArrayList<String>>) outIter
-					.next();
+			Map.Entry<String, ArrayList<String>> oEntry = entry;
 
 			if (oEntry.getValue().size() > 1
 					&& !oEntry.getKey().startsWith("PG")) {
@@ -257,7 +254,7 @@ public class MashupPlantoBPMNConverter {
 				parallel.setCamundaAsync(false);
 				BPMNWorkFlow.createSequenceFlow(
 						BPMNWorkFlow.MainProcess, BPMNWorkFlow.ModelInstance
-								.getModelElementById(oEntry.getKey()),
+						.getModelElementById(oEntry.getKey()),
 						parallel);
 				outTransitionMapReplaced.put(parallel.getName(),
 						oEntry.getValue());
@@ -274,10 +271,9 @@ public class MashupPlantoBPMNConverter {
 		 * transitions and replace them with the parallel gate in the list of
 		 * sequence flows
 		 */
-		for (Iterator<Entry<String, ArrayList<String>>> inIter = inTransitionMap
-				.entrySet().iterator(); inIter.hasNext();) {
-			Map.Entry<String, ArrayList<String>> iEntry = (Map.Entry<String, ArrayList<String>>) inIter
-					.next();
+		for (Entry<String, ArrayList<String>> entry : inTransitionMap
+				.entrySet()) {
+			Map.Entry<String, ArrayList<String>> iEntry = entry;
 			if (iEntry.getValue().size() > 1) {
 
 				ParallelGateway parallel = BPMNWorkFlow.createElement(
@@ -287,12 +283,9 @@ public class MashupPlantoBPMNConverter {
 				parallel.setCamundaAsync(false);
 				BPMNWorkFlow.createSequenceFlow(BPMNWorkFlow.MainProcess,
 						parallel, BPMNWorkFlow.ModelInstance
-								.getModelElementById(iEntry.getKey()));
+						.getModelElementById(iEntry.getKey()));
 
-				for (Iterator<String> sourceNodes = iEntry.getValue()
-						.iterator(); sourceNodes.hasNext();) {
-
-					String sourceNode = sourceNodes.next();
+				for (String sourceNode : iEntry.getValue()) {
 
 					outTransitionMap.get(sourceNode).add(parallel.getName());
 					outTransitionMap.get(sourceNode).remove(iEntry.getKey());

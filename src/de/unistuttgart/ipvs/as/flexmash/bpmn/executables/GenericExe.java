@@ -3,11 +3,13 @@ package de.unistuttgart.ipvs.as.flexmash.bpmn.executables;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import de.unistuttgart.ipvs.as.flexmash.utils.ExecutionHelper;
 import de.unistuttgart.ipvs.as.flexmash.utils.serviceplatform.ServiceModel;
 
@@ -18,6 +20,7 @@ public class GenericExe implements JavaDelegate {
 	 * updated variables based on the execution context
 	 * 
 	 **/
+	@Override
 	@SuppressWarnings("unchecked")
 	public void execute(DelegateExecution execution) throws Exception {
 
@@ -29,13 +32,13 @@ public class GenericExe implements JavaDelegate {
 		if (!userInput.equals(null) && Service.getParameters().size()>1)
 			input.put(Service.getParameters().get(0), userInput);
 		int paramCount = Service.getParameters().size()>1?1:0;
-		for (Iterator<String> predecessor = Helper.getPredecessors(execution)
-				.iterator(); predecessor.hasNext();) {
-			String predName = predecessor.next().toString();
+
+		for (String string : Helper.getPredecessors(execution)) {
+			String predName = string.toString();
 			System.out.println("GETTING INPUT: " + predName + "Out "+Service.getParameters().size());
 			ArrayList<String> tempInput = (ArrayList<String>) execution
 					.getVariable(predName + "Out");
-			
+
 			System.out.println("PUTTING INPUT: "
 					+ Service.getParameters().size());
 			tempInput.forEach(k -> System.out.println(k));
@@ -52,7 +55,7 @@ public class GenericExe implements JavaDelegate {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> result = mapper.readValue(
 				Helper.sendInputToPlatform(input, new URL(Service.getAddress()))
-						.toString(),
+				.toString(),
 				HashMap.class);
 		receivedOutput = (ArrayList<String>) result.get("output");
 		Helper.setOutput(execution, receivedOutput);
