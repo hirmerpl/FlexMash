@@ -129,13 +129,13 @@ DiagramNode = A.Component.create({
         },
 
         /**
-         * The description of the node.
+         * The criteria of the node.
          *
-         * @attribute description
+         * @attribute criteria
          * @default ''
          * @type String
          */
-        description: {
+        criteria: {
             value: '',
             validator: A.Lang.isString
         },
@@ -273,7 +273,7 @@ DiagramNode = A.Component.create({
             value: {
                 closeMessage: 'Close',
                 connectMessage: 'Connect',
-                description: 'Description',
+                criteria: 'Criteria',
                 editMessage: 'Edit',
                 name: 'Name',
                 type: 'Type'
@@ -435,7 +435,7 @@ DiagramNode = A.Component.create({
 
         CONTROLS_TEMPLATE: '<div class="' + CSS_DB_CONTROLS + '"></div>',
 
-        SERIALIZABLE_ATTRS: ['description', 'name', 'required', 'type', 'width', 'height', 'zIndex', 'xy'],
+        SERIALIZABLE_ATTRS: ['criteria', 'name', 'required', 'type', 'width', 'height', 'zIndex', 'xy'],
 
         /**
          * Construction logic executed during DiagramNode instantiation.
@@ -873,9 +873,9 @@ DiagramNode = A.Component.create({
             var strings = instance.getStrings();
 
             return [{
-                attributeName: 'description',
+                attributeName: 'criteria',
                 editor: new A.TextAreaCellEditor(),
-                name: strings.description
+                name: strings.criteria
             }, {
                 attributeName: 'name',
                 editor: new A.TextCellEditor({

@@ -1,6 +1,7 @@
 var dynamicnodemanager = {
 	initialize: function(Y) {
 		var availableFields = [];
+		
 		//check and see if there are dynamic nodes to be created
 		if (app.dynamicNodes) {
 			for (var i = 0; i < app.dynamicNodes.length; i++) {
@@ -20,9 +21,9 @@ var dynamicnodemanager = {
 					},
 					EXTENDS: Y.DiagramNodeTask,
 					prototype: {
-						initializer: function() {
-							
-						}
+						 initializer: function() {
+			                 
+							}
 					}
 				});
 				//Define the mapings dynamically and add the new node to available fields to be preocessed by application
