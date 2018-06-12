@@ -107,7 +107,7 @@ public class NYTRSSExtractor {
 				}
 			}
 
-			org.json.simple.JSONObject returnObject = new org.json.simple.JSONObject(articles);
+			org.json.simple.JSONObject returnObject = new org.json.simple.JSONObject(/*articles*/);
 
 			return returnObject.toJSONString();
 

@@ -53,7 +53,7 @@ public class DataCache {
 
 			return data;
 
-		} catch (UnknownHostException | JSONException e) {
+		} catch (/*UnknownHostException | */JSONException e) {
 			e.printStackTrace();
 		}
 
@@ -90,7 +90,7 @@ public class DataCache {
 			}
 			return key;
 
-		} catch (UnknownHostException | JSONException e) {
+		} catch (/*UnknownHostException | */JSONException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -109,7 +109,7 @@ public class DataCache {
 			DB db = mongoClient.getDB("mydb");
 			DBCollection coll = db.getCollection(key);
 			coll.drop();
-		} catch (UnknownHostException e) {
+		} catch (/*UnknownHostException*/Exception e) {
 			e.printStackTrace();
 		}
 	}
