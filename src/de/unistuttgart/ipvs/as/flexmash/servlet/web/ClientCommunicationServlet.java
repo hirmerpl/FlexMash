@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.unistuttgart.ipvs.as.flexmash.mashupplan.MashupPlan;
 import org.json.JSONObject;
 
 import com.sun.javafx.collections.MappingChange.Map;
@@ -69,7 +71,12 @@ public class ClientCommunicationServlet extends HttpServlet {
 		mashupPlan = mashupPlan.replaceAll("[\\t\\n\\r]", "");
 		PrintWriter out = resp.getWriter();
 		JSONObject mashupPlanAsJSON = Util.createJsonObjects(mashupPlan);
-		
+
+		ObjectMapper mapper = new ObjectMapper();
+		//JSON from String to Object
+		MashupPlan obj = mapper.readValue(mashupPlan, MashupPlan.class);
+		System.out.println("JSON to POJO conversion complete!");
+
 		switch (selectedPattern) {
 			case ROBUST:
 				LOGGER.log(Level.INFO, "Robust pattern selected.");
