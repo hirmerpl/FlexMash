@@ -4,25 +4,25 @@ package de.unistuttgart.ipvs.as.flexmash.mashupplan.Connection.Policy.Performanc
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import de.unistuttgart.ipvs.as.flexmash.mashupplan.Connection.Policy.Performance.MaximumLatency.MaximumLatency;
+import de.unistuttgart.ipvs.as.flexmash.mashupplan.Connection.Policy.Performance.Latency.Latency;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "maximumLatency"
+    "latency"
 })
 public class Performance {
 
-    @JsonProperty("maximumLatency")
-    private MaximumLatency maximumLatency;
+    @JsonProperty("latency")
+    private Latency latency;
 
-    @JsonProperty("maximumLatency")
-    public MaximumLatency getMaximumLatency() {
-        return maximumLatency;
+    @JsonProperty("latency")
+    public Latency getLatency() {
+        return latency;
     }
 
-    @JsonProperty("maximumLatency")
-    public void setMaximumLatency(MaximumLatency maximumLatency) {
-        this.maximumLatency = maximumLatency;
+    @JsonProperty("latency")
+    public void setLatency(Latency latency) {
+        this.latency = latency;
     }
 
 }

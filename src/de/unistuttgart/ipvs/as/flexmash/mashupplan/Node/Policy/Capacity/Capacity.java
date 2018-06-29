@@ -5,14 +5,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.unistuttgart.ipvs.as.flexmash.mashupplan.Node.Policy.Capacity.Disk.Disk;
-import de.unistuttgart.ipvs.as.flexmash.mashupplan.Node.Policy.Capacity.MaximumProcessingPower.MaximumProcessingPower;
+import de.unistuttgart.ipvs.as.flexmash.mashupplan.Node.Policy.Capacity.ProcessingPower.ProcessingPower;
 import de.unistuttgart.ipvs.as.flexmash.mashupplan.Node.Policy.Capacity.Memory.Memory;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "memory",
     "disk",
-    "maximumProcessingPower"
+    "processingPower"
 })
 public class Capacity {
 
@@ -20,8 +20,8 @@ public class Capacity {
     private Memory memory;
     @JsonProperty("disk")
     private Disk disk;
-    @JsonProperty("maximumProcessingPower")
-    private MaximumProcessingPower maximumProcessingPower;
+    @JsonProperty("processingPower")
+    private ProcessingPower processingPower;
 
     @JsonProperty("memory")
     public Memory getMemory() {
@@ -43,14 +43,14 @@ public class Capacity {
         this.disk = disk;
     }
 
-    @JsonProperty("maximumProcessingPower")
-    public MaximumProcessingPower getMaximumProcessingPower() {
-        return maximumProcessingPower;
+    @JsonProperty("processingPower")
+    public ProcessingPower getProcessingPower() {
+        return processingPower;
     }
 
-    @JsonProperty("maximumProcessingPower")
-    public void setMaximumProcessingPower(MaximumProcessingPower maximumProcessingPower) {
-        this.maximumProcessingPower = maximumProcessingPower;
+    @JsonProperty("processingPower")
+    public void setProcessingPower(ProcessingPower processingPower) {
+        this.processingPower = processingPower;
     }
 
 }

@@ -1,5 +1,5 @@
 
-package de.unistuttgart.ipvs.as.flexmash.mashupplan.Node.Policy.Capacity.MaximumProcessingPower;
+package de.unistuttgart.ipvs.as.flexmash.mashupplan.Node.Policy.Capacity.ProcessingPower;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "unit",
     "operator"
 })
-public class MaximumProcessingPower {
+public class ProcessingPower {
 
     @JsonProperty("value")
     private Double value;
