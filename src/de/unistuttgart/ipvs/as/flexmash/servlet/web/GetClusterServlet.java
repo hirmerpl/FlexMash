@@ -2,6 +2,7 @@ package de.unistuttgart.ipvs.as.flexmash.servlet.web;
 
 import org.json.JSONObject;
 
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,9 +16,10 @@ import java.sql.*;
 @WebServlet("/GetCluster")
 public class GetClusterServlet extends HttpServlet {
 
-    private final String[] policyParams = {"processingTime", "memory"};
-    int[] cluster = new int[2];
-    double[] average = new double[2];
+    private final String[] policyParams = {"processingTime", "memory", "disk"};
+    /*int[] cluster = new int[3];
+    double[] average = new double[3];*/
+
     private JSONObject respJSON = new JSONObject();
 
     private Connection con;
@@ -34,22 +36,21 @@ public class GetClusterServlet extends HttpServlet {
             con = DriverManager.getConnection("jdbc:mysql://192.168.209.250:3306/operations", "root", "password");
             st = con.createStatement();
 
+            String query = "SELECT cluster.cluster FROM operations.cluster WHERE id = \"" + op + "\"";
+            rs = st.executeQuery(query);
+            while (rs.next()) {
+                String overallCluster = rs.getString("cluster");
+                respJSON.put("overallCluster", overallCluster);
+            }
+
             for(int i=0; i<policyParams.length; i++) {
-                String query = "SELECT cluster.cluster_"+policyParams[i]+", cluster.avg_"+policyParams[i]+" FROM operations.cluster WHERE id = \"" + op + "\"";
+                query = "SELECT cluster.cluster_"+policyParams[i]+", cluster.avg_"+policyParams[i]+" FROM operations.cluster WHERE id = \"" + op + "\"";
                 rs = st.executeQuery(query);
                 while (rs.next()) {
-                    cluster[i] = rs.getInt("cluster_"+policyParams[i]);
-                    String strCluster = "Predict";
-                    if (cluster[i] == 0) {
-                        strCluster = "Low";
-                    } else if (cluster[i] == 1) {
-                        strCluster = "Medium";
-                    } else {
-                        strCluster = "High";
-                    }
-                    respJSON.put("cluster_"+policyParams[i], strCluster);
-                    average[i] = rs.getDouble("avg_"+policyParams[i]);
-                    respJSON.put("avg_"+policyParams[i], average[i]);
+                    String cluster = rs.getString("cluster_"+policyParams[i]);
+                    respJSON.put("cluster_"+policyParams[i], cluster);
+                    double average = rs.getDouble("avg_"+policyParams[i]);
+                    respJSON.put("avg_"+policyParams[i], average);
                 }
             }
 
